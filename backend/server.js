@@ -20,21 +20,36 @@ const contactRoutes = require("./routes/contactRoutes");
 const zumbaRoutes = require("./routes/zumbaRoutes");
 const testMailRoutes = require("./routes/testMailRoutes");
 
-// Zumba background scheduler
 const { startZumbaNotifier } = require("./utils/zumbaNotifier");
 
-// ================= APP INIT =================
 const app = express();
 
-// ================= MIDDLEWARE =================
+// ================= PRODUCTION CORS =================
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://fittrack-otl5.onrender.com" // allow Render frontend
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "https://fittrack-weld.vercel.app"
+      ];
+
+      // Allow Postman or direct server requests
+      if (!origin) return callback(null, true);
+
+      // Allow exact matches
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Allow any Vercel preview URL
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS not allowed for: " + origin));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   })
 );
 
@@ -76,8 +91,6 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected ✅");
-
-    // Start Zumba notifier only after DB connection
     startZumbaNotifier();
     console.log("🕺 Zumba Notification Scheduler Started");
   })
