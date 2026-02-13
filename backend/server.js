@@ -1,3 +1,4 @@
+// backend/server.js
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -24,37 +25,45 @@ const { startZumbaNotifier } = require("./utils/zumbaNotifier");
 
 const app = express();
 
-// ================= PRODUCTION CORS =================
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        "http://localhost:5173",
-        "https://fittrack-weld.vercel.app"
-      ];
-
-      // Allow Postman or direct server requests
-      if (!origin) return callback(null, true);
-
-      // Allow exact matches
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Allow any Vercel preview URL
-      if (origin.endsWith(".vercel.app")) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("CORS not allowed for: " + origin));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  })
-);
-
+// ================= BODY PARSER =================
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
+
+// ================= CORS =================
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://fittrack-weld.vercel.app",
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow Postman / server-to-server requests
+    if (!origin) return callback(null, true);
+
+    // Allow exact matches
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Allow any Vercel preview URL
+    if (origin.endsWith(".vercel.app")) return callback(null, true);
+
+    return callback(new Error("CORS not allowed for: " + origin));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// Apply CORS globally
+app.use(cors(corsOptions));
+
+// ✅ EXPRESS-5 SAFE PREFLIGHT HANDLER (Fixes your crash + 404 preflight)
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // ================= HEALTH ROUTES =================
 app.get("/", (req, res) => {
@@ -91,6 +100,7 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected ✅");
+
     startZumbaNotifier();
     console.log("🕺 Zumba Notification Scheduler Started");
   })
@@ -100,7 +110,6 @@ mongoose
 
 // ================= SERVER START =================
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT} 🚀`);
 });
