@@ -25,6 +25,9 @@ const { startZumbaNotifier } = require("./utils/zumbaNotifier");
 
 const app = express();
 
+// ✅ (Helpful for Render / reverse proxy setups)
+app.set("trust proxy", 1);
+
 // ================= BODY PARSER =================
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
@@ -57,11 +60,9 @@ const corsOptions = {
 // Apply CORS globally
 app.use(cors(corsOptions));
 
-// ✅ EXPRESS-5 SAFE PREFLIGHT HANDLER (Fixes your crash + 404 preflight)
+// ✅ EXPRESS-5 SAFE PREFLIGHT HANDLER
 app.use((req, res, next) => {
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(204);
-  }
+  if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
 
@@ -94,6 +95,16 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/zumba", zumbaRoutes);
 app.use("/api/testmail", testMailRoutes);
+
+// ================= GLOBAL ERROR HANDLER =================
+// (So errors are visible instead of just "Network error")
+app.use((err, req, res, next) => {
+  console.error("❌ Server error:", err.message);
+  res.status(500).json({
+    success: false,
+    message: err.message || "Server error",
+  });
+});
 
 // ================= DATABASE CONNECTION =================
 mongoose
