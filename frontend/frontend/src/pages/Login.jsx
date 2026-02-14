@@ -9,7 +9,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ If user was redirected here by RequireAuth, we get target route + state
+  // ✅ Redirect back to intended route after login
   const redirectTo = location.state?.from || "/home";
   const redirectState = location.state?.state || null;
 
@@ -21,22 +21,19 @@ export default function Login() {
     try {
       const data = await loginUser(email, password);
 
-      if (!data.success) return alert(data.message || "Invalid login");
+      if (!data?.success) return alert(data?.message || "Login failed");
 
-      if (data.token) {
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify(data.user));
-}
+      // ✅ Save token + user
+      if (data.token) localStorage.setItem("token", data.token);
+      if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
+      alert("Login successful ✅");
 
-      alert("Login successful");
-
-      // ✅ Go back to intended page (ex: /home/join with selected plan)
+      // ✅ Go back to intended page
       navigate(redirectTo, { replace: true, state: redirectState });
-
     } catch (err) {
       console.error(err);
-      alert("Server error. Make sure backend running.");
+      alert("Network / server error");
     }
   };
 

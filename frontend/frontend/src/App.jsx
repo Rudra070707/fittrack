@@ -49,12 +49,12 @@ export default function App() {
 
   return (
     <>
-      {/* ✅ Show main Navbar only on non-admin pages */}
+      {/* ✅ Main Navbar only on non-admin pages */}
       {!isAdminRoute && (
         <Navbar onOpenServices={() => setShowServicesNav(true)} />
       )}
 
-      {/* ✅ Services subnav only for non-admin pages */}
+      {/* ✅ Services subnav only on non-admin pages */}
       {!isAdminRoute && <ServicesSubnav show={showServicesNav} />}
 
       <AnimatePresence mode="wait">
@@ -66,10 +66,10 @@ export default function App() {
           transition={{ duration: 0.45 }}
         >
           <Routes location={location}>
-            {/* ✅ ADMIN routes */}
+            {/* ✅ ADMIN */}
             <Route path="/admin/*" element={<AdminLayout />} />
 
-            {/* ✅ HOME page */}
+            {/* ✅ HOME LANDING */}
             <Route
               index
               element={
@@ -84,21 +84,24 @@ export default function App() {
             {/* ✅ PUBLIC */}
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
-
             <Route path="gym" element={<Gym />} />
             <Route path="zumba" element={<Zumba />} />
             <Route path="yoga" element={<Yoga />} />
 
+            {/* ✅ AUTH (support BOTH /login and /home/login) */}
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
-            {/* ✅ PUBLIC right now (we can lock later if you want) */}
+            <Route path="home/login" element={<Login />} />
+            <Route path="home/signup" element={<Signup />} />
+
+            {/* ✅ PUBLIC FEATURES (keep public for now) */}
             <Route path="diet" element={<Diet />} />
             <Route path="workout" element={<SmartWorkoutPlanner />} />
             <Route path="progress" element={<Progress />} />
             <Route path="injury" element={<InjurySafe />} />
 
-            {/* ✅ PROTECTED */}
+            {/* ✅ PROTECTED (support BOTH /join and /home/join) */}
             <Route
               path="join"
               element={
@@ -107,7 +110,16 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route
+              path="home/join"
+              element={
+                <RequireAuth>
+                  <Join />
+                </RequireAuth>
+              }
+            />
 
+            {/* ✅ CHANGE PASSWORD (support BOTH) */}
             <Route
               path="change-password"
               element={
@@ -116,13 +128,23 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route
+              path="home/change-password"
+              element={
+                <RequireAuth>
+                  <ChangePassword />
+                </RequireAuth>
+              }
+            />
 
+            {/* ✅ DEFAULT */}
+            <Route path="home" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
 
-      {/* ✅ Footer + Chatbot only for non-admin pages */}
+      {/* ✅ Footer + Chatbot only on non-admin pages */}
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <Chatbot />}
     </>

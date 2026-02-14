@@ -14,32 +14,42 @@ export default function RequireAuth({ children, adminOnly = false }) {
         <Navigate
           to="/admin/login"
           replace
-          state={{ from: location.pathname }}
+          state={{ from: location.pathname, state: location.state || null }}
         />
       );
     }
     return children;
   }
 
-  // 🔐 USER ROUTES
+  // 🔐 USER ROUTES (admin token also allowed)
   if (!token && !adminToken) {
-    return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to="/home/login"
+        replace
+        state={{ from: location.pathname, state: location.state || null }}
+      />
+    );
   }
 
-  // 🔁 FORCE PASSWORD CHANGE
+  // 🔁 FORCE PASSWORD CHANGE (users only)
   if (token) {
     try {
       const user = storedUser ? JSON.parse(storedUser) : null;
 
-      if (
-        user?.mustChangePassword === true &&
-        location.pathname !== "/change-password"
-      ) {
-        return <Navigate to="/change-password" replace />;
+      // If user must change password, force route
+      const isOnChangePassword =
+        location.pathname === "/change-password" ||
+        location.pathname === "/home/change-password";
+
+      if (user?.mustChangePassword === true && !isOnChangePassword) {
+        return <Navigate to="/home/change-password" replace />;
       }
     } catch {
-      localStorage.clear();
-      return <Navigate to="/login" replace />;
+      // corrupted storage
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      return <Navigate to="/home/login" replace />;
     }
   }
 
