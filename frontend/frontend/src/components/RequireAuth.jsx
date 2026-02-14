@@ -7,35 +7,39 @@ export default function RequireAuth({ children, adminOnly = false }) {
   const adminToken = localStorage.getItem("adminToken");
   const storedUser = localStorage.getItem("user");
 
-  // 🔒 ADMIN-ONLY ROUTES
+  // 🔒 ADMIN ROUTES
   if (adminOnly) {
     if (!adminToken) {
-      return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
+      return (
+        <Navigate
+          to="/admin/login"
+          replace
+          state={{ from: location.pathname }}
+        />
+      );
     }
     return children;
   }
 
-  // 🔐 USER ROUTES (admin is also allowed)
+  // 🔐 USER ROUTES
   if (!token && !adminToken) {
-    return <Navigate to="/home/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/login" replace />;
   }
 
-  // 🔁 FORCE PASSWORD CHANGE (users only)
+  // 🔁 FORCE PASSWORD CHANGE
   if (token) {
-    let user = null;
     try {
-      user = storedUser ? JSON.parse(storedUser) : null;
-    } catch {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      return <Navigate to="/home/login" replace />;
-    }
+      const user = storedUser ? JSON.parse(storedUser) : null;
 
-    if (
-      user?.mustChangePassword === true &&
-      location.pathname !== "/home/change-password"
-    ) {
-      return <Navigate to="/home/change-password" replace />;
+      if (
+        user?.mustChangePassword === true &&
+        location.pathname !== "/change-password"
+      ) {
+        return <Navigate to="/change-password" replace />;
+      }
+    } catch {
+      localStorage.clear();
+      return <Navigate to="/login" replace />;
     }
   }
 

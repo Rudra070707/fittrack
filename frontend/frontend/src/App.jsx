@@ -28,7 +28,6 @@ import Yoga from "./pages/Yoga";
 import RequireAuth from "./components/RequireAuth";
 import ChangePassword from "./pages/ChangePassword";
 
-// ✅ IMPORTANT: you forgot this import
 import AdminLayout from "./admin/AdminLayout";
 
 export default function App() {
@@ -51,7 +50,9 @@ export default function App() {
   return (
     <>
       {/* ✅ Show main Navbar only on non-admin pages */}
-      {!isAdminRoute && <Navbar onOpenServices={() => setShowServicesNav(true)} />}
+      {!isAdminRoute && (
+        <Navbar onOpenServices={() => setShowServicesNav(true)} />
+      )}
 
       {/* ✅ Services subnav only for non-admin pages */}
       {!isAdminRoute && <ServicesSubnav show={showServicesNav} />}
@@ -68,7 +69,7 @@ export default function App() {
             {/* ✅ ADMIN routes */}
             <Route path="/admin/*" element={<AdminLayout />} />
 
-            {/* ✅ PUBLIC site routes */}
+            {/* ✅ HOME page */}
             <Route
               index
               element={
@@ -80,13 +81,9 @@ export default function App() {
               }
             />
 
+            {/* ✅ PUBLIC */}
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
-
-            <Route path="diet" element={<Diet />} />
-            <Route path="workout" element={<SmartWorkoutPlanner />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="injury" element={<InjurySafe />} />
 
             <Route path="gym" element={<Gym />} />
             <Route path="zumba" element={<Zumba />} />
@@ -95,6 +92,13 @@ export default function App() {
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
+            {/* ✅ PUBLIC right now (we can lock later if you want) */}
+            <Route path="diet" element={<Diet />} />
+            <Route path="workout" element={<SmartWorkoutPlanner />} />
+            <Route path="progress" element={<Progress />} />
+            <Route path="injury" element={<InjurySafe />} />
+
+            {/* ✅ PROTECTED */}
             <Route
               path="join"
               element={

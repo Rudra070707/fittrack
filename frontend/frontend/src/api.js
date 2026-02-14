@@ -2,15 +2,20 @@
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 /**
- * 🔐 Token handling
+ * 🔐 Token handling (separate)
  * - Admin panel stores: adminToken
  * - User side stores:   token
  */
-const getToken = () =>
-  localStorage.getItem("adminToken") || localStorage.getItem("token");
+export const getUserToken = () => localStorage.getItem("token");
+export const getAdminToken = () => localStorage.getItem("adminToken");
 
-const authHeader = () => {
-  const token = getToken();
+export const userAuthHeader = () => {
+  const token = getUserToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const adminAuthHeader = () => {
+  const token = getAdminToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -30,6 +35,7 @@ const safeJson = async (res) => {
 // Unified response handler
 const handleResponse = async (res, fallbackMsg) => {
   const data = await safeJson(res);
+
   if (!res.ok) {
     return {
       success: false,
@@ -37,6 +43,7 @@ const handleResponse = async (res, fallbackMsg) => {
       data,
     };
   }
+
   return data ?? { success: true };
 };
 
@@ -76,14 +83,14 @@ export async function signupUser(payload) {
   }
 }
 
-// CHANGE PASSWORD
+// CHANGE PASSWORD (USER PROTECTED)
 export async function changePassword(currentPassword, newPassword) {
   try {
     const res = await fetch(`${API_BASE}/auth/change-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...authHeader(),
+        ...userAuthHeader(),
       },
       body: JSON.stringify({ currentPassword, newPassword }),
     });
@@ -99,14 +106,14 @@ export async function changePassword(currentPassword, newPassword) {
    USERS (ADMIN)
    ========================= */
 
-// ADMIN RESET USER PASSWORD
+// ADMIN RESET USER PASSWORD (ADMIN PROTECTED)
 export async function adminResetUserPassword(userId) {
   try {
     const res = await fetch(`${API_BASE}/users/${userId}/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...authHeader(),
+        ...adminAuthHeader(),
       },
     });
 
@@ -151,7 +158,10 @@ export async function subscribeMembership(payload) {
   try {
     const res = await fetch(`${API_BASE}/users/subscribe`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // if you want this protected later, add ...userAuthHeader()
+      },
       body: JSON.stringify(payload), // { name, email, phone, planCode }
     });
 
@@ -172,20 +182,11 @@ export async function recordPayment(payload) {
     const res = await fetch(`${API_BASE}/payments/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload), 
+      body: JSON.stringify(payload),
       // { userId, amount, plan, status, txnId, method }
     });
 
-    const data = await safeJson(res);
-
-    if (!res.ok) {
-      return {
-        success: false,
-        message: data?.message || "Failed to record payment",
-      };
-    }
-
-    return data || { success: true };
+    return await handleResponse(res, "Failed to record payment");
   } catch (err) {
     console.error("RECORD PAYMENT API ERROR:", err);
     return { success: false, message: "Network / server error" };
@@ -195,5 +196,7 @@ export async function recordPayment(payload) {
 /* =========================
    EXPORTS
    ========================= */
+export const authHeader = () => userAuthHeader();
 
-export { API_BASE, authHeader };
+
+export { API_BASE, safeJson };
