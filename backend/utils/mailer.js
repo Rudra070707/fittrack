@@ -4,20 +4,22 @@ const nodemailer = require("nodemailer");
 /**
  * ✅ Gmail SMTP Transport (Render-friendly)
  * Use explicit SMTP config instead of only `service: "gmail"`
- * to avoid connection timeout / DNS issues on some hosts.
+ * to reduce connection timeout / DNS issues on some hosts.
  *
- * Works with:
+ * Needs ENV:
  * - GMAIL_USER = your gmail address
  * - GMAIL_APP_PASS = 16-char Gmail App Password
  */
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,          // ✅ 587 = STARTTLS (best for Render)
-  secure: false,      // must be false for 587
+  port: 587, // ✅ 587 = STARTTLS (usually best for Render)
+  secure: false, // must be false for 587
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_APP_PASS,
   },
+
+  // Helpful on slow/limited networks
   connectionTimeout: 20_000, // 20s
   greetingTimeout: 20_000,
   socketTimeout: 20_000,
@@ -36,7 +38,7 @@ transporter.verify((err, success) => {
 });
 
 /**
- * Generic sendMail function (Used across FitTrack)
+ * ✅ Generic sendMail function (Used across FitTrack)
  *
  * @param {Object} param0
  * @param {string|string[]} param0.to
