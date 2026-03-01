@@ -1,55 +1,34 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { adminApi } from "../adminApi"; // ✅ FIXED
 
 export default function ContactMessages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
-
-  const getAdminToken = () => localStorage.getItem("adminToken");
 
   const fetchMessages = async () => {
     try {
       setLoading(true);
 
-      const token = getAdminToken();
-      if (!token) {
-        setMessages([]);
-        setLoading(false);
+      const res = await adminApi.get("/contact"); // ✅ FIXED
+
+      if (!res.data?.success) {
+        alert(res.data?.message || "Failed to load messages");
         return;
       }
 
-      const res = await fetch("http://localhost:5000/api/contact", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      // ✅ If token invalid/not admin, reset and send to login
-      if (res.status === 401 || res.status === 403) {
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("adminRole");
-        alert(data.message || "Session expired. Please login again.");
-        navigate("/admin/login");
-        return;
-      }
-
-      if (!res.ok) {
-        console.error("GET /api/contact failed:", res.status, data);
-        alert(data.message || `API failed (${res.status})`);
-        return;
-      }
-
-      if (!data.success) {
-        alert(data.message || "Failed to load messages");
-        return;
-      }
-
-      setMessages(Array.isArray(data.data) ? data.data : []);
+      setMessages(Array.isArray(res.data.data) ? res.data.data : []);
     } catch (err) {
       console.error(err);
-      alert("Server error (backend down / CORS issue)");
+
+      // 🔥 Auto logout if token invalid
+      if (err?.response?.status === 401) {
+        localStorage.removeItem("adminToken");
+        navigate("/admin/login");
+      } else {
+        alert("Server error");
+      }
     } finally {
       setLoading(false);
     }
@@ -57,57 +36,40 @@ export default function ContactMessages() {
 
   useEffect(() => {
     fetchMessages();
-    // eslint-disable-next-line
   }, []);
 
   const updateStatus = async (id, status) => {
-    const token = getAdminToken();
-    if (!token) return alert("Please login again.");
+    try {
+      const res = await adminApi.patch(`/contact/${id}/status`, { status });
 
-    const res = await fetch(`http://localhost:5000/api/contact/${id}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status }),
-    });
-
-    const data = await res.json().catch(() => ({}));
-    if (res.status === 401 || res.status === 403) {
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminRole");
-      alert(data.message || "Session expired. Please login again.");
-      navigate("/admin/login");
-      return;
+      if (!res.data?.success) return alert(res.data.message || "Failed");
+      fetchMessages();
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        localStorage.removeItem("adminToken");
+        navigate("/admin/login");
+      } else {
+        alert("Update failed");
+      }
     }
-
-    if (!res.ok || !data.success) return alert(data.message || "Failed");
-    fetchMessages();
   };
 
   const deleteMsg = async (id) => {
-    const token = getAdminToken();
-    if (!token) return alert("Please login again.");
-
     if (!confirm("Delete this message?")) return;
 
-    const res = await fetch(`http://localhost:5000/api/contact/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await adminApi.delete(`/contact/${id}`);
 
-    const data = await res.json().catch(() => ({}));
-    if (res.status === 401 || res.status === 403) {
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminRole");
-      alert(data.message || "Session expired. Please login again.");
-      navigate("/admin/login");
-      return;
+      if (!res.data?.success) return alert(res.data.message || "Failed");
+      fetchMessages();
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        localStorage.removeItem("adminToken");
+        navigate("/admin/login");
+      } else {
+        alert("Delete failed");
+      }
     }
-
-    if (!res.ok || !data.success) return alert(data.message || "Failed");
-    fetchMessages();
   };
 
   return (
@@ -160,12 +122,14 @@ export default function ContactMessages() {
                 >
                   Mark Seen
                 </button>
+
                 <button
                   onClick={() => updateStatus(m._id, "resolved")}
                   className="px-4 py-2 rounded-xl bg-blue-500/20 border border-blue-500/30 hover:bg-blue-500/30"
                 >
                   Mark Resolved
                 </button>
+
                 <button
                   onClick={() => deleteMsg(m._id)}
                   className="px-4 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30"
