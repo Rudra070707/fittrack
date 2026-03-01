@@ -7,6 +7,13 @@ export default function Navbar({ onOpenServices }) {
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
 
+  // ✅ Use deployed backend (Vercel + Render)
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+  // ✅ Hide Navbar on auth pages (user)
+  const hideOnRoutes = ["/home/login", "/login", "/home/signup", "/signup"];
+  if (hideOnRoutes.includes(location.pathname)) return null;
+
   const navLinks = [
     { name: "About", type: "page", path: "/home/about" },
     { name: "Services", type: "scroll", id: "services" },
@@ -15,16 +22,16 @@ export default function Navbar({ onOpenServices }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/settings")
+      .get(`${API_BASE}/api/settings`)
       .then((res) => setLogo(res.data.logo))
       .catch((err) => console.error(err));
-  }, []);
+  }, [API_BASE]);
 
   const scrollToSection = (id) => {
-    // ✅ if Services clicked, show subnav
     if (id === "services" && onOpenServices) onOpenServices();
 
-    if (location.pathname !== "/home") {
+    // ✅ if not on /home, navigate then scroll
+    if (location.pathname !== "/home" && location.pathname !== "/") {
       navigate("/home", { state: { scrollTo: id } });
       return;
     }
@@ -53,7 +60,7 @@ export default function Navbar({ onOpenServices }) {
         </div>
 
         <div className="relative max-w-7xl mx-auto h-full px-6 md:px-8 flex items-center justify-between">
-          {/* LOGO (HOME BUTTON) */}
+          {/* LOGO */}
           <Link to="/home" className="flex items-center gap-3">
             {logo ? (
               <div
@@ -67,7 +74,7 @@ export default function Navbar({ onOpenServices }) {
                 "
               >
                 <img
-                  src={`http://localhost:5000${logo}`}
+                  src={`${API_BASE}${logo}`}
                   alt="FitTrack Logo"
                   className="
                     h-9 w-auto
@@ -104,7 +111,6 @@ export default function Navbar({ onOpenServices }) {
                       group
                     "
                   >
-                    {/* Hover pill */}
                     <span
                       className="
                         absolute -inset-x-3 -inset-y-2
@@ -135,7 +141,6 @@ export default function Navbar({ onOpenServices }) {
                       group
                     "
                   >
-                    {/* Hover pill */}
                     <span
                       className="
                         absolute -inset-x-3 -inset-y-2
@@ -162,7 +167,6 @@ export default function Navbar({ onOpenServices }) {
 
           {/* RIGHT ACTIONS */}
           <div className="flex items-center gap-3">
-            {/* Mobile quick Services */}
             <button
               type="button"
               onClick={() => scrollToSection("services")}
@@ -179,7 +183,6 @@ export default function Navbar({ onOpenServices }) {
               Services
             </button>
 
-            {/* LOGIN */}
             <Link
               to="/home/login"
               className="

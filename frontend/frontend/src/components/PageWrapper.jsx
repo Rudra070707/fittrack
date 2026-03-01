@@ -16,7 +16,7 @@ export default function PageWrapper({ children }) {
       exit="out"
       variants={variants}
       transition={transition}
-      style={{ minHeight: "100vh" }} // full screen height
+      style={{ minHeight: "100vh" }}
     >
       {children}
     </motion.div>

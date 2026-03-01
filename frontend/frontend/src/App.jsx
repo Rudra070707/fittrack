@@ -49,7 +49,7 @@ export default function App() {
 
   return (
     <>
-      {/* ✅ Main Navbar only on non-admin pages */}
+      {/* ✅ Navbar only on non-admin pages (Navbar itself hides on login/signup) */}
       {!isAdminRoute && (
         <Navbar onOpenServices={() => setShowServicesNav(true)} />
       )}
@@ -69,9 +69,19 @@ export default function App() {
             {/* ✅ ADMIN */}
             <Route path="/admin/*" element={<AdminLayout />} />
 
-            {/* ✅ HOME LANDING */}
+            {/* ✅ LANDING: support both / and /home */}
             <Route
-              index
+              path="/"
+              element={
+                <>
+                  <Hero />
+                  <Services />
+                  <Plans />
+                </>
+              }
+            />
+            <Route
+              path="/home"
               element={
                 <>
                   <Hero />
@@ -82,28 +92,32 @@ export default function App() {
             />
 
             {/* ✅ PUBLIC */}
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="gym" element={<Gym />} />
-            <Route path="zumba" element={<Zumba />} />
-            <Route path="yoga" element={<Yoga />} />
+            <Route path="/home/about" element={<About />} />
+            <Route path="/home/contact" element={<Contact />} />
+            <Route path="/home/gym" element={<Gym />} />
+            <Route path="/home/zumba" element={<Zumba />} />
+            <Route path="/home/yoga" element={<Yoga />} />
 
-            {/* ✅ AUTH (support BOTH /login and /home/login) */}
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
+            {/* ✅ AUTH (support BOTH) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/home/login" element={<Login />} />
+            <Route path="/home/signup" element={<Signup />} />
 
-            <Route path="home/login" element={<Login />} />
-            <Route path="home/signup" element={<Signup />} />
+            {/* ✅ PUBLIC FEATURES */}
+            <Route path="/diet" element={<Diet />} />
+            <Route path="/workout" element={<SmartWorkoutPlanner />} />
+            <Route path="/progress" element={<Progress />} />
+            <Route path="/injury" element={<InjurySafe />} />
 
-            {/* ✅ PUBLIC FEATURES (keep public for now) */}
-            <Route path="diet" element={<Diet />} />
-            <Route path="workout" element={<SmartWorkoutPlanner />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="injury" element={<InjurySafe />} />
+            <Route path="/home/diet" element={<Diet />} />
+            <Route path="/home/workout" element={<SmartWorkoutPlanner />} />
+            <Route path="/home/progress" element={<Progress />} />
+            <Route path="/home/injury" element={<InjurySafe />} />
 
-            {/* ✅ PROTECTED (support BOTH /join and /home/join) */}
+            {/* ✅ PROTECTED */}
             <Route
-              path="join"
+              path="/join"
               element={
                 <RequireAuth>
                   <Join />
@@ -111,7 +125,7 @@ export default function App() {
               }
             />
             <Route
-              path="home/join"
+              path="/home/join"
               element={
                 <RequireAuth>
                   <Join />
@@ -119,9 +133,9 @@ export default function App() {
               }
             />
 
-            {/* ✅ CHANGE PASSWORD (support BOTH) */}
+            {/* ✅ CHANGE PASSWORD */}
             <Route
-              path="change-password"
+              path="/change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -129,7 +143,7 @@ export default function App() {
               }
             />
             <Route
-              path="home/change-password"
+              path="/home/change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -138,8 +152,7 @@ export default function App() {
             />
 
             {/* ✅ DEFAULT */}
-            <Route path="home" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
