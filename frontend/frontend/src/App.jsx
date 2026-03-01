@@ -34,7 +34,6 @@ export default function App() {
   const location = useLocation();
   const [showServicesNav, setShowServicesNav] = useState(false);
 
-  // ✅ Detect admin route and hide main-site layout
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
@@ -49,12 +48,9 @@ export default function App() {
 
   return (
     <>
-      {/* ✅ Navbar only on non-admin pages (Navbar itself hides on login/signup) */}
       {!isAdminRoute && (
         <Navbar onOpenServices={() => setShowServicesNav(true)} />
       )}
-
-      {/* ✅ Services subnav only on non-admin pages */}
       {!isAdminRoute && <ServicesSubnav show={showServicesNav} />}
 
       <AnimatePresence mode="wait">
@@ -69,17 +65,9 @@ export default function App() {
             {/* ✅ ADMIN */}
             <Route path="/admin/*" element={<AdminLayout />} />
 
-            {/* ✅ LANDING: support both / and /home */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <Hero />
-                  <Services />
-                  <Plans />
-                </>
-              }
-            />
+            {/* ✅ Make /home the ONLY landing (fix blank screen) */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+
             <Route
               path="/home"
               element={
@@ -94,36 +82,38 @@ export default function App() {
             {/* ✅ PUBLIC */}
             <Route path="/home/about" element={<About />} />
             <Route path="/home/contact" element={<Contact />} />
+
             <Route path="/home/gym" element={<Gym />} />
             <Route path="/home/zumba" element={<Zumba />} />
             <Route path="/home/yoga" element={<Yoga />} />
 
-            {/* ✅ AUTH (support BOTH) */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            {/* ✅ AUTH (official) */}
             <Route path="/home/login" element={<Login />} />
             <Route path="/home/signup" element={<Signup />} />
 
-            {/* ✅ PUBLIC FEATURES */}
-            <Route path="/diet" element={<Diet />} />
-            <Route path="/workout" element={<SmartWorkoutPlanner />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/injury" element={<InjurySafe />} />
+            {/* ✅ Redirect old routes to /home/* */}
+            <Route path="/login" element={<Navigate to="/home/login" replace />} />
+            <Route path="/signup" element={<Navigate to="/home/signup" replace />} />
 
+            <Route path="/about" element={<Navigate to="/home/about" replace />} />
+            <Route path="/contact" element={<Navigate to="/home/contact" replace />} />
+            <Route path="/gym" element={<Navigate to="/home/gym" replace />} />
+            <Route path="/zumba" element={<Navigate to="/home/zumba" replace />} />
+            <Route path="/yoga" element={<Navigate to="/home/yoga" replace />} />
+
+            {/* ✅ FEATURES (official /home/*) */}
             <Route path="/home/diet" element={<Diet />} />
             <Route path="/home/workout" element={<SmartWorkoutPlanner />} />
             <Route path="/home/progress" element={<Progress />} />
             <Route path="/home/injury" element={<InjurySafe />} />
 
-            {/* ✅ PROTECTED */}
-            <Route
-              path="/join"
-              element={
-                <RequireAuth>
-                  <Join />
-                </RequireAuth>
-              }
-            />
+            {/* ✅ Redirect old feature routes */}
+            <Route path="/diet" element={<Navigate to="/home/diet" replace />} />
+            <Route path="/workout" element={<Navigate to="/home/workout" replace />} />
+            <Route path="/progress" element={<Navigate to="/home/progress" replace />} />
+            <Route path="/injury" element={<Navigate to="/home/injury" replace />} />
+
+            {/* ✅ PROTECTED (official) */}
             <Route
               path="/home/join"
               element={
@@ -132,16 +122,9 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route path="/join" element={<Navigate to="/home/join" replace />} />
 
-            {/* ✅ CHANGE PASSWORD */}
-            <Route
-              path="/change-password"
-              element={
-                <RequireAuth>
-                  <ChangePassword />
-                </RequireAuth>
-              }
-            />
+            {/* ✅ CHANGE PASSWORD (official) */}
             <Route
               path="/home/change-password"
               element={
@@ -150,6 +133,10 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            <Route
+              path="/change-password"
+              element={<Navigate to="/home/change-password" replace />}
+            />
 
             {/* ✅ DEFAULT */}
             <Route path="*" element={<Navigate to="/home" replace />} />
@@ -157,7 +144,6 @@ export default function App() {
         </motion.main>
       </AnimatePresence>
 
-      {/* ✅ Footer + Chatbot only on non-admin pages */}
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <Chatbot />}
     </>
