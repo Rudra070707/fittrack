@@ -87,27 +87,232 @@ export default function AdminPayments() {
 
       w.document.open();
       w.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8" />
-            <title>FitTrack Receipt</title>
-          </head>
-          <body>
-            <h2>FitTrack Payment Receipt</h2>
-            <p><b>Member:</b> ${escapeHtml(name)}</p>
-            <p><b>Email:</b> ${escapeHtml(email)}</p>
-            <p><b>User ID:</b> ${escapeHtml(userId)}</p>
-            <p><b>Plan:</b> ${escapeHtml(plan)}</p>
-            <p><b>Amount:</b> ${escapeHtml(amount)}</p>
-            <p><b>Method:</b> ${escapeHtml(method)}</p>
-            <p><b>Status:</b> ${escapeHtml(statusText)}</p>
-            <p><b>Date:</b> ${escapeHtml(date)}</p>
-            <p><b>Transaction:</b> ${escapeHtml(receiptNo)}</p>
-            <script>setTimeout(() => window.print(), 250)</script>
-          </body>
-        </html>
-      `);
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>FitTrack Receipt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
+        background: #0b0f14;
+        color: #e5e7eb;
+        padding: 24px;
+      }
+      .wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.04);
+        border-radius: 18px;
+        overflow: hidden;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.03);
+      }
+      .brand {
+        font-weight: 900;
+        letter-spacing: .06em;
+        font-size: 18px;
+      }
+      .brand span { color: #22c55e; }
+      .meta {
+        text-align: right;
+        font-size: 12px;
+        color: #9ca3af;
+        line-height: 1.6;
+      }
+      .meta strong { color: #e5e7eb; }
+      .content { padding: 22px; }
+      .title {
+        font-size: 22px;
+        font-weight: 900;
+        margin: 0;
+      }
+      .subtitle {
+        margin: 8px 0 18px;
+        color: #9ca3af;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 14px;
+      }
+      .card {
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(0,0,0,0.25);
+        min-height: 72px;
+      }
+      .label {
+        font-size: 10px;
+        letter-spacing: .18em;
+        text-transform: uppercase;
+        color: #9ca3af;
+        margin-bottom: 8px;
+      }
+      .value {
+        font-size: 14px;
+        font-weight: 700;
+        color: #f3f4f6;
+        word-break: break-word;
+      }
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .amount {
+        font-size: 20px;
+        font-weight: 900;
+        color: #22c55e;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: .03em;
+        border: 1px solid rgba(34,197,94,0.28);
+        background: rgba(34,197,94,0.12);
+        color: #86efac;
+      }
+      .pill.fail {
+        border-color: rgba(248,113,113,0.28);
+        background: rgba(248,113,113,0.12);
+        color: #fecaca;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 16px rgba(34,197,94,0.55);
+      }
+      .dot.fail {
+        background: #f87171;
+        box-shadow: 0 0 16px rgba(248,113,113,0.45);
+      }
+      .footer {
+        padding: 14px 22px 18px;
+        border-top: 1px solid rgba(255,255,255,0.10);
+        color: #9ca3af;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .note { margin: 0; max-width: 520px; line-height: 1.6; }
+
+      @media print {
+        body { background: #fff; color: #111827; padding: 0; }
+        .wrap { border: 1px solid #e5e7eb; background: #fff; border-radius: 0; }
+        .top { background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+        .card { background: #fff; border: 1px solid #e5e7eb; }
+        .brand span { color: #16a34a; }
+        .amount { color: #16a34a; }
+        .pill { border-color: #bbf7d0; background: #dcfce7; color: #166534; }
+        .pill.fail { border-color: #fecaca; background: #fee2e2; color: #991b1b; }
+        .footer { border-top: 1px solid #e5e7eb; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top">
+        <div class="brand">FitTrack<span>Receipt</span></div>
+        <div class="meta">
+          <div><strong>Payment Receipt</strong></div>
+          <div>Date: ${escapeHtml(date)}</div>
+          <div class="mono">Receipt No: ${escapeHtml(receiptNo)}</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <h1 class="title">Payment Successful</h1>
+        <p class="subtitle">
+          This receipt confirms a recorded subscription payment in FitTrack (Demo). Keep it for your project proof/screenshots.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <div class="label">Member</div>
+            <div class="value">${escapeHtml(name)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Email</div>
+            <div class="value">${escapeHtml(email)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">User ID</div>
+            <div class="value mono">${escapeHtml(userId)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Transaction ID</div>
+            <div class="value mono">${escapeHtml(txn)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Plan</div>
+            <div class="value">${escapeHtml(plan)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Method</div>
+            <div class="value">${escapeHtml(method)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Amount</div>
+            <div class="value amount">${escapeHtml(amount)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Status</div>
+            <div class="value">
+              <span class="pill ${statusText === "FAILED" ? "fail" : ""}">
+                <span class="dot ${statusText === "FAILED" ? "fail" : ""}"></span>
+                ${escapeHtml(statusText || "—")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p class="note">
+          This is a demo receipt generated by FitTrack Admin Panel. For documentation, export as PDF and attach in report/PPT.
+        </p>
+        <div>© ${new Date().getFullYear()} FitTrack</div>
+      </div>
+    </div>
+
+    <script>
+      setTimeout(() => window.print(), 250);
+    </script>
+  </body>
+</html>
+`);
       w.document.close();
     } catch (e) {
       console.error(e);
