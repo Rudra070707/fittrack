@@ -21,10 +21,23 @@ export default function Navbar({ onOpenServices }) {
   ];
 
   useEffect(() => {
+    let mounted = true;
+
     axios
       .get(`${API_BASE}/api/settings`)
-      .then((res) => setLogo(res.data.logo))
-      .catch((err) => console.error(err));
+      .then((res) => {
+        if (!mounted) return;
+        setLogo(res?.data?.logo || null);
+      })
+      .catch((err) => {
+        console.error("Navbar settings fetch failed:", err);
+        if (!mounted) return;
+        setLogo(null); // ✅ safe fallback
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, [API_BASE]);
 
   const scrollToSection = (id) => {
@@ -83,6 +96,7 @@ export default function Navbar({ onOpenServices }) {
                     drop-shadow-[0_0_22px_rgba(34,197,94,0.6)]
                     transition-transform duration-300 hover:scale-[1.4]
                   "
+                  onError={() => setLogo(null)} // ✅ if image path broken, fallback to text logo
                 />
               </div>
             ) : (
