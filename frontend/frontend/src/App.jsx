@@ -28,14 +28,11 @@ import Yoga from "./pages/Yoga";
 import RequireAuth from "./components/RequireAuth";
 import ChangePassword from "./pages/ChangePassword";
 
-import AdminLayout from "./admin/AdminLayout";
-
 export default function App() {
   const location = useLocation();
   const [showServicesNav, setShowServicesNav] = useState(false);
 
-  const isAdminRoute = location.pathname.startsWith("/admin");
-
+  // ✅ App is ONLY for /home/* (admin is handled in main.jsx)
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -48,10 +45,9 @@ export default function App() {
 
   return (
     <>
-      {!isAdminRoute && (
-        <Navbar onOpenServices={() => setShowServicesNav(true)} />
-      )}
-      {!isAdminRoute && <ServicesSubnav show={showServicesNav} />}
+      {/* Navbar hides itself on login/signup */}
+      <Navbar onOpenServices={() => setShowServicesNav(true)} />
+      <ServicesSubnav show={showServicesNav} />
 
       <AnimatePresence mode="wait">
         <motion.main
@@ -61,15 +57,11 @@ export default function App() {
           exit={{ opacity: 0, scale: 0.985 }}
           transition={{ duration: 0.45 }}
         >
-          <Routes location={location}>
-            {/* ✅ ADMIN */}
-            <Route path="/admin/*" element={<AdminLayout />} />
-
-            {/* ✅ Make /home the ONLY landing (fix blank screen) */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
-
+          {/* ✅ IMPORTANT: all routes here are RELATIVE to /home/* */}
+          <Routes>
+            {/* Landing for /home */}
             <Route
-              path="/home"
+              index
               element={
                 <>
                   <Hero />
@@ -79,73 +71,52 @@ export default function App() {
               }
             />
 
-            {/* ✅ PUBLIC */}
-            <Route path="/home/about" element={<About />} />
-            <Route path="/home/contact" element={<Contact />} />
+            {/* Public pages */}
+            <Route path="about" element={<About />} />
+            <Route path="contact" element={<Contact />} />
 
-            <Route path="/home/gym" element={<Gym />} />
-            <Route path="/home/zumba" element={<Zumba />} />
-            <Route path="/home/yoga" element={<Yoga />} />
+            {/* Service pages */}
+            <Route path="gym" element={<Gym />} />
+            <Route path="zumba" element={<Zumba />} />
+            <Route path="yoga" element={<Yoga />} />
 
-            {/* ✅ AUTH (official) */}
-            <Route path="/home/login" element={<Login />} />
-            <Route path="/home/signup" element={<Signup />} />
+            {/* Auth */}
+            <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
 
-            {/* ✅ Redirect old routes to /home/* */}
-            <Route path="/login" element={<Navigate to="/home/login" replace />} />
-            <Route path="/signup" element={<Navigate to="/home/signup" replace />} />
+            {/* Features */}
+            <Route path="diet" element={<Diet />} />
+            <Route path="workout" element={<SmartWorkoutPlanner />} />
+            <Route path="progress" element={<Progress />} />
+            <Route path="injury" element={<InjurySafe />} />
 
-            <Route path="/about" element={<Navigate to="/home/about" replace />} />
-            <Route path="/contact" element={<Navigate to="/home/contact" replace />} />
-            <Route path="/gym" element={<Navigate to="/home/gym" replace />} />
-            <Route path="/zumba" element={<Navigate to="/home/zumba" replace />} />
-            <Route path="/yoga" element={<Navigate to="/home/yoga" replace />} />
-
-            {/* ✅ FEATURES (official /home/*) */}
-            <Route path="/home/diet" element={<Diet />} />
-            <Route path="/home/workout" element={<SmartWorkoutPlanner />} />
-            <Route path="/home/progress" element={<Progress />} />
-            <Route path="/home/injury" element={<InjurySafe />} />
-
-            {/* ✅ Redirect old feature routes */}
-            <Route path="/diet" element={<Navigate to="/home/diet" replace />} />
-            <Route path="/workout" element={<Navigate to="/home/workout" replace />} />
-            <Route path="/progress" element={<Navigate to="/home/progress" replace />} />
-            <Route path="/injury" element={<Navigate to="/home/injury" replace />} />
-
-            {/* ✅ PROTECTED (official) */}
+            {/* Protected */}
             <Route
-              path="/home/join"
+              path="join"
               element={
                 <RequireAuth>
                   <Join />
                 </RequireAuth>
               }
             />
-            <Route path="/join" element={<Navigate to="/home/join" replace />} />
 
-            {/* ✅ CHANGE PASSWORD (official) */}
             <Route
-              path="/home/change-password"
+              path="change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
                 </RequireAuth>
               }
             />
-            <Route
-              path="/change-password"
-              element={<Navigate to="/home/change-password" replace />}
-            />
 
-            {/* ✅ DEFAULT */}
+            {/* Default */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
 
-      {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <Chatbot />}
+      <Footer />
+      <Chatbot />
     </>
   );
 }
