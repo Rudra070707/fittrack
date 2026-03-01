@@ -3,8 +3,11 @@ import { Navigate, useLocation } from "react-router-dom";
 export default function RequireAuth({ children, adminOnly = false }) {
   const location = useLocation();
 
-  const token = localStorage.getItem("token");
-  const adminToken = localStorage.getItem("adminToken");
+  // ✅ Accept both keys (prevents login loop bugs)
+  const token = localStorage.getItem("token"); // user token
+  const adminToken =
+    localStorage.getItem("adminToken") || localStorage.getItem("token");
+
   const storedUser = localStorage.getItem("user");
 
   // 🔒 ADMIN ROUTES
@@ -37,7 +40,6 @@ export default function RequireAuth({ children, adminOnly = false }) {
     try {
       const user = storedUser ? JSON.parse(storedUser) : null;
 
-      // If user must change password, force route
       const isOnChangePassword =
         location.pathname === "/change-password" ||
         location.pathname === "/home/change-password";
@@ -46,7 +48,6 @@ export default function RequireAuth({ children, adminOnly = false }) {
         return <Navigate to="/home/change-password" replace />;
       }
     } catch {
-      // corrupted storage
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       return <Navigate to="/home/login" replace />;

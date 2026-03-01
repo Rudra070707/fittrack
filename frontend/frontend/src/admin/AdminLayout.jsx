@@ -12,12 +12,10 @@ import ContactMessages from "./pages/ContactMessages";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 
-import { getAdminToken } from "./auth";
 import RequireAuth from "../components/RequireAuth";
 
 export default function AdminLayout() {
   const location = useLocation();
-  const token = getAdminToken();
   const isLoginPage = location.pathname === "/admin/login";
 
   const pageVariants = {
@@ -45,6 +43,7 @@ export default function AdminLayout() {
         >
           <Routes>
             <Route path="login" element={<AdminLogin />} />
+            <Route path="*" element={<Navigate to="/admin/login" replace />} />
           </Routes>
         </motion.div>
       </AnimatePresence>
