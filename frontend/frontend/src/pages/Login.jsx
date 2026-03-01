@@ -15,8 +15,24 @@ export default function Login() {
   const [error, setError] = useState("");
 
   // ✅ Redirect back to intended route after login
-  const redirectTo = location.state?.from || "/home";
+  const from = location.state?.from;
+
+  // default should always be /home
+  const redirectTo = from ? from : "/home";
   const redirectState = location.state?.state || null;
+
+  // ✅ Safe redirect (IMPORTANT)
+  // If redirectTo is like "/progress" or "/join", convert to "/home/progress"
+  const safeRedirect = redirectTo.startsWith("/home")
+    ? redirectTo
+    : redirectTo.startsWith("/admin")
+    ? "/admin/dashboard"
+    : redirectTo === "/"
+    ? "/home"
+    : `/home${redirectTo.startsWith("/") ? "" : "/"}${redirectTo.replace(
+        /^\//,
+        ""
+      )}`;
 
   // ----- ULTRA motion / glow like AdminLogin -----
   const wrapRef = useRef(null);
@@ -78,7 +94,7 @@ export default function Login() {
     tiltY.set(0);
   };
 
-  // ----- login submit (same logic, just nicer error handling) -----
+  // ----- login submit -----
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -101,8 +117,8 @@ export default function Login() {
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ Go back to intended page
-      navigate(redirectTo, { replace: true, state: redirectState });
+      // ✅ Go to safe redirect (prevents blank screen)
+      navigate(safeRedirect, { replace: true, state: redirectState });
     } catch (err) {
       console.error(err);
       setError("Network / server error. Please try again.");
@@ -177,7 +193,11 @@ export default function Login() {
           onSubmit={handleSubmit}
           style={
             isFinePointer
-              ? { rotateX: tiltXS, rotateY: tiltYS, transformStyle: "preserve-3d" }
+              ? {
+                  rotateX: tiltXS,
+                  rotateY: tiltYS,
+                  transformStyle: "preserve-3d",
+                }
               : undefined
           }
           initial={{ opacity: 0, scale: 0.985, y: 16 }}
@@ -194,7 +214,10 @@ export default function Login() {
           </div>
 
           {/* Heading */}
-          <div className="relative text-center mb-8" style={{ transform: "translateZ(18px)" }}>
+          <div
+            className="relative text-center mb-8"
+            style={{ transform: "translateZ(18px)" }}
+          >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/12">
               <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.7)]" />
               <p className="text-[11px] tracking-[0.35em] uppercase text-white/70">
@@ -209,12 +232,19 @@ export default function Login() {
               </span>
             </h2>
 
-            <p className="text-white/65 mt-3">Login to continue your fitness journey.</p>
+            <p className="text-white/65 mt-3">
+              Login to continue your fitness journey.
+            </p>
           </div>
 
           {/* Email */}
-          <div className="relative space-y-2" style={{ transform: "translateZ(14px)" }}>
-            <label className="text-xs uppercase tracking-[0.22em] text-white/55">Email</label>
+          <div
+            className="relative space-y-2"
+            style={{ transform: "translateZ(14px)" }}
+          >
+            <label className="text-xs uppercase tracking-[0.22em] text-white/55">
+              Email
+            </label>
             <input
               type="email"
               placeholder="you@example.com"
@@ -225,8 +255,13 @@ export default function Login() {
           </div>
 
           {/* Password */}
-          <div className="relative space-y-2 mt-5" style={{ transform: "translateZ(14px)" }}>
-            <label className="text-xs uppercase tracking-[0.22em] text-white/55">Password</label>
+          <div
+            className="relative space-y-2 mt-5"
+            style={{ transform: "translateZ(14px)" }}
+          >
+            <label className="text-xs uppercase tracking-[0.22em] text-white/55">
+              Password
+            </label>
 
             <div className="relative">
               <input
@@ -296,7 +331,10 @@ export default function Login() {
             </span>
           </div>
 
-          <p className="relative text-center text-white/35 text-xs mt-5" style={{ transform: "translateZ(10px)" }}>
+          <p
+            className="relative text-center text-white/35 text-xs mt-5"
+            style={{ transform: "translateZ(10px)" }}
+          >
             © {new Date().getFullYear()} FitTrack
           </p>
         </motion.form>
