@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
-import axios from "axios";
 import { adminResetUserPassword } from "../../api";
+import { adminApi } from "../adminApi"; // ✅ use your axios instance with token
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -28,15 +28,15 @@ export default function Users() {
   }, [plans]);
 
   const fetchUsers = () => {
-    axios
-      .get("http://localhost:5000/api/users/all")
+    adminApi
+      .get("/users/all") // ✅ was localhost
       .then((res) => setUsers(res.data.users))
       .catch((err) => console.error(err));
   };
 
   const fetchPlans = () => {
-    axios
-      .get("http://localhost:5000/api/plans/all")
+    adminApi
+      .get("/plans/all") // ✅ was localhost
       .then((res) => setPlans(res.data.plans))
       .catch((err) => console.error(err));
   };
@@ -58,7 +58,7 @@ export default function Users() {
     if (!window.confirm("Are you sure you want to remove this user?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/users/${id}`);
+      await adminApi.delete(`/users/${id}`); // ✅ was localhost
       fetchUsers();
     } catch {
       alert("Error deleting user");
@@ -86,7 +86,7 @@ export default function Users() {
         planCode: editUser.planCode || "",
       };
 
-      await axios.put(`http://localhost:5000/api/users/${editUser._id}`, payload);
+      await adminApi.put(`/users/${editUser._id}`, payload); // ✅ was localhost
 
       setEditUser(null);
       fetchUsers();
@@ -122,7 +122,7 @@ export default function Users() {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/api/users/add", payload);
+      const res = await adminApi.post("/users/add", payload); // ✅ was localhost
 
       if (!res.data.success) {
         alert(res.data.message);
@@ -346,7 +346,8 @@ export default function Users() {
 
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <span className="px-3 py-2 rounded-2xl bg-black/20 border border-white/10">
-              Showing: <span className="text-white font-semibold">{users.length}</span>
+              Showing:{" "}
+              <span className="text-white font-semibold">{users.length}</span>
             </span>
           </div>
         </div>
@@ -365,7 +366,10 @@ export default function Users() {
             <tbody>
               {users.length === 0 && (
                 <tr>
-                  <td className="px-6 py-10 text-center text-gray-400" colSpan="4">
+                  <td
+                    className="px-6 py-10 text-center text-gray-400"
+                    colSpan="4"
+                  >
                     No users found
                   </td>
                 </tr>
@@ -491,7 +495,9 @@ export default function Users() {
                 <p className="text-xs text-gray-500">
                   Will save as:{" "}
                   <span className="text-gray-300 font-semibold">
-                    {editUser.planCode ? planNameByCode[editUser.planCode] : "No Plan"}
+                    {editUser.planCode
+                      ? planNameByCode[editUser.planCode]
+                      : "No Plan"}
                   </span>
                 </p>
               </div>
