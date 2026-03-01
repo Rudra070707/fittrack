@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { adminApi } from "../adminApi"; // ✅ use centralized admin axios
 
 export default function Sidebar() {
   const links = [
@@ -17,11 +17,14 @@ export default function Sidebar() {
 
   const location = useLocation();
 
+  // ✅ base for loading images from backend (Render)
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // ✅ Load admin logo
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/settings")
-      .then((res) => setLogo(res.data.logo))
+    adminApi
+      .get("/settings") // ✅ FIXED (no localhost)
+      .then((res) => setLogo(res.data?.logo || null))
       .catch((err) => console.error(err));
   }, [location.pathname]);
 
@@ -39,21 +42,21 @@ export default function Sidebar() {
       return;
     }
 
-    fetch("http://localhost:5000/api/contact", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(async (res) => {
-        const data = await res.json().catch(() => ({}));
-
-        // If token is invalid/not admin, silently reset token
-        if (res.status === 401 || res.status === 403) {
+    // ✅ FIXED: use adminApi so token auto-attaches + correct baseURL
+    adminApi
+      .get("/contact")
+      .then((res) => res.data)
+      .catch((err) => {
+        // Keep same logic: if backend says unauthorized, reset token
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
           localStorage.removeItem("adminToken");
           localStorage.removeItem("adminRole");
           setNewCount(0);
           return null;
         }
-
-        return data;
+        console.error(err);
+        setNewCount(0);
+        return null;
       })
       .then((data) => {
         if (!data) return;
@@ -64,10 +67,6 @@ export default function Sidebar() {
         } else {
           setNewCount(0);
         }
-      })
-      .catch((err) => {
-        console.error(err);
-        setNewCount(0);
       });
   }, [location.pathname]);
 
@@ -107,7 +106,7 @@ export default function Sidebar() {
           >
             {logo ? (
               <img
-                src={`http://localhost:5000${logo}`}
+                src={`${API_BASE}${logo}`} // ✅ FIXED (no localhost)
                 alt="FitTrack Logo"
                 className="
                   h-20 w-auto object-contain

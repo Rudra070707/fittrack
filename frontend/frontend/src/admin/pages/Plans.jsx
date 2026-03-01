@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { adminApi } from "../adminApi"; // ✅ use your axios instance
+import { adminApi } from "../adminApi";
 
 export default function Plans() {
   const [plans, setPlans] = useState([]);
@@ -12,7 +12,7 @@ export default function Plans() {
 
   const fetchPlans = async () => {
     try {
-      const plansRes = await adminApi.get("/plans/all"); // ✅ FIXED
+      const plansRes = await adminApi.get("/plans/all");
       setPlans(plansRes.data.plans || []);
       console.log("PLANS FETCHED:", plansRes.data.plans);
     } catch (err) {
@@ -35,15 +35,14 @@ export default function Plans() {
     e.preventDefault();
 
     if (!name.trim()) return alert("Plan name is required");
-    if (price === "" || Number.isNaN(Number(price)))
-      return alert("Valid price is required");
+    if (price === "" || Number.isNaN(Number(price))) return alert("Valid price is required");
 
     try {
       const res = await adminApi.put(`/plans/${editingPlan._id}`, {
         name: name.trim(),
         price: Number(price),
         description: (description || "").trim(),
-      }); // ✅ FIXED
+      });
 
       if (!res.data?.success) {
         alert(res.data?.message || "Failed to update ❌");

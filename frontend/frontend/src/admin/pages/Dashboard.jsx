@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { logoutAdmin } from "../auth";
 import { useEffect, useState } from "react";
-import { adminApi } from "../adminApi"; // ✅ FIXED
+import { adminApi } from "../adminApi";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -12,30 +12,14 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    const run = async () => {
-      try {
-        const [u, p] = await Promise.all([
-          adminApi.get("/users/all"), // ✅ FIXED
-          adminApi.get("/plans/all"), // ✅ FIXED
-        ]);
-
+    Promise.all([adminApi.get("/users/all"), adminApi.get("/plans/all")])
+      .then(([u, p]) => {
         setStats({
-          users: u?.data?.users?.length || 0,
-          plans: p?.data?.plans?.length || 0,
+          users: (u.data.users || []).length,
+          plans: (p.data.plans || []).length,
         });
-      } catch (err) {
-        console.error(err);
-
-        // ✅ If token expired, send back to login (UI only)
-        if (err?.response?.status === 401 || err?.response?.status === 403) {
-          logoutAdmin();
-          navigate("/admin/login", { replace: true });
-        }
-      }
-    };
-
-    run();
-    // eslint-disable-next-line
+      })
+      .catch(console.error);
   }, []);
 
   const handleLogout = () => {
@@ -57,8 +41,7 @@ export default function Dashboard() {
           </h2>
 
           <p className="text-gray-400 mt-3 max-w-xl">
-            Real-time snapshot of your gym platform — members, plans and growth
-            insights.
+            Real-time snapshot of your gym platform — members, plans and growth insights.
           </p>
         </div>
 
@@ -82,8 +65,7 @@ export default function Dashboard() {
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* TOTAL USERS */}
-        <div
-          className="
+        <div className="
             relative
             bg-white/[0.04] backdrop-blur-xl
             border border-white/10
@@ -95,23 +77,14 @@ export default function Dashboard() {
             hover:shadow-[0_0_45px_rgba(34,197,94,0.35)]
           "
         >
-          {/* glow */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-green-400/20 blur-[120px] rounded-full" />
-
           <p className="text-gray-400 text-sm tracking-wide">Total Members</p>
-
-          <h3 className="text-5xl font-extrabold mt-4 text-white">
-            {stats.users}
-          </h3>
-
-          <p className="text-gray-400 mt-3 text-sm">
-            Registered users on the platform
-          </p>
+          <h3 className="text-5xl font-extrabold mt-4 text-white">{stats.users}</h3>
+          <p className="text-gray-400 mt-3 text-sm">Registered users on the platform</p>
         </div>
 
         {/* ACTIVE PLANS */}
-        <div
-          className="
+        <div className="
             relative
             bg-white/[0.04] backdrop-blur-xl
             border border-white/10
@@ -123,26 +96,14 @@ export default function Dashboard() {
             hover:shadow-[0_0_45px_rgba(56,189,248,0.35)]
           "
         >
-          {/* glow */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-400/20 blur-[120px] rounded-full" />
-
-          <p className="text-gray-400 text-sm tracking-wide">
-            Active Membership Plans
-          </p>
-
-          <h3 className="text-5xl font-extrabold mt-4 text-white">
-            {stats.plans}
-          </h3>
-
-          <p className="text-gray-400 mt-3 text-sm">
-            Plans currently available for users
-          </p>
+          <p className="text-gray-400 text-sm tracking-wide">Active Membership Plans</p>
+          <h3 className="text-5xl font-extrabold mt-4 text-white">{stats.plans}</h3>
+          <p className="text-gray-400 mt-3 text-sm">Plans currently available for users</p>
         </div>
       </div>
 
-      {/* OPTIONAL FUTURE PLACEHOLDER (looks real, no logic) */}
-      <div
-        className="
+      <div className="
           bg-white/[0.03]
           border border-white/10
           rounded-3xl

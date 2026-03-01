@@ -1,34 +1,40 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { adminApi } from "../adminApi"; // ✅ FIXED
+import { adminApi } from "../adminApi";
 
 export default function ContactMessages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   const fetchMessages = async () => {
     try {
       setLoading(true);
 
-      const res = await adminApi.get("/contact"); // ✅ FIXED
+      const res = await adminApi.get("/contact");
+      const data = res.data || {};
 
-      if (!res.data?.success) {
-        alert(res.data?.message || "Failed to load messages");
+      if (!data.success) {
+        alert(data.message || "Failed to load messages");
+        setMessages([]);
         return;
       }
 
-      setMessages(Array.isArray(res.data.data) ? res.data.data : []);
+      setMessages(Array.isArray(data.data) ? data.data : []);
     } catch (err) {
-      console.error(err);
+      const status = err?.response?.status;
 
-      // 🔥 Auto logout if token invalid
-      if (err?.response?.status === 401) {
+      if (status === 401 || status === 403) {
         localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminRole");
+        alert(err?.response?.data?.message || "Session expired. Please login again.");
         navigate("/admin/login");
-      } else {
-        alert("Server error");
+        return;
       }
+
+      console.error(err);
+      alert("Server error (backend down / CORS issue)");
     } finally {
       setLoading(false);
     }
@@ -36,21 +42,26 @@ export default function ContactMessages() {
 
   useEffect(() => {
     fetchMessages();
+    // eslint-disable-next-line
   }, []);
 
   const updateStatus = async (id, status) => {
     try {
       const res = await adminApi.patch(`/contact/${id}/status`, { status });
-
-      if (!res.data?.success) return alert(res.data.message || "Failed");
+      const data = res.data || {};
+      if (!data.success) return alert(data.message || "Failed");
       fetchMessages();
     } catch (err) {
-      if (err?.response?.status === 401) {
+      const code = err?.response?.status;
+      if (code === 401 || code === 403) {
         localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminRole");
+        alert(err?.response?.data?.message || "Session expired. Please login again.");
         navigate("/admin/login");
-      } else {
-        alert("Update failed");
+        return;
       }
+      console.error(err);
+      alert("Failed");
     }
   };
 
@@ -59,16 +70,20 @@ export default function ContactMessages() {
 
     try {
       const res = await adminApi.delete(`/contact/${id}`);
-
-      if (!res.data?.success) return alert(res.data.message || "Failed");
+      const data = res.data || {};
+      if (!data.success) return alert(data.message || "Failed");
       fetchMessages();
     } catch (err) {
-      if (err?.response?.status === 401) {
+      const code = err?.response?.status;
+      if (code === 401 || code === 403) {
         localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminRole");
+        alert(err?.response?.data?.message || "Session expired. Please login again.");
         navigate("/admin/login");
-      } else {
-        alert("Delete failed");
+        return;
       }
+      console.error(err);
+      alert("Failed");
     }
   };
 
@@ -111,9 +126,7 @@ export default function ContactMessages() {
                 </span>
               </div>
 
-              <p className="text-gray-200 mt-4 whitespace-pre-line">
-                {m.message}
-              </p>
+              <p className="text-gray-200 mt-4 whitespace-pre-line">{m.message}</p>
 
               <div className="flex flex-wrap gap-2 mt-4">
                 <button
@@ -122,14 +135,12 @@ export default function ContactMessages() {
                 >
                   Mark Seen
                 </button>
-
                 <button
                   onClick={() => updateStatus(m._id, "resolved")}
                   className="px-4 py-2 rounded-xl bg-blue-500/20 border border-blue-500/30 hover:bg-blue-500/30"
                 >
                   Mark Resolved
                 </button>
-
                 <button
                   onClick={() => deleteMsg(m._id)}
                   className="px-4 py-2 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30"
