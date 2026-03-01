@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { logoutAdmin } from "../auth";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { adminApi } from "../adminApi"; // ✅ FIXED
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -12,17 +12,30 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    Promise.all([
-      axios.get("http://localhost:5000/api/users/all"),
-      axios.get("http://localhost:5000/api/plans/all"),
-    ])
-      .then(([u, p]) => {
+    const run = async () => {
+      try {
+        const [u, p] = await Promise.all([
+          adminApi.get("/users/all"), // ✅ FIXED
+          adminApi.get("/plans/all"), // ✅ FIXED
+        ]);
+
         setStats({
-          users: u.data.users.length,
-          plans: p.data.plans.length,
+          users: u?.data?.users?.length || 0,
+          plans: p?.data?.plans?.length || 0,
         });
-      })
-      .catch(console.error);
+      } catch (err) {
+        console.error(err);
+
+        // ✅ If token expired, send back to login (UI only)
+        if (err?.response?.status === 401 || err?.response?.status === 403) {
+          logoutAdmin();
+          navigate("/admin/login", { replace: true });
+        }
+      }
+    };
+
+    run();
+    // eslint-disable-next-line
   }, []);
 
   const handleLogout = () => {
@@ -32,7 +45,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-12">
-
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
         <div>
@@ -45,7 +57,8 @@ export default function Dashboard() {
           </h2>
 
           <p className="text-gray-400 mt-3 max-w-xl">
-            Real-time snapshot of your gym platform — members, plans and growth insights.
+            Real-time snapshot of your gym platform — members, plans and growth
+            insights.
           </p>
         </div>
 
@@ -68,7 +81,6 @@ export default function Dashboard() {
 
       {/* STATS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
         {/* TOTAL USERS */}
         <div
           className="
@@ -86,9 +98,7 @@ export default function Dashboard() {
           {/* glow */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-green-400/20 blur-[120px] rounded-full" />
 
-          <p className="text-gray-400 text-sm tracking-wide">
-            Total Members
-          </p>
+          <p className="text-gray-400 text-sm tracking-wide">Total Members</p>
 
           <h3 className="text-5xl font-extrabold mt-4 text-white">
             {stats.users}
@@ -128,7 +138,6 @@ export default function Dashboard() {
             Plans currently available for users
           </p>
         </div>
-
       </div>
 
       {/* OPTIONAL FUTURE PLACEHOLDER (looks real, no logic) */}
@@ -145,7 +154,6 @@ export default function Dashboard() {
       >
         📊 Analytics & activity insights will appear here
       </div>
-
     </div>
   );
 }
