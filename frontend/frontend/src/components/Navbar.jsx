@@ -2,13 +2,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+// ✅ Use central config (same for localhost + vercel)
+import { API_BASE, BASE_URL } from "../api";
+
 export default function Navbar({ onOpenServices }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
-
-  // ✅ Use deployed backend (Vercel + Render)
-  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // ✅ Hide Navbar on auth pages (user)
   const hideOnRoutes = ["/home/login", "/login", "/home/signup", "/signup"];
@@ -24,7 +24,7 @@ export default function Navbar({ onOpenServices }) {
     let mounted = true;
 
     axios
-      .get(`${API_BASE}/api/settings`)
+      .get(`${API_BASE}/settings`) // ✅ FIXED (API_BASE already has /api)
       .then((res) => {
         if (!mounted) return;
         setLogo(res?.data?.logo || null);
@@ -32,18 +32,18 @@ export default function Navbar({ onOpenServices }) {
       .catch((err) => {
         console.error("Navbar settings fetch failed:", err);
         if (!mounted) return;
-        setLogo(null); // ✅ safe fallback
+        setLogo(null);
       });
 
     return () => {
       mounted = false;
     };
-  }, [API_BASE]);
+  }, []);
 
   const scrollToSection = (id) => {
     if (id === "services" && onOpenServices) onOpenServices();
 
-    // ✅ if not on /home, navigate then scroll
+    // ✅ If not on /home, navigate then scroll
     if (location.pathname !== "/home" && location.pathname !== "/") {
       navigate("/home", { state: { scrollTo: id } });
       return;
@@ -87,7 +87,8 @@ export default function Navbar({ onOpenServices }) {
                 "
               >
                 <img
-                  src={`${API_BASE}${logo}`}
+                  // ✅ BASE_URL for static file (uploads)
+                  src={`${BASE_URL}${logo}`}
                   alt="FitTrack Logo"
                   className="
                     h-9 w-auto
@@ -96,7 +97,7 @@ export default function Navbar({ onOpenServices }) {
                     drop-shadow-[0_0_22px_rgba(34,197,94,0.6)]
                     transition-transform duration-300 hover:scale-[1.4]
                   "
-                  onError={() => setLogo(null)} // ✅ if image path broken, fallback to text logo
+                  onError={() => setLogo(null)}
                 />
               </div>
             ) : (

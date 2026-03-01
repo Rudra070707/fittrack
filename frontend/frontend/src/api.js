@@ -1,8 +1,15 @@
 // src/api.js
-const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
+
+// ✅ Works in BOTH:
+// - Local:   VITE_API_URL not set → uses localhost backend
+// - Vercel:  VITE_API_URL set → uses Render backend
+export const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+// ✅ API base
+export const API_BASE = `${BASE_URL}/api`;
 
 /**
- * 🔐 Token handling (separate)
+ * 🔐 Token handling
  * - Admin panel stores: adminToken
  * - User side stores:   token
  */
@@ -23,8 +30,8 @@ export const adminAuthHeader = () => {
    HELPERS
    ========================= */
 
-// Safely parse JSON (handles empty responses)
-const safeJson = async (res) => {
+// Safely parse JSON (handles empty / non-json responses)
+export const safeJson = async (res) => {
   try {
     return await res.json();
   } catch {
@@ -48,13 +55,13 @@ const handleResponse = async (res, fallbackMsg) => {
 };
 
 /* =========================
-   AUTH (USER)
+   AUTH (USER)  ✅ FIXED ROUTES
    ========================= */
 
-// USER LOGIN
+// USER LOGIN  ✅ /users/login
 export async function loginUser(email, password) {
   try {
-    const res = await fetch(`${API_BASE}/auth/login`, {
+    const res = await fetch(`${API_BASE}/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -67,10 +74,10 @@ export async function loginUser(email, password) {
   }
 }
 
-// USER REGISTER
+// USER REGISTER ✅ /users/signup
 export async function signupUser(payload) {
   try {
-    const res = await fetch(`${API_BASE}/auth/register`, {
+    const res = await fetch(`${API_BASE}/users/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -84,9 +91,10 @@ export async function signupUser(payload) {
 }
 
 // CHANGE PASSWORD (USER PROTECTED)
+// ⚠️ If your backend route differs, change only this URL.
 export async function changePassword(currentPassword, newPassword) {
   try {
-    const res = await fetch(`${API_BASE}/auth/change-password`, {
+    const res = await fetch(`${API_BASE}/users/change-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,6 +115,7 @@ export async function changePassword(currentPassword, newPassword) {
    ========================= */
 
 // ADMIN RESET USER PASSWORD (ADMIN PROTECTED)
+// ⚠️ If backend differs, update route here.
 export async function adminResetUserPassword(userId) {
   try {
     const res = await fetch(`${API_BASE}/users/${userId}/reset-password`, {
@@ -125,12 +134,26 @@ export async function adminResetUserPassword(userId) {
 }
 
 /* =========================
+   SETTINGS (logo, theme)
+   ========================= */
+
+export async function getSettings() {
+  try {
+    const res = await fetch(`${API_BASE}/settings`);
+    return await handleResponse(res, "Failed to fetch settings");
+  } catch (err) {
+    console.error("GET SETTINGS ERROR:", err);
+    return { success: false, message: "Network / server error" };
+  }
+}
+
+/* =========================
    PLANS (PUBLIC)
    ========================= */
 
-// GET ALL PLANS
 export async function getPlans() {
   try {
+    // ⚠️ if your backend is /plans (not /plans/all), change here
     const res = await fetch(`${API_BASE}/plans/all`);
     const data = await safeJson(res);
 
@@ -153,16 +176,14 @@ export async function getPlans() {
    MEMBERSHIP
    ========================= */
 
-// ACTIVATE MEMBERSHIP (Join Page)
 export async function subscribeMembership(payload) {
   try {
     const res = await fetch(`${API_BASE}/users/subscribe`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // if you want this protected later, add ...userAuthHeader()
       },
-      body: JSON.stringify(payload), // { name, email, phone, planCode }
+      body: JSON.stringify(payload),
     });
 
     return await handleResponse(res, "Subscribe failed");
@@ -173,17 +194,15 @@ export async function subscribeMembership(payload) {
 }
 
 /* =========================
-   PAYMENTS (UI-ONLY, NO REAL MONEY)
+   PAYMENTS (UI-ONLY)
    ========================= */
 
-// SAVE PAYMENT RECORD
 export async function recordPayment(payload) {
   try {
     const res = await fetch(`${API_BASE}/payments/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-      // { userId, amount, plan, status, txnId, method }
     });
 
     return await handleResponse(res, "Failed to record payment");
@@ -196,7 +215,6 @@ export async function recordPayment(payload) {
 /* =========================
    EXPORTS
    ========================= */
+
+// kept for backward compatibility
 export const authHeader = () => userAuthHeader();
-
-
-export { API_BASE, safeJson };
