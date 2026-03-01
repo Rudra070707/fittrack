@@ -32,7 +32,6 @@ export default function App() {
   const location = useLocation();
   const [showServicesNav, setShowServicesNav] = useState(false);
 
-  // ✅ App is ONLY for /home/* (admin is handled in main.jsx)
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -45,7 +44,7 @@ export default function App() {
 
   return (
     <>
-      {/* Navbar hides itself on login/signup */}
+      {/* ✅ App is already inside /home/* so we always show website layout here */}
       <Navbar onOpenServices={() => setShowServicesNav(true)} />
       <ServicesSubnav show={showServicesNav} />
 
@@ -57,9 +56,9 @@ export default function App() {
           exit={{ opacity: 0, scale: 0.985 }}
           transition={{ duration: 0.45 }}
         >
-          {/* ✅ IMPORTANT: all routes here are RELATIVE to /home/* */}
+          {/* ✅ IMPORTANT: ALL routes are RELATIVE */}
           <Routes>
-            {/* Landing for /home */}
+            {/* ✅ /home */}
             <Route
               index
               element={
@@ -71,26 +70,25 @@ export default function App() {
               }
             />
 
-            {/* Public pages */}
+            {/* ✅ PUBLIC */}
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
 
-            {/* Service pages */}
             <Route path="gym" element={<Gym />} />
             <Route path="zumba" element={<Zumba />} />
             <Route path="yoga" element={<Yoga />} />
 
-            {/* Auth */}
+            {/* ✅ AUTH */}
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
-            {/* Features */}
+            {/* ✅ FEATURES */}
             <Route path="diet" element={<Diet />} />
             <Route path="workout" element={<SmartWorkoutPlanner />} />
             <Route path="progress" element={<Progress />} />
             <Route path="injury" element={<InjurySafe />} />
 
-            {/* Protected */}
+            {/* ✅ PROTECTED */}
             <Route
               path="join"
               element={
@@ -109,7 +107,7 @@ export default function App() {
               }
             />
 
-            {/* Default */}
+            {/* ✅ DEFAULT */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
