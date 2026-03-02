@@ -20,7 +20,7 @@ export default function Signup({ mode = "page", onSuccess }) {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // ----- ULTRA motion / glow (page mode only) -----
+  // motion
   const wrapRef = useRef(null);
 
   const mx = useMotionValue(0);
@@ -99,10 +99,9 @@ export default function Signup({ mode = "page", onSuccess }) {
         return;
       }
 
-      // ✅ close modal if provided
       if (onSuccess) onSuccess();
 
-      // ✅ after signup, open login as modal on same background
+      // after signup → open login as modal with same background
       navigate("/home/login", {
         state: { backgroundLocation: location.state?.backgroundLocation || location },
       });
@@ -116,7 +115,7 @@ export default function Signup({ mode = "page", onSuccess }) {
 
   const Form = (
     <div ref={wrapRef} className="relative z-10 w-full max-w-md">
-      {mode === "page" && isFinePointer && (
+      {(mode === "modal" || (mode === "page" && isFinePointer)) && (
         <motion.div
           className="pointer-events-none absolute -inset-10"
           style={{
@@ -141,6 +140,11 @@ export default function Signup({ mode = "page", onSuccess }) {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
       >
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-20 -left-20 h-56 w-56 rotate-12 bg-white/10 blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/30" />
+        </div>
+
         <div className="relative text-center mb-7">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/12">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.7)]" />
@@ -238,9 +242,13 @@ export default function Signup({ mode = "page", onSuccess }) {
           disabled={loading}
           whileHover={{ scale: loading ? 1 : 1.01 }}
           whileTap={{ scale: loading ? 1 : 0.99 }}
-          className="mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed"
+          className="relative mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group"
         >
-          <span className="inline-flex items-center justify-center gap-2">
+          <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition">
+            <span className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-white/35 blur-md translate-x-0 group-hover:translate-x-[260%] transition duration-700" />
+          </span>
+
+          <span className="relative inline-flex items-center justify-center gap-2">
             {loading && (
               <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black/70 animate-spin" />
             )}
@@ -253,7 +261,10 @@ export default function Signup({ mode = "page", onSuccess }) {
             type="button"
             onClick={() =>
               navigate("/home/login", {
-                state: { backgroundLocation: location.state?.backgroundLocation || location },
+                state: {
+                  backgroundLocation:
+                    location.state?.backgroundLocation || location,
+                },
               })
             }
             className="hover:text-white/85 transition"

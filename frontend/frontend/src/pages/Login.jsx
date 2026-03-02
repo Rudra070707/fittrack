@@ -19,16 +19,18 @@ export default function Login({ mode = "page", onSuccess }) {
   const redirectTo = from ? from : "/home";
   const redirectState = location.state?.state || null;
 
-  // ✅ Safe redirect
   const safeRedirect = redirectTo.startsWith("/home")
     ? redirectTo
     : redirectTo.startsWith("/admin")
     ? "/admin/dashboard"
     : redirectTo === "/"
     ? "/home"
-    : `/home${redirectTo.startsWith("/") ? "" : "/"}${redirectTo.replace(/^\//, "")}`;
+    : `/home${redirectTo.startsWith("/") ? "" : "/"}${redirectTo.replace(
+        /^\//,
+        ""
+      )}`;
 
-  // ----- ULTRA motion / glow (page mode only) -----
+  // --- motion/tilt (only in page mode) ---
   const wrapRef = useRef(null);
 
   const mx = useMotionValue(0);
@@ -88,7 +90,6 @@ export default function Login({ mode = "page", onSuccess }) {
     tiltY.set(0);
   };
 
-  // ----- login submit -----
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -111,9 +112,7 @@ export default function Login({ mode = "page", onSuccess }) {
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
-      // ✅ close modal if provided
       if (onSuccess) onSuccess();
-
       navigate(safeRedirect, { replace: true, state: redirectState });
     } catch (err) {
       console.error(err);
@@ -123,10 +122,11 @@ export default function Login({ mode = "page", onSuccess }) {
     }
   };
 
-  // ✅ Shared form (used in both modal and page)
+  // ✅ shared form UI (modal + page)
   const Form = (
     <div ref={wrapRef} className="relative z-10 w-full max-w-md">
-      {mode === "page" && isFinePointer && (
+      {/* modal mode gets subtle extra glow */}
+      {(mode === "modal" || (mode === "page" && isFinePointer)) && (
         <motion.div
           className="pointer-events-none absolute -inset-10"
           style={{
@@ -151,6 +151,13 @@ export default function Login({ mode = "page", onSuccess }) {
         transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
       >
+        {/* shine */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-20 -left-20 h-56 w-56 rotate-12 bg-white/10 blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/30" />
+        </div>
+
+        {/* Heading */}
         <div className="relative text-center mb-7">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/12">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.7)]" />
@@ -169,9 +176,23 @@ export default function Login({ mode = "page", onSuccess }) {
           <p className="text-white/65 mt-2 text-sm">
             Login to continue your fitness journey.
           </p>
+
+          {/* micro badges */}
+          <div className="mt-4 flex justify-center gap-2 text-[11px] text-white/55">
+            <span className="px-3 py-1 rounded-2xl bg-white/[0.05] border border-white/10">
+              Progress
+            </span>
+            <span className="px-3 py-1 rounded-2xl bg-white/[0.05] border border-white/10">
+              Diet
+            </span>
+            <span className="px-3 py-1 rounded-2xl bg-white/[0.05] border border-white/10">
+              Workouts
+            </span>
+          </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Email */}
+        <div className="relative space-y-2">
           <label className="text-xs uppercase tracking-[0.22em] text-white/55">
             Email
           </label>
@@ -184,7 +205,8 @@ export default function Login({ mode = "page", onSuccess }) {
           />
         </div>
 
-        <div className="space-y-2 mt-4">
+        {/* Password */}
+        <div className="relative space-y-2 mt-4">
           <label className="text-xs uppercase tracking-[0.22em] text-white/55">
             Password
           </label>
@@ -207,20 +229,27 @@ export default function Login({ mode = "page", onSuccess }) {
           </div>
         </div>
 
+        {/* Error */}
         {error ? (
-          <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <div className="relative mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </div>
         ) : null}
 
+        {/* Button */}
         <motion.button
           type="submit"
           disabled={loading}
           whileHover={{ scale: loading ? 1 : 1.01 }}
           whileTap={{ scale: loading ? 1 : 0.99 }}
-          className="mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed"
+          className="relative mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group"
         >
-          <span className="inline-flex items-center justify-center gap-2">
+          {/* shimmer */}
+          <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition">
+            <span className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-white/35 blur-md translate-x-0 group-hover:translate-x-[260%] transition duration-700" />
+          </span>
+
+          <span className="relative inline-flex items-center justify-center gap-2">
             {loading && (
               <span className="h-4 w-4 rounded-full border-2 border-black/30 border-t-black/70 animate-spin" />
             )}
@@ -228,12 +257,16 @@ export default function Login({ mode = "page", onSuccess }) {
           </span>
         </motion.button>
 
-        <div className="mt-5 flex items-center justify-between text-xs text-white/55">
+        {/* bottom */}
+        <div className="relative mt-5 flex items-center justify-between text-xs text-white/55">
           <button
             type="button"
             onClick={() =>
               navigate("/home/signup", {
-                state: { backgroundLocation: location.state?.backgroundLocation || location },
+                state: {
+                  backgroundLocation:
+                    location.state?.backgroundLocation || location,
+                },
               })
             }
             className="hover:text-white/85 transition"
@@ -246,16 +279,17 @@ export default function Login({ mode = "page", onSuccess }) {
           </span>
         </div>
 
-        <p className="text-center text-white/35 text-xs mt-5">
+        <p className="relative text-center text-white/35 text-xs mt-5">
           © {new Date().getFullYear()} FitTrack
         </p>
       </motion.form>
     </div>
   );
 
-  // ✅ PAGE MODE has background; MODAL MODE shows only form
+  // ✅ modal mode shows only the form (auth modal already has backdrop)
   if (mode === "modal") return Form;
 
+  // ✅ page mode fallback
   return (
     <section
       className="relative min-h-screen w-full overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"

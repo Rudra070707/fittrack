@@ -38,6 +38,7 @@ export default function Navbar({ onOpenServices }) {
 
   const scrollToSection = (id) => {
     if (id === "services" && onOpenServices) onOpenServices();
+
     if (location.pathname !== "/home" && location.pathname !== "/") {
       navigate("/home", { state: { scrollTo: id } });
       return;
