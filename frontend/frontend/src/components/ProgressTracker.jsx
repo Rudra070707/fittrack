@@ -8,8 +8,10 @@ import {
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
+
+import { API_BASE } from "../api"; // ✅ IMPORTANT (API_BASE already includes /api)
 
 ChartJS.register(
   CategoryScale,
@@ -23,11 +25,13 @@ ChartJS.register(
 export default function ProgressTracker() {
   // ✅ Normalize token (supports "Bearer xxx" OR "xxx")
   const rawToken = localStorage.getItem("token");
-  const token = rawToken?.startsWith("Bearer ") ? rawToken.split(" ")[1] : rawToken;
+  const token = rawToken?.startsWith("Bearer ")
+    ? rawToken.split(" ")[1]
+    : rawToken;
 
   const headers = useMemo(
     () => ({
-      Authorization: token ? `Bearer ${token}` : ""
+      Authorization: token ? `Bearer ${token}` : "",
     }),
     [token]
   );
@@ -66,10 +70,9 @@ export default function ProgressTracker() {
 
   const loadRange = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/progress/range?days=${days}`,
-        { headers }
-      );
+      const res = await axios.get(`${API_BASE}/progress/range?days=${days}`, {
+        headers,
+      });
       setEntries(res.data.entries || []);
     } catch (err) {
       console.error("loadRange error:", err?.response?.data || err.message);
@@ -79,7 +82,7 @@ export default function ProgressTracker() {
   const loadSummary = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/progress/monthly-summary?year=${year}&month=${month}`,
+        `${API_BASE}/progress/monthly-summary?year=${year}&month=${month}`,
         { headers }
       );
       setSummary(res.data.stats);
@@ -115,14 +118,12 @@ export default function ProgressTracker() {
         bodyFat: bodyFat === "" ? null : Number(bodyFat),
         didWorkout,
         workoutMinutes: Number(workoutMinutes || 0),
-        workoutType: workoutType || ""
+        workoutType: workoutType || "",
       };
 
-      const res = await axios.post(
-        "http://localhost:5000/api/progress/upsert",
-        payload,
-        { headers }
-      );
+      const res = await axios.post(`${API_BASE}/progress/upsert`, payload, {
+        headers,
+      });
 
       if (!res.data.success) return alert("Save failed");
 
@@ -139,7 +140,10 @@ export default function ProgressTracker() {
       alert("Progress saved ✅");
     } catch (err) {
       console.error("addEntry error:", err?.response?.data || err.message);
-      alert(err?.response?.data?.message || "Save failed (check progress routes / auth)");
+      alert(
+        err?.response?.data?.message ||
+          "Save failed (check progress routes / auth)"
+      );
     }
   };
 
@@ -176,7 +180,10 @@ export default function ProgressTracker() {
   // Labels for chart
   const labels = useMemo(() => {
     return entries.map((e) =>
-      new Date(e.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })
+      new Date(e.date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+      })
     );
   }, [entries]);
 
@@ -188,13 +195,15 @@ export default function ProgressTracker() {
     if (entries.some((e) => typeof e.weightKg === "number")) {
       ds.push({
         label: "Weight (kg)",
-        data: entries.map((e) => (typeof e.weightKg === "number" ? e.weightKg : null)),
+        data: entries.map((e) =>
+          typeof e.weightKg === "number" ? e.weightKg : null
+        ),
         borderColor: "#22c55e",
         backgroundColor: "rgba(34,197,94,0.15)",
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 5,
-        pointBackgroundColor: "#22c55e"
+        pointBackgroundColor: "#22c55e",
       });
     }
 
@@ -202,13 +211,15 @@ export default function ProgressTracker() {
     if (entries.some((e) => typeof e.bodyFat === "number")) {
       ds.push({
         label: "Body Fat %",
-        data: entries.map((e) => (typeof e.bodyFat === "number" ? e.bodyFat : null)),
+        data: entries.map((e) =>
+          typeof e.bodyFat === "number" ? e.bodyFat : null
+        ),
         borderColor: "#3b82f6",
         backgroundColor: "rgba(59,130,246,0.15)",
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 5,
-        pointBackgroundColor: "#3b82f6"
+        pointBackgroundColor: "#3b82f6",
       });
     }
 
@@ -222,7 +233,7 @@ export default function ProgressTracker() {
         tension: 0.4,
         borderWidth: 3,
         pointRadius: 5,
-        pointBackgroundColor: "#22c55e"
+        pointBackgroundColor: "#22c55e",
       });
     }
 
@@ -236,31 +247,30 @@ export default function ProgressTracker() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        labels: { color: "#ffffff", font: { size: 14 } }
-      }
+        labels: { color: "#ffffff", font: { size: 14 } },
+      },
     },
     scales: {
       x: {
         ticks: { color: "#ffffff" },
-        grid: { color: "rgba(255,255,255,0.15)" }
+        grid: { color: "rgba(255,255,255,0.15)" },
       },
       y: {
         beginAtZero: false,
         ticks: { color: "#ffffff" },
-        grid: { color: "rgba(255,255,255,0.15)" }
-      }
-    }
+        grid: { color: "rgba(255,255,255,0.15)" },
+      },
+    },
   };
 
   const bmiValue = useMemo(() => {
-    const w = weight !== "" ? weight : (latest?.weightKg ?? "");
+    const w = weight !== "" ? weight : latest?.weightKg ?? "";
     if (!w || !height) return null;
     return calculateBMI(w, height);
   }, [weight, latest, height]);
 
   return (
     <div className="space-y-6">
-
       {/* Top Controls */}
       <div className="grid md:grid-cols-3 gap-4">
         <select
@@ -283,7 +293,9 @@ export default function ProgressTracker() {
 
         <div className="bg-white/10 p-4 rounded-xl text-center">
           <p className="text-gray-300">Current Streak</p>
-          <p className="text-2xl font-bold text-green-400">{currentStreak} days</p>
+          <p className="text-2xl font-bold text-green-400">
+            {currentStreak} days
+          </p>
         </div>
       </div>
 
@@ -358,10 +370,22 @@ export default function ProgressTracker() {
           <div>
             <p className="text-xl font-semibold">Monthly Fitness Summary</p>
             <p className="text-gray-300 text-sm">
-              Avg Weight: {summary?.avgWeight != null ? `${summary.avgWeight.toFixed(1)} kg` : "—"} •{" "}
-              Weight Change: {summary?.weightChange != null ? `${summary.weightChange.toFixed(1)} kg` : "—"} •{" "}
-              Avg Body Fat: {summary?.avgBodyFat != null ? `${summary.avgBodyFat.toFixed(1)}%` : "—"} •{" "}
-              Body Fat Change: {summary?.bodyFatChange != null ? `${summary.bodyFatChange.toFixed(1)}%` : "—"}
+              Avg Weight:{" "}
+              {summary?.avgWeight != null
+                ? `${summary.avgWeight.toFixed(1)} kg`
+                : "—"}{" "}
+              • Weight Change:{" "}
+              {summary?.weightChange != null
+                ? `${summary.weightChange.toFixed(1)} kg`
+                : "—"}{" "}
+              • Avg Body Fat:{" "}
+              {summary?.avgBodyFat != null
+                ? `${summary.avgBodyFat.toFixed(1)}%`
+                : "—"}{" "}
+              • Body Fat Change:{" "}
+              {summary?.bodyFatChange != null
+                ? `${summary.bodyFatChange.toFixed(1)}%`
+                : "—"}
             </p>
           </div>
 
@@ -373,7 +397,9 @@ export default function ProgressTracker() {
             >
               {Array.from({ length: 12 }).map((_, i) => (
                 <option key={i} value={i + 1}>
-                  {new Date(2000, i, 1).toLocaleString("en-IN", { month: "long" })}
+                  {new Date(2000, i, 1).toLocaleString("en-IN", {
+                    month: "long",
+                  })}
                 </option>
               ))}
             </select>
@@ -390,15 +416,21 @@ export default function ProgressTracker() {
         <div className="grid md:grid-cols-4 gap-4 mt-5">
           <div className="bg-white/10 p-4 rounded-xl text-center">
             <p className="text-gray-300">Workouts</p>
-            <p className="text-2xl font-bold text-green-400">{summary?.workoutDays ?? "—"}</p>
+            <p className="text-2xl font-bold text-green-400">
+              {summary?.workoutDays ?? "—"}
+            </p>
           </div>
           <div className="bg-white/10 p-4 rounded-xl text-center">
             <p className="text-gray-300">Total Minutes</p>
-            <p className="text-2xl font-bold text-green-400">{summary?.totalMinutes ?? "—"}</p>
+            <p className="text-2xl font-bold text-green-400">
+              {summary?.totalMinutes ?? "—"}
+            </p>
           </div>
           <div className="bg-white/10 p-4 rounded-xl text-center">
             <p className="text-gray-300">Best Streak</p>
-            <p className="text-2xl font-bold text-green-400">{summary?.bestStreak ?? "—"} days</p>
+            <p className="text-2xl font-bold text-green-400">
+              {summary?.bestStreak ?? "—"} days
+            </p>
           </div>
           <div className="bg-white/10 p-4 rounded-xl text-center">
             <p className="text-gray-300">Last Weight</p>
