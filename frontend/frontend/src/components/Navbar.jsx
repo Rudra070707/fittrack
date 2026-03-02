@@ -1,30 +1,34 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 
-// ✅ Use central config (same for localhost + vercel)
-import { API_BASE, BASE_URL } from "../api";
+// ✅ Use central config
+import { API_BASE } from "../api";
 
 export default function Navbar({ onOpenServices }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
 
-  // ✅ Hide Navbar on auth pages (user)
-  const hideOnRoutes = ["/home/login", "/login", "/home/signup", "/signup"];
-  if (hideOnRoutes.includes(location.pathname)) return null;
+  // ✅ Hide Navbar on auth pages (user) — BUT DO NOT EARLY RETURN BEFORE HOOKS
+  const hideOnRoutes = useMemo(
+    () => ["/home/login", "/login", "/home/signup", "/signup"],
+    []
+  );
+  const shouldHide = hideOnRoutes.includes(location.pathname);
 
-  const navLinks = [
-    { name: "About", type: "page", path: "/home/about" },
-    { name: "Services", type: "scroll", id: "services" },
-    { name: "Contact Us", type: "page", path: "/home/contact" },
-  ];
+  // ✅ BASE_URL = API without "/api" (needed for serving uploaded files like /uploads/..)
+  // API_BASE is like: https://xxx.onrender.com/api
+  const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
 
   useEffect(() => {
     let mounted = true;
 
+    // ✅ Only fetch logo if navbar is visible
+    if (shouldHide) return;
+
     axios
-      .get(`${API_BASE}/settings`) // ✅ FIXED (API_BASE already has /api)
+      .get(`${API_BASE}/settings`)
       .then((res) => {
         if (!mounted) return;
         setLogo(res?.data?.logo || null);
@@ -38,7 +42,7 @@ export default function Navbar({ onOpenServices }) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [shouldHide]);
 
   const scrollToSection = (id) => {
     if (id === "services" && onOpenServices) onOpenServices();
@@ -52,6 +56,15 @@ export default function Navbar({ onOpenServices }) {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const navLinks = [
+    { name: "About", type: "page", path: "/home/about" },
+    { name: "Services", type: "scroll", id: "services" },
+    { name: "Contact Us", type: "page", path: "/home/contact" },
+  ];
+
+  // ✅ Return null ONLY AFTER all hooks have executed
+  if (shouldHide) return null;
 
   return (
     <header className="sticky top-0 z-50">
@@ -87,7 +100,6 @@ export default function Navbar({ onOpenServices }) {
                 "
               >
                 <img
-                  // ✅ BASE_URL for static file (uploads)
                   src={`${BASE_URL}${logo}`}
                   alt="FitTrack Logo"
                   className="
