@@ -128,11 +128,7 @@ export default function Login() {
   };
 
   return (
-    <section
-      className="relative min-h-screen overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"
-      onMouseMove={isFinePointer ? onMove : undefined}
-      onMouseLeave={isFinePointer ? onLeave : undefined}
-    >
+    <section className="relative min-h-screen w-full overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950">
       {/* BACKGROUND (ULTRA) */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />

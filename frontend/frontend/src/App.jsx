@@ -32,6 +32,11 @@ export default function App() {
   const location = useLocation();
   const [showServicesNav, setShowServicesNav] = useState(false);
 
+  // ✅ Detect auth pages
+  const isAuthPage =
+    location.pathname === "/home/login" ||
+    location.pathname === "/home/signup";
+
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -44,9 +49,13 @@ export default function App() {
 
   return (
     <>
-      {/* ✅ App is already inside /home/* so we always show website layout here */}
-      <Navbar onOpenServices={() => setShowServicesNav(true)} />
-      <ServicesSubnav show={showServicesNav} />
+      {/* ✅ Hide layout on login/signup */}
+      {!isAuthPage && (
+        <>
+          <Navbar onOpenServices={() => setShowServicesNav(true)} />
+          <ServicesSubnav show={showServicesNav} />
+        </>
+      )}
 
       <AnimatePresence mode="wait">
         <motion.main
@@ -56,9 +65,8 @@ export default function App() {
           exit={{ opacity: 0, scale: 0.985 }}
           transition={{ duration: 0.45 }}
         >
-          {/* ✅ IMPORTANT: ALL routes are RELATIVE */}
           <Routes>
-            {/* ✅ /home */}
+            {/* HOME */}
             <Route
               index
               element={
@@ -70,25 +78,24 @@ export default function App() {
               }
             />
 
-            {/* ✅ PUBLIC */}
+            {/* PUBLIC */}
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
-
             <Route path="gym" element={<Gym />} />
             <Route path="zumba" element={<Zumba />} />
             <Route path="yoga" element={<Yoga />} />
 
-            {/* ✅ AUTH */}
+            {/* AUTH */}
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
 
-            {/* ✅ FEATURES */}
+            {/* FEATURES */}
             <Route path="diet" element={<Diet />} />
             <Route path="workout" element={<SmartWorkoutPlanner />} />
             <Route path="progress" element={<Progress />} />
             <Route path="injury" element={<InjurySafe />} />
 
-            {/* ✅ PROTECTED */}
+            {/* PROTECTED */}
             <Route
               path="join"
               element={
@@ -107,14 +114,14 @@ export default function App() {
               }
             />
 
-            {/* ✅ DEFAULT */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
 
-      <Footer />
-      <Chatbot />
+      {/* ✅ Hide footer & chatbot on login */}
+      {!isAuthPage && <Footer />}
+      {!isAuthPage && <Chatbot />}
     </>
   );
 }
