@@ -1,6 +1,6 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import Navbar from "./components/Navbar";
 import ServicesSubnav from "./components/ServicesSubnav";
@@ -28,14 +28,24 @@ import Yoga from "./pages/Yoga";
 import RequireAuth from "./components/RequireAuth";
 import ChangePassword from "./pages/ChangePassword";
 
+import AuthModal from "./components/AuthModal";
+
 export default function App() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // ✅ Background location for modal routing
+  const state = location.state;
+  const backgroundLocation = state?.backgroundLocation;
+
+  // ✅ show/hide services nav
   const [showServicesNav, setShowServicesNav] = useState(false);
 
-  // ✅ Detect auth pages
-  const isAuthPage =
-    location.pathname === "/home/login" ||
-    location.pathname === "/home/signup";
+  // ✅ if a modal is open, force-hide ServicesSubnav
+  const modalOpen = useMemo(() => {
+    const p = location.pathname;
+    return p === "/home/login" || p === "/home/signup";
+  }, [location.pathname]);
 
   useEffect(() => {
     const id = location.state?.scrollTo;
@@ -47,26 +57,32 @@ export default function App() {
     }
   }, [location.state]);
 
+  // ✅ Close modal helper
+  const closeModal = () => {
+    // go back to background page if present, else to /home
+    if (backgroundLocation) navigate(-1);
+    else navigate("/home");
+  };
+
   return (
     <>
-      {/* ✅ Hide layout on login/signup */}
-      {!isAuthPage && (
-        <>
-          <Navbar onOpenServices={() => setShowServicesNav(true)} />
-          <ServicesSubnav show={showServicesNav} />
-        </>
-      )}
+      {/* ✅ Always show Navbar inside /home/* */}
+      <Navbar onOpenServices={() => setShowServicesNav(true)} />
 
+      {/* ✅ Hide ServicesSubnav when modal is open */}
+      <ServicesSubnav show={!modalOpen && showServicesNav} />
+
+      {/* ✅ MAIN ROUTES: render using backgroundLocation if modal is open */}
       <AnimatePresence mode="wait">
         <motion.main
-          key={location.pathname}
+          key={(backgroundLocation || location).pathname}
           initial={{ opacity: 0, scale: 0.985 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.985 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.35 }}
         >
-          <Routes>
-            {/* HOME */}
+          <Routes location={backgroundLocation || location}>
+            {/* ✅ /home */}
             <Route
               index
               element={
@@ -78,24 +94,21 @@ export default function App() {
               }
             />
 
-            {/* PUBLIC */}
+            {/* ✅ PUBLIC */}
             <Route path="about" element={<About />} />
             <Route path="contact" element={<Contact />} />
+
             <Route path="gym" element={<Gym />} />
             <Route path="zumba" element={<Zumba />} />
             <Route path="yoga" element={<Yoga />} />
 
-            {/* AUTH */}
-            <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
-
-            {/* FEATURES */}
+            {/* ✅ FEATURES */}
             <Route path="diet" element={<Diet />} />
             <Route path="workout" element={<SmartWorkoutPlanner />} />
             <Route path="progress" element={<Progress />} />
             <Route path="injury" element={<InjurySafe />} />
 
-            {/* PROTECTED */}
+            {/* ✅ PROTECTED */}
             <Route
               path="join"
               element={
@@ -104,7 +117,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="change-password"
               element={
@@ -114,14 +126,38 @@ export default function App() {
               }
             />
 
+            {/* ✅ DEFAULT */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
       </AnimatePresence>
 
-      {/* ✅ Hide footer & chatbot on login */}
-      {!isAuthPage && <Footer />}
-      {!isAuthPage && <Chatbot />}
+      <Footer />
+      <Chatbot />
+
+      {/* ✅ MODAL ROUTES (only render when background exists OR even direct open) */}
+      <AnimatePresence>
+        {(modalOpen || backgroundLocation) && (
+          <Routes location={location}>
+            <Route
+              path="login"
+              element={
+                <AuthModal onClose={closeModal} title="Login">
+                  <Login mode="modal" onSuccess={closeModal} />
+                </AuthModal>
+              }
+            />
+            <Route
+              path="signup"
+              element={
+                <AuthModal onClose={closeModal} title="Signup">
+                  <Signup mode="modal" onSuccess={closeModal} />
+                </AuthModal>
+              }
+            />
+          </Routes>
+        )}
+      </AnimatePresence>
     </>
   );
 }
