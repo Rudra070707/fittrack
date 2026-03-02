@@ -1,17 +1,17 @@
 // src/api.js
 
-// ✅ Works in BOTH:
-// - Local:   VITE_API_URL not set → uses localhost backend
-// - Vercel:  VITE_API_URL set → uses Render backend
-export const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// ✅ BASE_URL = backend root (NO /api at end)
+export const BASE_URL =
+  (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
+    /\/api\/?$/,
+    ""
+  );
 
-// ✅ API base
+// ✅ API_BASE = backend api root
 export const API_BASE = `${BASE_URL}/api`;
 
 /**
  * 🔐 Token handling
- * - Admin panel stores: adminToken
- * - User side stores:   token
  */
 export const getUserToken = () => localStorage.getItem("token");
 export const getAdminToken = () => localStorage.getItem("adminToken");
@@ -26,11 +26,7 @@ export const adminAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-/* =========================
-   HELPERS
-   ========================= */
-
-// Safely parse JSON (handles empty / non-json responses)
+// Safely parse JSON
 export const safeJson = async (res) => {
   try {
     return await res.json();
@@ -39,7 +35,6 @@ export const safeJson = async (res) => {
   }
 };
 
-// Unified response handler
 const handleResponse = async (res, fallbackMsg) => {
   const data = await safeJson(res);
 
@@ -55,18 +50,16 @@ const handleResponse = async (res, fallbackMsg) => {
 };
 
 /* =========================
-   AUTH (USER)  ✅ FIXED ROUTES
+   AUTH (USER)
    ========================= */
 
-// USER LOGIN  ✅ /users/login
 export async function loginUser(email, password) {
   try {
-    const res = await fetch(`${API_BASE}/users/login`, {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
-
     return await handleResponse(res, "Login failed");
   } catch (err) {
     console.error("LOGIN API ERROR:", err);
@@ -74,15 +67,13 @@ export async function loginUser(email, password) {
   }
 }
 
-// USER REGISTER ✅ /users/signup
 export async function signupUser(payload) {
   try {
-    const res = await fetch(`${API_BASE}/users/signup`, {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     return await handleResponse(res, "Signup failed");
   } catch (err) {
     console.error("SIGNUP API ERROR:", err);
@@ -90,11 +81,9 @@ export async function signupUser(payload) {
   }
 }
 
-// CHANGE PASSWORD (USER PROTECTED)
-// ⚠️ If your backend route differs, change only this URL.
 export async function changePassword(currentPassword, newPassword) {
   try {
-    const res = await fetch(`${API_BASE}/users/change-password`, {
+    const res = await fetch(`${API_BASE}/auth/change-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,7 +91,6 @@ export async function changePassword(currentPassword, newPassword) {
       },
       body: JSON.stringify({ currentPassword, newPassword }),
     });
-
     return await handleResponse(res, "Change password failed");
   } catch (err) {
     console.error("CHANGE PASSWORD API ERROR:", err);
@@ -111,11 +99,9 @@ export async function changePassword(currentPassword, newPassword) {
 }
 
 /* =========================
-   USERS (ADMIN)
+   ADMIN
    ========================= */
 
-// ADMIN RESET USER PASSWORD (ADMIN PROTECTED)
-// ⚠️ If backend differs, update route here.
 export async function adminResetUserPassword(userId) {
   try {
     const res = await fetch(`${API_BASE}/users/${userId}/reset-password`, {
@@ -125,7 +111,6 @@ export async function adminResetUserPassword(userId) {
         ...adminAuthHeader(),
       },
     });
-
     return await handleResponse(res, "Reset failed");
   } catch (err) {
     console.error("RESET PASSWORD API ERROR:", err);
@@ -134,26 +119,11 @@ export async function adminResetUserPassword(userId) {
 }
 
 /* =========================
-   SETTINGS (logo, theme)
-   ========================= */
-
-export async function getSettings() {
-  try {
-    const res = await fetch(`${API_BASE}/settings`);
-    return await handleResponse(res, "Failed to fetch settings");
-  } catch (err) {
-    console.error("GET SETTINGS ERROR:", err);
-    return { success: false, message: "Network / server error" };
-  }
-}
-
-/* =========================
-   PLANS (PUBLIC)
+   PLANS
    ========================= */
 
 export async function getPlans() {
   try {
-    // ⚠️ if your backend is /plans (not /plans/all), change here
     const res = await fetch(`${API_BASE}/plans/all`);
     const data = await safeJson(res);
 
@@ -180,12 +150,9 @@ export async function subscribeMembership(payload) {
   try {
     const res = await fetch(`${API_BASE}/users/subscribe`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     return await handleResponse(res, "Subscribe failed");
   } catch (err) {
     console.error("SUBSCRIBE API ERROR:", err);
@@ -194,7 +161,7 @@ export async function subscribeMembership(payload) {
 }
 
 /* =========================
-   PAYMENTS (UI-ONLY)
+   PAYMENTS
    ========================= */
 
 export async function recordPayment(payload) {
@@ -204,7 +171,6 @@ export async function recordPayment(payload) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     return await handleResponse(res, "Failed to record payment");
   } catch (err) {
     console.error("RECORD PAYMENT API ERROR:", err);
@@ -212,9 +178,4 @@ export async function recordPayment(payload) {
   }
 }
 
-/* =========================
-   EXPORTS
-   ========================= */
-
-// kept for backward compatibility
 export const authHeader = () => userAuthHeader();
