@@ -34,16 +34,27 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const state = location.state;
-  const backgroundLocation = state?.backgroundLocation;
-
-  const [showServicesNav, setShowServicesNav] = useState(false);
-
+  // ✅ detect modal paths
   const modalOpen = useMemo(() => {
     const p = location.pathname;
     return p === "/home/login" || p === "/home/signup";
   }, [location.pathname]);
 
+  // ✅ real backgroundLocation if coming from Link state
+  const state = location.state;
+  const stateBg = state?.backgroundLocation;
+
+  // ✅ If user opens /home/login directly (no state), still render /home as background
+  const backgroundLocation = useMemo(() => {
+    if (stateBg) return stateBg;
+    if (modalOpen) return { pathname: "/home" }; // force home behind modal
+    return null;
+  }, [stateBg, modalOpen]);
+
+  // ✅ show/hide services nav
+  const [showServicesNav, setShowServicesNav] = useState(false);
+
+  // ✅ scroll-to support
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -54,93 +65,93 @@ export default function App() {
     }
   }, [location.state]);
 
+  // ❌ Close modal via X/backdrop: go back if we have a background page
   const closeModal = () => {
-    if (backgroundLocation) navigate(-1);
+    if (stateBg) navigate(-1);
     else navigate("/home");
+  };
+
+  // ✅ Close modal AFTER SUCCESS (login/signup): ALWAYS go to /home
+  const closeModalSuccess = () => {
+    navigate("/home", { replace: true });
   };
 
   return (
     <>
       <Navbar onOpenServices={() => setShowServicesNav(true)} />
+
       <ServicesSubnav show={!modalOpen && showServicesNav} />
 
-      {/* ✅ background depth when modal is open */}
-      <motion.div
-        animate={
-          modalOpen || backgroundLocation
-            ? { filter: "blur(2px)", scale: 0.985, opacity: 0.92 }
-            : { filter: "blur(0px)", scale: 1, opacity: 1 }
-        }
-        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        style={{ transformOrigin: "center top" }}
-      >
-        <AnimatePresence mode="wait">
-          <motion.main
-            key={(backgroundLocation || location).pathname}
-            initial={{ opacity: 0, scale: 0.992 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.992 }}
-            transition={{ duration: 0.30 }}
-          >
-            <Routes location={backgroundLocation || location}>
-              <Route
-                index
-                element={
-                  <>
-                    <Hero />
-                    <Services />
-                    <Plans />
-                  </>
-                }
-              />
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={(backgroundLocation || location).pathname}
+          initial={{ opacity: 0, scale: 0.985 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.985 }}
+          transition={{ duration: 0.35 }}
+        >
+          <Routes location={backgroundLocation || location}>
+            <Route
+              index
+              element={
+                <>
+                  <Hero />
+                  <Services />
+                  <Plans />
+                </>
+              }
+            />
 
-              <Route path="about" element={<About />} />
-              <Route path="contact" element={<Contact />} />
+            {/* PUBLIC */}
+            <Route path="about" element={<About />} />
+            <Route path="contact" element={<Contact />} />
 
-              <Route path="gym" element={<Gym />} />
-              <Route path="zumba" element={<Zumba />} />
-              <Route path="yoga" element={<Yoga />} />
+            <Route path="gym" element={<Gym />} />
+            <Route path="zumba" element={<Zumba />} />
+            <Route path="yoga" element={<Yoga />} />
 
-              <Route path="diet" element={<Diet />} />
-              <Route path="workout" element={<SmartWorkoutPlanner />} />
-              <Route path="progress" element={<Progress />} />
-              <Route path="injury" element={<InjurySafe />} />
+            {/* FEATURES */}
+            <Route path="diet" element={<Diet />} />
+            <Route path="workout" element={<SmartWorkoutPlanner />} />
+            <Route path="progress" element={<Progress />} />
+            <Route path="injury" element={<InjurySafe />} />
 
-              <Route
-                path="join"
-                element={
-                  <RequireAuth>
-                    <Join />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="change-password"
-                element={
-                  <RequireAuth>
-                    <ChangePassword />
-                  </RequireAuth>
-                }
-              />
+            {/* PROTECTED */}
+            <Route
+              path="join"
+              element={
+                <RequireAuth>
+                  <Join />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="change-password"
+              element={
+                <RequireAuth>
+                  <ChangePassword />
+                </RequireAuth>
+              }
+            />
 
-              <Route path="*" element={<Navigate to="/home" replace />} />
-            </Routes>
-          </motion.main>
-        </AnimatePresence>
+            {/* DEFAULT */}
+            <Route path="*" element={<Navigate to="/home" replace />} />
+          </Routes>
+        </motion.main>
+      </AnimatePresence>
 
-        <Footer />
-        <Chatbot />
-      </motion.div>
+      <Footer />
+      <Chatbot />
 
-      {/* ✅ MODAL ROUTES */}
+      {/* MODAL ROUTES */}
       <AnimatePresence>
-        {(modalOpen || backgroundLocation) && (
+        {modalOpen && (
           <Routes location={location}>
             <Route
               path="login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
-                  <Login mode="modal" onSuccess={closeModal} />
+                  <Login mode="modal" onSuccess={closeModalSuccess} />
                 </AuthModal>
               }
             />
@@ -148,7 +159,7 @@ export default function App() {
               path="signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
-                  <Signup mode="modal" onSuccess={closeModal} />
+                  <Signup mode="modal" onSuccess={closeModalSuccess} />
                 </AuthModal>
               }
             />
