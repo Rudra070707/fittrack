@@ -22,6 +22,7 @@ const zumbaRoutes = require("./routes/zumbaRoutes");
 const testMailRoutes = require("./routes/testMailRoutes");
 
 const { startZumbaNotifier } = require("./utils/zumbaNotifier");
+const gamificationRoutes = require("./routes/gamificationRoutes");
 
 const app = express();
 
@@ -95,6 +96,7 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/zumba", zumbaRoutes);
 app.use("/api/testmail", testMailRoutes);
+app.use("/api/gamification", gamificationRoutes);
 
 // ================= GLOBAL ERROR HANDLER =================
 // (So errors are visible instead of just "Network error")

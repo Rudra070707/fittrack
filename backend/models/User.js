@@ -41,6 +41,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    /* ======================================================
+       🎮 GAMIFICATION (NEW)
+       ====================================================== */
+    streak: {
+      current: { type: Number, default: 0 },
+      best: { type: Number, default: 0 },
+      // store date-only string: "YYYY-MM-DD" (IST safe using helper)
+      lastActiveDate: { type: String, default: "" },
+    },
+
+    xp: { type: Number, default: 0 },
+    level: { type: Number, default: 1 },
+    badges: { type: [String], default: [] },
   },
   { timestamps: true }
 );
