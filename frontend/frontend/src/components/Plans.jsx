@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { getPlans } from "../api";
 
+const containerVariants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.18,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 const Plans = () => {
   const navigate = useNavigate();
-
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,22 +50,16 @@ const Plans = () => {
   };
 
   return (
-    <section
-      id="plans"
-      className="relative py-28 px-6 bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white overflow-hidden"
-    >
-      {/* Background visuals */}
-      <div className="pointer-events-none absolute inset-0 opacity-35">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.06)_1px,transparent_0)] [background-size:28px_28px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
-      </div>
-
-      <div className="absolute -top-16 left-6 w-[520px] h-[520px] bg-green-400/18 blur-[170px] rounded-full" />
-      <div className="absolute bottom-0 right-6 w-[620px] h-[620px] bg-green-600/14 blur-[190px] rounded-full" />
-
+    <section className="relative py-32 px-6 bg-[#05070c] text-white overflow-hidden">
       {/* Heading */}
-      <div className="relative max-w-6xl mx-auto text-center">
-        <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+        className="relative max-w-6xl mx-auto text-center"
+      >
+        <p className="text-green-400 font-semibold tracking-[0.3em] text-xs">
           PRICING
         </p>
 
@@ -54,74 +67,68 @@ const Plans = () => {
           Membership <span className="text-green-400">Plans</span>
         </h1>
 
-        <p className="text-gray-300 mt-6 text-lg max-w-2xl mx-auto leading-relaxed">
-          Choose a plan that matches your fitness journey. Upgrade anytime.
+        <p className="text-gray-400 mt-6 text-lg max-w-2xl mx-auto">
+          Choose a plan that matches your fitness journey.
         </p>
-      </div>
+      </motion.div>
 
-      {/* Loading / Empty state */}
       {loading && (
-        <div className="relative max-w-6xl mx-auto mt-16 text-center text-gray-300">
+        <div className="text-center mt-16 text-gray-400">
           Loading plans...
         </div>
       )}
 
-      {!loading && plans.length === 0 && (
-        <div className="relative max-w-6xl mx-auto mt-16 text-center text-gray-300">
-          No plans found.
-        </div>
-      )}
-
-      {/* Cards */}
       {!loading && plans.length > 0 && (
-        <div className="relative max-w-6xl mx-auto mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3 items-stretch">
-          {plans.map((plan) => {
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="relative max-w-6xl mx-auto mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-3"
+        >
+          {plans.map((plan, i) => {
             const isPopular = !!plan.highlight;
 
             return (
-              <div
+              <motion.div
                 key={plan._id}
-                className={`
-                  group relative rounded-3xl overflow-hidden
-                  border transition-all duration-300
-                  ${
-                    isPopular
-                      ? "border-green-400/35 bg-white/8 shadow-[0_25px_70px_rgba(0,0,0,0.65)]"
-                      : "border-white/10 bg-white/6 shadow-[0_22px_60px_rgba(0,0,0,0.55)]"
-                  }
-                  backdrop-blur-xl
-                  hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
-                `}
+                variants={cardVariants}
+                whileHover={{ y: -8 }}
+                className={`group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent`}
               >
-                {isPopular && (
-                  <div className="absolute top-5 left-5">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-green-400/15 border border-green-400/25 text-green-300">
+                <div
+                  className={`
+                    relative rounded-3xl p-8 backdrop-blur-xl border
+                    ${
+                      isPopular
+                        ? "border-green-400/40 bg-white/10 shadow-[0_0_45px_rgba(34,197,94,0.35)]"
+                        : "border-white/10 bg-white/6"
+                    }
+                    transition-all duration-300
+                  `}
+                >
+                  {isPopular && (
+                    <div className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-400/15 border border-green-400/30 text-green-300">
                       Most Popular
-                    </span>
-                  </div>
-                )}
+                    </div>
+                  )}
 
-                <div className="p-8 flex flex-col h-full">
-                  <h2 className="text-2xl font-extrabold text-center mt-2">
+                  <h2 className="text-2xl font-bold text-center">
                     {plan.name}
                   </h2>
 
-                  <div className="mt-5 text-center">
-                    <p className="text-4xl font-extrabold">
-                      ₹{formatINR(plan.price)}
-                    </p>
-                    <p className="text-sm text-gray-400 mt-1">per month</p>
-                    <p className="text-xs text-gray-400 mt-3">
-                      Cancel anytime • Instant activation
-                    </p>
-                  </div>
+                  <p className="text-center text-4xl font-extrabold mt-6">
+                    ₹{formatINR(plan.price)}
+                  </p>
 
-                  <div className="my-7 h-[1px] bg-gradient-to-r from-transparent via-white/12 to-transparent" />
+                  <p className="text-center text-gray-400 text-sm mt-1">
+                    per month
+                  </p>
 
-                  <ul className="text-gray-200 flex-1 space-y-3">
+                  <ul className="mt-8 space-y-3 text-gray-300">
                     {(plan.features || []).map((f, j) => (
                       <li key={j} className="flex gap-3">
-                        <span className="text-green-400 font-bold">✓</span>
+                        <span className="text-green-400">✓</span>
                         {f}
                       </li>
                     ))}
@@ -130,31 +137,21 @@ const Plans = () => {
                   <button
                     onClick={() => choosePlan(plan)}
                     className={`
-                      mt-8 w-full rounded-2xl py-3 font-bold transition-all duration-300
+                      mt-8 w-full rounded-2xl py-3 font-semibold transition-all duration-300
                       ${
                         isPopular
-                          ? "bg-green-400 text-black shadow-[0_0_30px_rgba(34,197,94,0.55)] hover:bg-green-500"
-                          : "bg-white/10 text-white border border-white/12 hover:bg-white/16"
+                          ? "bg-green-400 text-black hover:bg-green-500 shadow-[0_0_30px_rgba(34,197,94,0.55)]"
+                          : "bg-white/10 hover:bg-white/20"
                       }
-                      hover:scale-[1.02] active:scale-[0.99]
                     `}
                   >
                     Choose Plan
                   </button>
-
-                  <p className="text-center text-xs text-gray-500 mt-4">
-                    Best for{" "}
-                    {plan.name?.includes("Elite")
-                      ? "advanced users"
-                      : plan.name?.includes("Premium")
-                      ? "all-round fitness"
-                      : "getting started"}
-                  </p>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
     </section>
   );

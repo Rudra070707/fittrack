@@ -12,6 +12,7 @@ export default function Navbar({ onOpenServices }) {
     () => ["/home/login", "/login", "/home/signup", "/signup"],
     []
   );
+
   const shouldHide = hideOnRoutes.includes(location.pathname);
 
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
@@ -44,37 +45,29 @@ export default function Navbar({ onOpenServices }) {
       return;
     }
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
-
-  const navLinks = [
-    { name: "About", type: "page", path: "/home/about" },
-    { name: "Services", type: "scroll", id: "services" },
-    { name: "Contact Us", type: "page", path: "/home/contact" },
-  ];
 
   if (shouldHide) return null;
 
   return (
     <header className="sticky top-0 z-50">
-      <nav className="h-16 bg-gradient-to-b from-[#070b10]/90 via-[#0b1017]/80 to-[#070b10]/90 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.55)] relative overflow-hidden">
+      <nav className="h-16 bg-[#05070c]/80 backdrop-blur-xl border-b border-white/10 relative overflow-hidden">
+        {/* soft aurora glow */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-green-400/10 blur-[70px] rounded-full" />
-          <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-emerald-400/10 blur-[70px] rounded-full" />
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.06)_1px,transparent_0)] [background-size:28px_28px]" />
+          <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-green-400/12 blur-[80px] rounded-full" />
+          <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-emerald-400/12 blur-[80px] rounded-full" />
         </div>
 
         <div className="relative max-w-7xl mx-auto h-full px-6 md:px-8 flex items-center justify-between">
           <Link to="/home" className="flex items-center gap-3">
             {logo ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl px-3 py-2 shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
-                <img
-                  src={`${BASE_URL}${logo}`}
-                  alt="FitTrack Logo"
-                  className="h-9 w-auto scale-[1.35] origin-left drop-shadow-[0_0_22px_rgba(34,197,94,0.6)] transition-transform duration-300 hover:scale-[1.4]"
-                  onError={() => setLogo(null)}
-                />
-              </div>
+              <img
+                src={`${BASE_URL}${logo}`}
+                alt="FitTrack Logo"
+                className="h-9 w-auto drop-shadow-[0_0_18px_rgba(34,197,94,0.45)]"
+                onError={() => setLogo(null)}
+              />
             ) : (
               <div className="flex flex-col leading-none">
                 <span className="text-xl font-extrabold text-white tracking-tight">
@@ -87,51 +80,29 @@ export default function Navbar({ onOpenServices }) {
             )}
           </Link>
 
-          <ul className="hidden md:flex items-center gap-10 text-sm font-medium">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                {link.type === "page" ? (
-                  <Link
-                    to={link.path}
-                    className="relative px-1 py-2 text-gray-300 hover:text-white transition-all duration-300 group"
-                  >
-                    <span className="absolute -inset-x-3 -inset-y-2 rounded-xl bg-white/[0.04] border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                    <span className="relative">{link.name}</span>
-                    <span className="absolute left-0 -bottom-1 h-[2px] w-full rounded-full bg-green-400/0 group-hover:bg-green-400/70 transition-all duration-300" />
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection(link.id)}
-                    className="relative px-1 py-2 text-gray-300 hover:text-white transition-all duration-300 group"
-                  >
-                    <span className="absolute -inset-x-3 -inset-y-2 rounded-xl bg-white/[0.04] border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                    <span className="relative">{link.name}</span>
-                    <span className="absolute left-0 -bottom-1 h-[2px] w-full rounded-full bg-green-400/0 group-hover:bg-green-400/70 transition-all duration-300" />
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-300">
+            <Link to="/home/about" className="hover:text-white transition">
+              About
+            </Link>
             <button
               type="button"
               onClick={() => scrollToSection("services")}
-              className="md:hidden px-4 py-2 rounded-xl bg-white/[0.04] border border-white/10 text-gray-200 hover:bg-white/[0.07] transition-all duration-300"
+              className="hover:text-white transition"
             >
               Services
             </button>
-
-            {/* ✅ OPEN LOGIN AS MODAL */}
-            <Link
-              to="/home/login"
-              state={{ backgroundLocation: location }}
-              className="relative px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition-all duration-300 shadow-[0_0_28px_rgba(34,197,94,0.55)] hover:shadow-[0_0_40px_rgba(34,197,94,0.75)] hover:scale-[1.02]"
-            >
-              Login
+            <Link to="/home/contact" className="hover:text-white transition">
+              Contact Us
             </Link>
           </div>
+
+          <Link
+            to="/home/login"
+            state={{ backgroundLocation: location }}
+            className="px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition shadow-[0_0_28px_rgba(34,197,94,0.55)]"
+          >
+            Login
+          </Link>
         </div>
       </nav>
     </header>
