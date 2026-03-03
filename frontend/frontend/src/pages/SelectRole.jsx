@@ -115,8 +115,11 @@ export default function SelectRole() {
     });
   }, []);
 
+  // ✅ ALWAYS OPEN LOGIN MODAL OVER /home (no blank screen)
   const openLoginModal = () => {
-    navigate("/home/login", { state: { backgroundLocation: location } });
+    navigate("/home/login", {
+      state: { backgroundLocation: { pathname: "/home" } },
+    });
   };
 
   return (
@@ -190,7 +193,7 @@ export default function SelectRole() {
           ))}
         </div>
 
-        {/* Diagonal light streaks (cultfit vibe) */}
+        {/* Diagonal light streaks */}
         <motion.div
           className="absolute -top-40 left-[-40%] h-[420px] w-[140%] rotate-[-10deg] opacity-[0.12]"
           animate={{ x: ["-8%", "8%", "-8%"] }}
@@ -212,17 +215,17 @@ export default function SelectRole() {
           }}
         />
 
-        {/* Dots grid + subtle scanlines */}
+        {/* Dots grid + scanlines */}
         <div className="absolute inset-0 opacity-[0.18] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.10)_1px,transparent_0)] [background-size:22px_22px]" />
         <div className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(to_bottom,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:100%_7px]" />
 
-        {/* Vignette for depth */}
+        {/* Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
       </div>
 
       {/* ===== CARD ===== */}
       <div ref={wrapRef} className="relative z-10 w-full max-w-md">
-        {/* Cursor glow (follows mouse) */}
+        {/* Cursor glow */}
         {isFinePointer && (
           <motion.div
             className="pointer-events-none absolute -inset-10"
@@ -302,10 +305,7 @@ export default function SelectRole() {
             </motion.p>
 
             {/* Chips */}
-            <motion.div
-              variants={item}
-              className="mt-6 flex flex-wrap justify-center gap-2"
-            >
+            <motion.div variants={item} className="mt-6 flex flex-wrap justify-center gap-2">
               {[
                 { t: "Progress", e: "📊" },
                 { t: "Diet", e: "🥗" },
