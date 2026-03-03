@@ -29,6 +29,7 @@ import RequireAuth from "./components/RequireAuth";
 import ChangePassword from "./pages/ChangePassword";
 
 import AuthModal from "./components/AuthModal";
+import Gamification from "./pages/Gamification";
 
 export default function App() {
   const location = useLocation();
@@ -115,6 +116,9 @@ export default function App() {
             <Route path="workout" element={<SmartWorkoutPlanner />} />
             <Route path="progress" element={<Progress />} />
             <Route path="injury" element={<InjurySafe />} />
+
+            {/* ✅ NEW: GAMIFICATION */}
+            <Route path="gamification" element={<Gamification />} />
 
             {/* PROTECTED */}
             <Route

@@ -12,6 +12,9 @@ export default function ServicesSubnav({ show }) {
     { name: "Gym Access", to: "/home/gym" },
     { name: "Zumba", to: "/home/zumba" },
     { name: "Yoga", to: "/home/yoga" },
+
+    // ✅ NEW FEATURE TAB
+    { name: "Rewards", to: "/home/gamification" },
   ];
 
   return (

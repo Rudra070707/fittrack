@@ -179,3 +179,43 @@ export async function recordPayment(payload) {
 }
 
 export const authHeader = () => userAuthHeader();
+
+/* =========================
+   🎮 GAMIFICATION (NEW)
+   ========================= */
+
+// ✅ GET current streak/xp/level/badges
+export async function getGamification() {
+  try {
+    const res = await fetch(`${API_BASE}/gamification`, {
+      method: "GET",
+      headers: {
+        ...userAuthHeader(),
+      },
+    });
+
+    return await handleResponse(res, "Failed to fetch gamification");
+  } catch (err) {
+    console.error("GET GAMIFICATION API ERROR:", err);
+    return { success: false, message: "Network / server error" };
+  }
+}
+
+// ✅ Mark today done (updates streak + awards XP)
+export async function markTodayDone() {
+  try {
+    const res = await fetch(`${API_BASE}/gamification/mark-today`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...userAuthHeader(),
+      },
+      body: JSON.stringify({}), // keep body (some hosts block empty POST)
+    });
+
+    return await handleResponse(res, "Failed to update streak");
+  } catch (err) {
+    console.error("MARK TODAY API ERROR:", err);
+    return { success: false, message: "Network / server error" };
+  }
+}
