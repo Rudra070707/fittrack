@@ -22,8 +22,11 @@ export default function AdminLogin() {
   const sx = useSpring(mx, { stiffness: 120, damping: 25, mass: 0.6 });
   const sy = useSpring(my, { stiffness: 120, damping: 25, mass: 0.6 });
 
-  const bgX = useTransform(sx, (v) => (v - window.innerWidth / 2) * 0.012);
-  const bgY = useTransform(sy, (v) => (v - window.innerHeight / 2) * 0.012);
+  const viewportW = typeof window !== "undefined" ? window.innerWidth : 1440;
+  const viewportH = typeof window !== "undefined" ? window.innerHeight : 900;
+
+  const bgX = useTransform(sx, (v) => (v - viewportW / 2) * 0.012);
+  const bgY = useTransform(sy, (v) => (v - viewportH / 2) * 0.012);
 
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
@@ -35,14 +38,27 @@ export default function AdminLogin() {
   const glowXS = useSpring(glowX, { stiffness: 200, damping: 28 });
   const glowYS = useSpring(glowY, { stiffness: 200, damping: 28 });
 
+  // ✅ FIX: hook must be top-level
+  const glowBg = useTransform(
+    [glowXS, glowYS],
+    ([x, y]) =>
+      `radial-gradient(260px circle at ${x}px ${y}px, rgba(34,197,94,0.18), rgba(59,130,246,0.12), transparent 65%)`
+  );
+
   const [isFinePointer, setIsFinePointer] = useState(true);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: fine)");
     const update = () => setIsFinePointer(!!mq.matches);
     update();
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
+
+    if (mq.addEventListener) {
+      mq.addEventListener("change", update);
+      return () => mq.removeEventListener("change", update);
+    } else {
+      mq.addListener(update);
+      return () => mq.removeListener(update);
+    }
   }, []);
 
   const onMove = (e) => {
@@ -126,7 +142,6 @@ export default function AdminLogin() {
       onMouseMove={isFinePointer ? onMove : undefined}
       onMouseLeave={isFinePointer ? onLeave : undefined}
     >
-      {/* BACKGROUND (ULTRA) */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
@@ -187,18 +202,11 @@ export default function AdminLogin() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.65)_100%)]" />
       </div>
 
-      {/* WRAPPER */}
       <div ref={wrapRef} className="relative z-10 w-full max-w-md">
         {isFinePointer && (
           <motion.div
             className="pointer-events-none absolute -inset-10"
-            style={{
-              background: useTransform(
-                [glowXS, glowYS],
-                ([x, y]) =>
-                  `radial-gradient(260px circle at ${x}px ${y}px, rgba(34,197,94,0.18), rgba(59,130,246,0.12), transparent 65%)`
-              ),
-            }}
+            style={{ background: glowBg }}
           />
         )}
 
@@ -266,7 +274,10 @@ export default function AdminLogin() {
           </div>
 
           {error ? (
-            <div className="relative mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200" style={{ transform: "translateZ(14px)" }}>
+            <div
+              className="relative mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+              style={{ transform: "translateZ(14px)" }}
+            >
               {error}
             </div>
           ) : null}
@@ -291,7 +302,10 @@ export default function AdminLogin() {
             </span>
           </motion.button>
 
-          <div className="relative mt-7 flex items-center justify-between text-xs text-white/45" style={{ transform: "translateZ(12px)" }}>
+          <div
+            className="relative mt-7 flex items-center justify-between text-xs text-white/45"
+            style={{ transform: "translateZ(12px)" }}
+          >
             <span>© {new Date().getFullYear()} FitTrack</span>
             <span className="px-3 py-1.5 rounded-2xl bg-white/[0.06] border border-white/12 text-white/70">
               Secure Access
