@@ -1,10 +1,9 @@
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export default function SelectRole() {
   const navigate = useNavigate();
-  const location = useLocation();
   const wrapRef = useRef(null);
 
   // Mouse position (relative to viewport)
@@ -15,9 +14,13 @@ export default function SelectRole() {
   const sx = useSpring(mx, { stiffness: 120, damping: 25, mass: 0.6 });
   const sy = useSpring(my, { stiffness: 120, damping: 25, mass: 0.6 });
 
+  // Safe viewport center values
+  const viewportW = typeof window !== "undefined" ? window.innerWidth : 1440;
+  const viewportH = typeof window !== "undefined" ? window.innerHeight : 900;
+
   // Convert to parallax offsets (small movement)
-  const bgX = useTransform(sx, (v) => (v - window.innerWidth / 2) * 0.012);
-  const bgY = useTransform(sy, (v) => (v - window.innerHeight / 2) * 0.012);
+  const bgX = useTransform(sx, (v) => (v - viewportW / 2) * 0.012);
+  const bgY = useTransform(sy, (v) => (v - viewportH / 2) * 0.012);
 
   // Card tilt based on cursor position inside wrapper
   const tiltX = useMotionValue(0);
@@ -31,15 +34,28 @@ export default function SelectRole() {
   const glowXS = useSpring(glowX, { stiffness: 220, damping: 26 });
   const glowYS = useSpring(glowY, { stiffness: 220, damping: 26 });
 
+  // ✅ FIX: define hook at top level, not inside conditional JSX
+  const glowBg = useTransform([glowXS, glowYS], ([x, y]) => {
+    return `radial-gradient(280px circle at ${x}px ${y}px,
+      rgba(34,197,94,0.22),
+      rgba(59,130,246,0.12),
+      transparent 66%)`;
+  });
+
   const [isFinePointer, setIsFinePointer] = useState(true);
 
   useEffect(() => {
-    // Disable heavy cursor effects on touch devices
     const mq = window.matchMedia("(pointer: fine)");
     const update = () => setIsFinePointer(!!mq.matches);
     update();
-    mq.addEventListener?.("change", update);
-    return () => mq.removeEventListener?.("change", update);
+
+    if (mq.addEventListener) {
+      mq.addEventListener("change", update);
+      return () => mq.removeEventListener("change", update);
+    } else {
+      mq.addListener(update);
+      return () => mq.removeListener(update);
+    }
   }, []);
 
   const onMove = (e) => {
@@ -58,8 +74,8 @@ export default function SelectRole() {
     const cx = rect.width / 2;
     const cy = rect.height / 2;
 
-    const dx = (relX - cx) / cx; // -1..1
-    const dy = (relY - cy) / cy; // -1..1
+    const dx = (relX - cx) / cx;
+    const dy = (relY - cy) / cy;
 
     tiltX.set(-dy * 7);
     tiltY.set(dx * 9);
@@ -99,23 +115,21 @@ export default function SelectRole() {
     []
   );
 
-  // Floating particles (CSS + motion) for “depth”
   const particles = useMemo(() => {
     const n = 22;
     return Array.from({ length: n }).map((_, i) => {
       const left = Math.random() * 100;
       const top = Math.random() * 100;
-      const size = 2 + Math.random() * 3.5; // 2..5.5px
-      const dur = 6 + Math.random() * 10; // 6..16s
-      const driftX = (Math.random() * 2 - 1) * 18; // -18..18
-      const driftY = -(18 + Math.random() * 38); // up
+      const size = 2 + Math.random() * 3.5;
+      const dur = 6 + Math.random() * 10;
+      const driftX = (Math.random() * 2 - 1) * 18;
+      const driftY = -(18 + Math.random() * 38);
       const delay = Math.random() * 3;
       const opacity = 0.18 + Math.random() * 0.22;
       return { i, left, top, size, dur, driftX, driftY, delay, opacity };
     });
   }, []);
 
-  // ✅ ALWAYS OPEN LOGIN MODAL OVER /home (no blank screen)
   const openLoginModal = () => {
     navigate("/home/login", {
       state: { backgroundLocation: { pathname: "/home" } },
@@ -128,12 +142,9 @@ export default function SelectRole() {
       onMouseMove={isFinePointer ? onMove : undefined}
       onMouseLeave={isFinePointer ? onLeave : undefined}
     >
-      {/* ===== Lively “cult.fit”-like BACKGROUND ===== */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Base gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#05070c] via-[#050a12] to-black" />
 
-        {/* Aurora (parallax + animated) */}
         <motion.div
           className="absolute inset-0 opacity-80"
           style={isFinePointer ? { x: bgX, y: bgY } : undefined}
@@ -148,7 +159,6 @@ export default function SelectRole() {
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Big glow blobs */}
         <motion.div
           className="absolute -top-56 -left-56 h-[820px] w-[820px] rounded-full bg-emerald-500/16 blur-[240px]"
           animate={{ x: [0, 80, 0], y: [0, 60, 0] }}
@@ -165,7 +175,6 @@ export default function SelectRole() {
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Floating particles */}
         <div className="absolute inset-0">
           {particles.map((p) => (
             <motion.span
@@ -193,7 +202,6 @@ export default function SelectRole() {
           ))}
         </div>
 
-        {/* Diagonal light streaks */}
         <motion.div
           className="absolute -top-40 left-[-40%] h-[420px] w-[140%] rotate-[-10deg] opacity-[0.12]"
           animate={{ x: ["-8%", "8%", "-8%"] }}
@@ -215,35 +223,21 @@ export default function SelectRole() {
           }}
         />
 
-        {/* Dots grid + scanlines */}
         <div className="absolute inset-0 opacity-[0.18] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.10)_1px,transparent_0)] [background-size:22px_22px]" />
         <div className="absolute inset-0 opacity-[0.07] bg-[linear-gradient(to_bottom,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:100%_7px]" />
-
-        {/* Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,rgba(0,0,0,0.75)_100%)]" />
       </div>
 
-      {/* ===== CARD ===== */}
       <div ref={wrapRef} className="relative z-10 w-full max-w-md">
-        {/* Cursor glow */}
         {isFinePointer && (
           <motion.div
             className="pointer-events-none absolute -inset-10"
-            style={{
-              background: useTransform([glowXS, glowYS], ([x, y]) => {
-                return `radial-gradient(280px circle at ${x}px ${y}px,
-                  rgba(34,197,94,0.22),
-                  rgba(59,130,246,0.12),
-                  transparent 66%)`;
-              }),
-            }}
+            style={{ background: glowBg }}
           />
         )}
 
-        {/* Gradient border */}
         <div className="pointer-events-none absolute -inset-[1px] rounded-[28px] bg-gradient-to-r from-emerald-500/45 via-sky-500/35 to-indigo-500/40 blur-[14px] opacity-75 animate-pulse" />
 
-        {/* Card */}
         <motion.div
           style={
             isFinePointer
@@ -255,7 +249,6 @@ export default function SelectRole() {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           className="relative rounded-[28px] border border-white/15 bg-white/7 backdrop-blur-2xl shadow-[0_28px_110px_rgba(0,0,0,0.70)] overflow-hidden"
         >
-          {/* Glass highlights */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-28 -left-28 h-72 w-72 rotate-12 bg-white/10 blur-2xl" />
             <div className="absolute top-10 right-10 h-24 w-44 rotate-12 bg-white/7 blur-xl" />
@@ -263,7 +256,6 @@ export default function SelectRole() {
             <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/30" />
           </div>
 
-          {/* Subtle moving shine */}
           <motion.div
             className="pointer-events-none absolute -top-24 -left-40 h-64 w-64 rotate-12 bg-white/10 blur-2xl"
             animate={{ x: [0, 520, 0], y: [0, 160, 0] }}
@@ -277,7 +269,6 @@ export default function SelectRole() {
             className="relative p-9 text-center"
             style={{ transform: "translateZ(18px)" }}
           >
-            {/* Badge */}
             <motion.div
               variants={item}
               className="mx-auto inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-1 text-xs text-white/75"
@@ -286,7 +277,6 @@ export default function SelectRole() {
               FITTRACK PLATFORM
             </motion.div>
 
-            {/* Title */}
             <motion.h1
               variants={item}
               className="mt-5 text-4xl font-semibold tracking-tight"
@@ -304,7 +294,6 @@ export default function SelectRole() {
               Choose how you want to access the platform.
             </motion.p>
 
-            {/* Chips */}
             <motion.div variants={item} className="mt-6 flex flex-wrap justify-center gap-2">
               {[
                 { t: "Progress", e: "📊" },
@@ -323,9 +312,7 @@ export default function SelectRole() {
               ))}
             </motion.div>
 
-            {/* Buttons */}
             <motion.div variants={item} className="mt-9 space-y-3">
-              {/* User Primary */}
               <motion.button
                 type="button"
                 onClick={openLoginModal}
@@ -342,7 +329,6 @@ export default function SelectRole() {
                 </span>
               </motion.button>
 
-              {/* Admin Secondary */}
               <motion.button
                 type="button"
                 onClick={() => navigate("/admin/login")}
@@ -357,7 +343,6 @@ export default function SelectRole() {
               </motion.button>
             </motion.div>
 
-            {/* Footer */}
             <motion.div
               variants={item}
               className="mt-8 flex items-center justify-center gap-2 text-xs text-white/50"
