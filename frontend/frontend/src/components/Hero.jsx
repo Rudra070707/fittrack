@@ -1,13 +1,19 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const openLogin = () => {
+    navigate("/login", { state: { backgroundLocation: location } });
+  };
+
   return (
     <section
       id="about"
       className="relative min-h-[calc(100vh-64px)] bg-[#05070c] text-white flex flex-col justify-center items-center text-center px-6 overflow-hidden"
     >
-      {/* animated aurora */}
       <motion.div
         className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
         animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
@@ -20,7 +26,6 @@ export default function Hero() {
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* subtle grid */}
       <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
       <motion.h1
@@ -50,12 +55,12 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ duration: 1.6 }}
       >
-        <Link
-          to="/home/join"
+        <button
+          onClick={openLogin}
           className="bg-green-400 text-black font-bold px-7 py-3 rounded-xl shadow-[0_18px_55px_rgba(0,0,0,0.55)] hover:scale-105 transition"
         >
           Get Started
-        </Link>
+        </button>
 
         <a
           href="#services"

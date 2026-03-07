@@ -37,6 +37,10 @@ export default function Navbar({ onOpenServices }) {
     };
   }, [shouldHide]);
 
+  const openLogin = () => {
+    navigate("/login", { state: { backgroundLocation: location } });
+  };
+
   const scrollToSection = (id) => {
     if (id === "services" && onOpenServices) onOpenServices();
 
@@ -44,6 +48,7 @@ export default function Navbar({ onOpenServices }) {
       navigate("/home", { state: { scrollTo: id } });
       return;
     }
+
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -53,7 +58,6 @@ export default function Navbar({ onOpenServices }) {
   return (
     <header className="sticky top-0 z-50">
       <nav className="h-16 bg-[#05070c]/80 backdrop-blur-xl border-b border-white/10 relative overflow-hidden">
-        {/* soft aurora glow */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-green-400/12 blur-[80px] rounded-full" />
           <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-emerald-400/12 blur-[80px] rounded-full" />
@@ -81,9 +85,13 @@ export default function Navbar({ onOpenServices }) {
           </Link>
 
           <div className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-300">
-            <Link to="/home/about" className="hover:text-white transition">
+            <button
+              onClick={openLogin}
+              className="hover:text-white transition"
+            >
               About
-            </Link>
+            </button>
+
             <button
               type="button"
               onClick={() => scrollToSection("services")}
@@ -91,13 +99,17 @@ export default function Navbar({ onOpenServices }) {
             >
               Services
             </button>
-            <Link to="/home/contact" className="hover:text-white transition">
+
+            <button
+              onClick={openLogin}
+              className="hover:text-white transition"
+            >
               Contact Us
-            </Link>
+            </button>
           </div>
 
           <Link
-            to="/home/login"
+            to="/login"
             state={{ backgroundLocation: location }}
             className="px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition shadow-[0_0_28px_rgba(34,197,94,0.55)]"
           >

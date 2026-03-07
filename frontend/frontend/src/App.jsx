@@ -35,24 +35,23 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ detect modal paths
+  // ✅ detect auth modal routes
   const modalOpen = useMemo(() => {
     const p = location.pathname;
-    return p === "/home/login" || p === "/home/signup";
+    return p === "/login" || p === "/signup";
   }, [location.pathname]);
 
-  // ✅ real backgroundLocation if coming from Link state
+  // ✅ background location support for modal navigation
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
-  // ✅ If user opens /home/login directly (no state), still render /home as background
+  // ✅ if /login or /signup is opened directly, show /home behind modal
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-    if (modalOpen) return { pathname: "/home" }; // force home behind modal
+    if (modalOpen) return { pathname: "/home" };
     return null;
   }, [stateBg, modalOpen]);
 
-  // ✅ show/hide services nav
   const [showServicesNav, setShowServicesNav] = useState(false);
 
   // ✅ scroll-to support
@@ -66,13 +65,13 @@ export default function App() {
     }
   }, [location.state]);
 
-  // ❌ Close modal via X/backdrop: go back if we have a background page
+  // ✅ close modal
   const closeModal = () => {
     if (stateBg) navigate(-1);
-    else navigate("/home");
+    else navigate("/home", { replace: true });
   };
 
-  // ✅ Close modal AFTER SUCCESS (login/signup): ALWAYS go to /home
+  // ✅ after success always go home
   const closeModalSuccess = () => {
     navigate("/home", { replace: true });
   };
@@ -92,8 +91,12 @@ export default function App() {
           transition={{ duration: 0.35 }}
         >
           <Routes location={backgroundLocation || location}>
+            {/* ✅ project link opens directly to /home */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+
+            {/* ✅ public landing page only */}
             <Route
-              index
+              path="/home"
               element={
                 <>
                   <Hero />
@@ -103,34 +106,108 @@ export default function App() {
               }
             />
 
-            {/* PUBLIC */}
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-
-            <Route path="gym" element={<Gym />} />
-            <Route path="zumba" element={<Zumba />} />
-            <Route path="yoga" element={<Yoga />} />
-
-            {/* FEATURES */}
-            <Route path="diet" element={<Diet />} />
-            <Route path="workout" element={<SmartWorkoutPlanner />} />
-            <Route path="progress" element={<Progress />} />
-            <Route path="injury" element={<InjurySafe />} />
-
-            {/* ✅ NEW: GAMIFICATION */}
-            <Route path="gamification" element={<Gamification />} />
-
-            {/* PROTECTED */}
+            {/* ✅ protected pages */}
             <Route
-              path="join"
+              path="/about"
+              element={
+                <RequireAuth>
+                  <About />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/contact"
+              element={
+                <RequireAuth>
+                  <Contact />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/gym"
+              element={
+                <RequireAuth>
+                  <Gym />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/zumba"
+              element={
+                <RequireAuth>
+                  <Zumba />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/yoga"
+              element={
+                <RequireAuth>
+                  <Yoga />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/diet"
+              element={
+                <RequireAuth>
+                  <Diet />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/workout"
+              element={
+                <RequireAuth>
+                  <SmartWorkoutPlanner />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/progress"
+              element={
+                <RequireAuth>
+                  <Progress />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/injury"
+              element={
+                <RequireAuth>
+                  <InjurySafe />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/gamification"
+              element={
+                <RequireAuth>
+                  <Gamification />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/join"
               element={
                 <RequireAuth>
                   <Join />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="change-password"
+              path="/change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -138,7 +215,7 @@ export default function App() {
               }
             />
 
-            {/* DEFAULT */}
+            {/* ✅ fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
@@ -147,12 +224,12 @@ export default function App() {
       <Footer />
       <Chatbot />
 
-      {/* MODAL ROUTES */}
+      {/* ✅ modal auth routes */}
       <AnimatePresence>
         {modalOpen && (
           <Routes location={location}>
             <Route
-              path="login"
+              path="/login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" onSuccess={closeModalSuccess} />
@@ -160,7 +237,7 @@ export default function App() {
               }
             />
             <Route
-              path="signup"
+              path="/signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" onSuccess={closeModalSuccess} />
