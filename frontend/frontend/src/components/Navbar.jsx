@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { API_BASE } from "../api";
 
-export default function Navbar() {
+export default function Navbar({ onOpenServices }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
@@ -62,9 +62,11 @@ export default function Navbar() {
     navigate(path);
   };
 
-  const scrollToServices = () => {
+  const handleServicesClick = () => {
+    if (onOpenServices) onOpenServices();
+
     if (location.pathname !== "/home" && location.pathname !== "/") {
-      navigate("/home", { state: { scrollTo: "services" } });
+      navigate("/home");
       return;
     }
 
@@ -114,7 +116,7 @@ export default function Navbar() {
 
             <button
               type="button"
-              onClick={scrollToServices}
+              onClick={handleServicesClick}
               className="hover:text-white transition"
             >
               Services
