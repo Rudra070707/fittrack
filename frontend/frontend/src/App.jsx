@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import Navbar from "./components/Navbar";
 import ServicesSubnav from "./components/ServicesSubnav";
@@ -35,7 +35,6 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ modal routes must match /home/login and /home/signup
   const modalOpen = useMemo(() => {
     const p = location.pathname;
     return p === "/home/login" || p === "/home/signup";
@@ -49,8 +48,6 @@ export default function App() {
     if (modalOpen) return { pathname: "/home" };
     return null;
   }, [stateBg, modalOpen]);
-
-  const [showServicesNav, setShowServicesNav] = useState(false);
 
   useEffect(() => {
     const id = location.state?.scrollTo;
@@ -73,8 +70,8 @@ export default function App() {
 
   return (
     <>
-      <Navbar onOpenServices={() => setShowServicesNav(true)} />
-      <ServicesSubnav show={!modalOpen && showServicesNav} />
+      <Navbar />
+      <ServicesSubnav show={false} />
 
       <AnimatePresence mode="wait">
         <motion.main
@@ -85,7 +82,6 @@ export default function App() {
           transition={{ duration: 0.35 }}
         >
           <Routes location={backgroundLocation || location}>
-            {/* /home */}
             <Route
               index
               element={
@@ -97,7 +93,6 @@ export default function App() {
               }
             />
 
-            {/* protected routes => /home/about, /home/contact, etc */}
             <Route
               path="about"
               element={
@@ -106,7 +101,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="contact"
               element={
@@ -115,7 +109,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="gym"
               element={
@@ -124,7 +117,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="zumba"
               element={
@@ -133,7 +125,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="yoga"
               element={
@@ -142,7 +133,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="diet"
               element={
@@ -151,7 +141,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="workout"
               element={
@@ -160,7 +149,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="progress"
               element={
@@ -169,7 +157,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="injury"
               element={
@@ -178,7 +165,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="gamification"
               element={
@@ -187,7 +173,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="join"
               element={
@@ -196,7 +181,6 @@ export default function App() {
                 </RequireAuth>
               }
             />
-
             <Route
               path="change-password"
               element={

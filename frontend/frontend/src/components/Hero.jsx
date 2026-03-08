@@ -5,8 +5,23 @@ export default function Hero() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const openLogin = () => {
-    navigate("/home/login", { state: { backgroundLocation: location } });
+  const handleGetStarted = () => {
+    const isUserLoggedIn = !!localStorage.getItem("token");
+
+    if (isUserLoggedIn) {
+      navigate("/home/join");
+      return;
+    }
+
+    navigate("/home/login", {
+      state: { backgroundLocation: location },
+    });
+  };
+
+  const handleLearnMore = (e) => {
+    e.preventDefault();
+    const el = document.getElementById("services");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -56,7 +71,8 @@ export default function Hero() {
         transition={{ duration: 1.6 }}
       >
         <button
-          onClick={openLogin}
+          type="button"
+          onClick={handleGetStarted}
           className="bg-green-400 text-black font-bold px-7 py-3 rounded-xl shadow-[0_18px_55px_rgba(0,0,0,0.55)] hover:scale-105 transition"
         >
           Get Started
@@ -64,6 +80,7 @@ export default function Hero() {
 
         <a
           href="#services"
+          onClick={handleLearnMore}
           className="border border-white/40 px-7 py-3 rounded-xl text-white hover:bg-white hover:text-black transition"
         >
           Learn More
