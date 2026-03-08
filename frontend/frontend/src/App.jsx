@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 import Navbar from "./components/Navbar";
 import ServicesSubnav from "./components/ServicesSubnav";
@@ -49,8 +49,6 @@ export default function App() {
     return null;
   }, [stateBg, modalOpen]);
 
-  const [showServicesNav, setShowServicesNav] = useState(false);
-
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -72,8 +70,8 @@ export default function App() {
 
   return (
     <>
-      <Navbar onOpenServices={() => setShowServicesNav(true)} />
-      <ServicesSubnav show={!modalOpen && showServicesNav} />
+      <Navbar />
+      <ServicesSubnav show={!modalOpen} />
 
       <AnimatePresence mode="wait">
         <motion.main
