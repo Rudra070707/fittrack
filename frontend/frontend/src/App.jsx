@@ -72,7 +72,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar onOpenServices={() => setShowServicesNav((prev) => !prev)} />
+      <Navbar onOpenServices={() => setShowServicesNav(true)} />
       <ServicesSubnav show={!modalOpen && showServicesNav} />
 
       <AnimatePresence mode="wait">

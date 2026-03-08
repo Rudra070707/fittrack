@@ -63,10 +63,10 @@ export default function Navbar({ onOpenServices }) {
   };
 
   const handleServicesClick = () => {
-    if (onOpenServices) onOpenServices();
+    onOpenServices?.();
 
     if (location.pathname !== "/home" && location.pathname !== "/") {
-      navigate("/home");
+      navigate("/home", { state: { scrollTo: "services" } });
       return;
     }
 
