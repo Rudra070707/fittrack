@@ -35,17 +35,14 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ detect auth modal routes
   const modalOpen = useMemo(() => {
     const p = location.pathname;
     return p === "/login" || p === "/signup";
   }, [location.pathname]);
 
-  // ✅ background location support for modal navigation
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
-  // ✅ if /login or /signup is opened directly, show /home behind modal
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
     if (modalOpen) return { pathname: "/home" };
@@ -54,7 +51,6 @@ export default function App() {
 
   const [showServicesNav, setShowServicesNav] = useState(false);
 
-  // ✅ scroll-to support
   useEffect(() => {
     const id = location.state?.scrollTo;
     if (id) {
@@ -65,13 +61,11 @@ export default function App() {
     }
   }, [location.state]);
 
-  // ✅ close modal
   const closeModal = () => {
     if (stateBg) navigate(-1);
     else navigate("/home", { replace: true });
   };
 
-  // ✅ after success always go home
   const closeModalSuccess = () => {
     navigate("/home", { replace: true });
   };
@@ -79,7 +73,6 @@ export default function App() {
   return (
     <>
       <Navbar onOpenServices={() => setShowServicesNav(true)} />
-
       <ServicesSubnav show={!modalOpen && showServicesNav} />
 
       <AnimatePresence mode="wait">
@@ -91,12 +84,9 @@ export default function App() {
           transition={{ duration: 0.35 }}
         >
           <Routes location={backgroundLocation || location}>
-            {/* ✅ project link opens directly to /home */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
-
-            {/* ✅ public landing page only */}
+            {/* /home */}
             <Route
-              path="/home"
+              index
               element={
                 <>
                   <Hero />
@@ -106,9 +96,9 @@ export default function App() {
               }
             />
 
-            {/* ✅ protected pages */}
+            {/* protected routes => /home/about, /home/contact, etc */}
             <Route
-              path="/about"
+              path="about"
               element={
                 <RequireAuth>
                   <About />
@@ -117,7 +107,7 @@ export default function App() {
             />
 
             <Route
-              path="/contact"
+              path="contact"
               element={
                 <RequireAuth>
                   <Contact />
@@ -126,7 +116,7 @@ export default function App() {
             />
 
             <Route
-              path="/gym"
+              path="gym"
               element={
                 <RequireAuth>
                   <Gym />
@@ -135,7 +125,7 @@ export default function App() {
             />
 
             <Route
-              path="/zumba"
+              path="zumba"
               element={
                 <RequireAuth>
                   <Zumba />
@@ -144,7 +134,7 @@ export default function App() {
             />
 
             <Route
-              path="/yoga"
+              path="yoga"
               element={
                 <RequireAuth>
                   <Yoga />
@@ -153,7 +143,7 @@ export default function App() {
             />
 
             <Route
-              path="/diet"
+              path="diet"
               element={
                 <RequireAuth>
                   <Diet />
@@ -162,7 +152,7 @@ export default function App() {
             />
 
             <Route
-              path="/workout"
+              path="workout"
               element={
                 <RequireAuth>
                   <SmartWorkoutPlanner />
@@ -171,7 +161,7 @@ export default function App() {
             />
 
             <Route
-              path="/progress"
+              path="progress"
               element={
                 <RequireAuth>
                   <Progress />
@@ -180,7 +170,7 @@ export default function App() {
             />
 
             <Route
-              path="/injury"
+              path="injury"
               element={
                 <RequireAuth>
                   <InjurySafe />
@@ -189,7 +179,7 @@ export default function App() {
             />
 
             <Route
-              path="/gamification"
+              path="gamification"
               element={
                 <RequireAuth>
                   <Gamification />
@@ -198,7 +188,7 @@ export default function App() {
             />
 
             <Route
-              path="/join"
+              path="join"
               element={
                 <RequireAuth>
                   <Join />
@@ -207,7 +197,7 @@ export default function App() {
             />
 
             <Route
-              path="/change-password"
+              path="change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -215,7 +205,6 @@ export default function App() {
               }
             />
 
-            {/* ✅ fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
         </motion.main>
@@ -224,7 +213,6 @@ export default function App() {
       <Footer />
       <Chatbot />
 
-      {/* ✅ modal auth routes */}
       <AnimatePresence>
         {modalOpen && (
           <Routes location={location}>

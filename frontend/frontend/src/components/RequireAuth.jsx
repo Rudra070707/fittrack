@@ -3,46 +3,46 @@ import { Navigate, useLocation } from "react-router-dom";
 export default function RequireAuth({ children, adminOnly = false }) {
   const location = useLocation();
 
-  // ✅ Accept both keys (prevents login loop bugs)
-  const token = localStorage.getItem("token"); // user token
-  const adminToken =
-    localStorage.getItem("adminToken") || localStorage.getItem("token");
-
+  const token = localStorage.getItem("token");
+  const adminToken = localStorage.getItem("adminToken");
   const storedUser = localStorage.getItem("user");
 
-  // 🔒 ADMIN ROUTES
+  // Admin routes
   if (adminOnly) {
     if (!adminToken) {
       return (
         <Navigate
           to="/admin/login"
           replace
-          state={{ from: location.pathname, state: location.state || null }}
+          state={{ from: location.pathname }}
         />
       );
     }
     return children;
   }
 
-  // 🔐 USER ROUTES (admin token also allowed)
+  // User routes
   if (!token && !adminToken) {
     return (
       <Navigate
-        to="/home/login"
+        to="/login"
         replace
-        state={{ from: location.pathname, state: location.state || null }}
+        state={{
+          from: location.pathname,
+          backgroundLocation: { pathname: "/home" },
+        }}
       />
     );
   }
 
-  // 🔁 FORCE PASSWORD CHANGE (users only)
+  // Force password change for user
   if (token) {
     try {
       const user = storedUser ? JSON.parse(storedUser) : null;
 
       const isOnChangePassword =
-        location.pathname === "/change-password" ||
-        location.pathname === "/home/change-password";
+        location.pathname === "/home/change-password" ||
+        location.pathname === "/change-password";
 
       if (user?.mustChangePassword === true && !isOnChangePassword) {
         return <Navigate to="/home/change-password" replace />;
@@ -50,7 +50,13 @@ export default function RequireAuth({ children, adminOnly = false }) {
     } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      return <Navigate to="/home/login" replace />;
+      return (
+        <Navigate
+          to="/login"
+          replace
+          state={{ backgroundLocation: { pathname: "/home" } }}
+        />
+      );
     }
   }
 
