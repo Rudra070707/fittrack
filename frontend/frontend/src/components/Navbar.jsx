@@ -7,14 +7,28 @@ export default function Navbar({ onOpenServices }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(
+    !!localStorage.getItem("token")
+  );
 
   const hideOnRoutes = useMemo(() => ["/home/login", "/home/signup"], []);
-
   const shouldHide = hideOnRoutes.includes(location.pathname);
-
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
 
-  const isUserLoggedIn = !!localStorage.getItem("token");
+  useEffect(() => {
+    const syncAuth = () => {
+      setIsUserLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    syncAuth();
+    window.addEventListener("storage", syncAuth);
+    window.addEventListener("focus", syncAuth);
+
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("focus", syncAuth);
+    };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -41,7 +55,7 @@ export default function Navbar({ onOpenServices }) {
   };
 
   const goProtectedOrLogin = (path) => {
-    if (!isUserLoggedIn) {
+    if (!localStorage.getItem("token")) {
       openLogin();
       return;
     }
