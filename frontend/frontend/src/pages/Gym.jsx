@@ -10,7 +10,12 @@ export default function Gym() {
       duration: "3 days/week",
       goal: "Foundation + Form",
       desc: "Perfect to start gym with structure and safe progression.",
-      list: ["Full body basics", "Light weights", "Form focus", "Simple progression"],
+      list: [
+        "Full body basics",
+        "Light weights",
+        "Form focus",
+        "Simple progression",
+      ],
     },
     {
       title: "Lean Muscle",
@@ -18,7 +23,12 @@ export default function Gym() {
       duration: "4 days/week",
       goal: "Hypertrophy + Consistency",
       desc: "Build muscle with split routines and progressive overload.",
-      list: ["Upper/Lower split", "Progress tracking", "Core training", "Recovery built-in"],
+      list: [
+        "Upper/Lower split",
+        "Progress tracking",
+        "Core training",
+        "Recovery built-in",
+      ],
     },
     {
       title: "Performance",
@@ -26,7 +36,12 @@ export default function Gym() {
       duration: "5 days/week",
       goal: "Strength + Conditioning",
       desc: "Push strength and endurance with advanced planning.",
-      list: ["Strength blocks", "Accessory work", "Conditioning days", "Deload weeks"],
+      list: [
+        "Strength blocks",
+        "Accessory work",
+        "Conditioning days",
+        "Deload weeks",
+      ],
     },
   ];
 
@@ -70,8 +85,8 @@ export default function Gym() {
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-3xl leading-relaxed">
-            Train anytime with a clean, modern experience—track your workouts, follow plans,
-            and stay consistent with FitTrack.
+            Train anytime with a clean, modern experience—track your workouts,
+            follow plans, and stay consistent with FitTrack.
           </p>
         </div>
 
@@ -89,7 +104,9 @@ export default function Gym() {
                 "Injury-safe guidance for safer training habits",
               ].map((text, i) => (
                 <li key={i} className="flex gap-3 items-start">
-                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">✓</span>
+                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">
+                    ✓
+                  </span>
                   <span className="leading-relaxed">{text}</span>
                 </li>
               ))}
@@ -120,20 +137,30 @@ export default function Gym() {
 
             <div className="space-y-3 text-gray-200 leading-relaxed">
               <p>
-                <span className="text-green-400 font-semibold">Beginners</span> who want structure and guidance.
+                <span className="text-green-400 font-semibold">Beginners</span>{" "}
+                who want structure and guidance.
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Intermediate</span> users who want consistency + progress logs.
+                <span className="text-green-400 font-semibold">
+                  Intermediate
+                </span>{" "}
+                users who want consistency + progress logs.
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Busy schedules</span> — quick, trackable workouts.
+                <span className="text-green-400 font-semibold">
+                  Busy schedules
+                </span>{" "}
+                — quick, trackable workouts.
               </p>
             </div>
 
             <div className="mt-7 p-5 rounded-2xl bg-green-400/10 border border-green-400/20">
-              <p className="text-green-300 text-xs tracking-[0.22em]">QUICK TIP</p>
+              <p className="text-green-300 text-xs tracking-[0.22em]">
+                QUICK TIP
+              </p>
               <p className="text-gray-200 mt-2 text-sm">
-                Start with 3 days/week + track progress for 2 weeks. You’ll feel the difference fast.
+                Start with 3 days/week + track progress for 2 weeks. You’ll feel
+                the difference fast.
               </p>
             </div>
           </div>
@@ -177,7 +204,9 @@ export default function Gym() {
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">{p.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  {p.desc}
+                </p>
 
                 <div className="text-sm text-gray-400 space-y-1 mb-4">
                   <p>📅 Frequency: {p.duration}</p>
@@ -185,7 +214,9 @@ export default function Gym() {
                 </div>
 
                 <div className="border-t border-white/10 pt-4">
-                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">WHAT’S INSIDE</p>
+                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">
+                    WHAT’S INSIDE
+                  </p>
                   <ul className="space-y-2 text-gray-200 text-sm">
                     {p.list.map((x, idx) => (
                       <li key={idx} className="flex gap-2 items-start">
@@ -209,14 +240,17 @@ export default function Gym() {
 
         {/* Final CTA */}
         <div className="mt-14 bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_80px_rgba(0,0,0,0.55)] text-center">
-          <p className="text-green-300 text-xs tracking-[0.22em]">READY TO TRAIN?</p>
+          <p className="text-green-300 text-xs tracking-[0.22em]">
+            READY TO TRAIN?
+          </p>
 
           <h2 className="text-2xl md:text-3xl font-extrabold mt-3">
             Start Training with <span className="text-green-400">FitTrack</span>
           </h2>
 
           <p className="text-gray-300 mt-3 max-w-2xl mx-auto leading-relaxed">
-            Pick a program, follow a routine, and track your progress—like premium gym platforms.
+            Pick a program, follow a routine, and track your progress—like
+            premium gym platforms.
           </p>
 
           <div className="mt-7 flex gap-4 justify-center flex-wrap">

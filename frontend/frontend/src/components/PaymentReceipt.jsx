@@ -14,9 +14,12 @@ Thank you for choosing FitTrack.
 
     const blob = new Blob([content], { type: "text/plain" });
     const link = document.createElement("a");
+
     link.href = URL.createObjectURL(blob);
     link.download = `FitTrack_Receipt_${txnId}.txt`;
     link.click();
+
+    URL.revokeObjectURL(link.href);
   };
 
   return (

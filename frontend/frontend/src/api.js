@@ -13,8 +13,14 @@ export const API_BASE = `${BASE_URL}/api`;
 /**
  * 🔐 Token handling
  */
-export const getUserToken = () => localStorage.getItem("token");
-export const getAdminToken = () => localStorage.getItem("adminToken");
+const normalizeToken = (token) => {
+  if (!token) return null;
+  return token.startsWith("Bearer ") ? token.split(" ")[1] : token;
+};
+
+export const getUserToken = () => normalizeToken(localStorage.getItem("token"));
+export const getAdminToken = () =>
+  normalizeToken(localStorage.getItem("adminToken"));
 
 export const userAuthHeader = () => {
   const token = getUserToken();

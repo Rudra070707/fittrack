@@ -35,7 +35,9 @@ export default function Join() {
 
   const selectedPlan = useMemo(() => {
     if (!plans.length) return null;
-    if (form.planCode) return plans.find((p) => p.code === form.planCode) || null;
+    if (form.planCode) {
+      return plans.find((p) => p.code === form.planCode) || null;
+    }
     return plans.find((p) => p.name === form.planName) || null;
   }, [plans, form.planCode, form.planName]);
 
@@ -47,7 +49,7 @@ export default function Join() {
     if (match?.code) {
       setForm((prev) => ({ ...prev, planCode: match.code }));
     }
-  }, [plans]);
+  }, [plans, form.planCode, form.planName]);
 
   const formatINR = (num) => Number(num || 0).toLocaleString("en-IN");
 
@@ -87,7 +89,6 @@ export default function Join() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white overflow-hidden">
-
       {/* Background glow */}
       <motion.div
         className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-green-400/20 blur-[180px] rounded-full"
@@ -102,10 +103,8 @@ export default function Join() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-5xl grid lg:grid-cols-2 gap-8"
         >
-
           {/* LEFT: Checkout Form */}
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_20px_70px_rgba(0,0,0,0.6)] hover:shadow-[0_0_45px_rgba(34,197,94,0.25)] transition-all duration-300 overflow-hidden">
-
             <div className="px-8 pt-8 pb-6 border-b border-white/10">
               <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
                 MEMBERSHIP CHECKOUT
@@ -118,18 +117,24 @@ export default function Join() {
               </p>
             </div>
 
-            <form onSubmit={(e) => e.preventDefault()} className="px-8 py-8 space-y-5">
-
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="px-8 py-8 space-y-5"
+            >
               {/* Name */}
               <div>
-                <label className="text-sm text-gray-300 font-medium">Full Name</label>
+                <label className="text-sm text-gray-300 font-medium">
+                  Full Name
+                </label>
                 <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400/80 transition-all">
                   <span className="text-green-400">👤</span>
                   <input
                     className="w-full bg-transparent outline-none text-white placeholder-gray-500"
                     placeholder="Enter full name"
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, name: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -137,7 +142,9 @@ export default function Join() {
 
               {/* Email */}
               <div>
-                <label className="text-sm text-gray-300 font-medium">Email</label>
+                <label className="text-sm text-gray-300 font-medium">
+                  Email
+                </label>
                 <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400/80 transition-all">
                   <span className="text-green-400">📧</span>
                   <input
@@ -145,7 +152,9 @@ export default function Join() {
                     className="w-full bg-transparent outline-none text-white placeholder-gray-500"
                     placeholder="Enter email"
                     value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -153,14 +162,18 @@ export default function Join() {
 
               {/* Phone */}
               <div>
-                <label className="text-sm text-gray-300 font-medium">Phone Number</label>
+                <label className="text-sm text-gray-300 font-medium">
+                  Phone Number
+                </label>
                 <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400/80 transition-all">
                   <span className="text-green-400">📞</span>
                   <input
                     className="w-full bg-transparent outline-none text-white placeholder-gray-500"
                     placeholder="Enter phone number"
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -176,14 +189,18 @@ export default function Join() {
                     className="w-full bg-transparent outline-none text-white placeholder-gray-500"
                     placeholder="Enter age"
                     value={form.age}
-                    onChange={(e) => setForm({ ...form, age: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, age: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
               {/* Selected Plan */}
               <div>
-                <label className="text-sm text-gray-300 font-medium">Selected Plan</label>
+                <label className="text-sm text-gray-300 font-medium">
+                  Selected Plan
+                </label>
                 <div className="mt-2 flex items-center justify-between gap-4 rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
                   <div className="min-w-0">
                     <p className="text-green-300 font-bold truncate">
@@ -221,13 +238,11 @@ export default function Join() {
                   alert("Membership Activated Successfully 🎉");
                 }}
               />
-
             </form>
           </div>
 
           {/* RIGHT: Order Summary */}
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_20px_70px_rgba(0,0,0,0.5)] hover:shadow-[0_0_45px_rgba(34,197,94,0.25)] transition-all duration-300 overflow-hidden h-fit">
-
             <div className="px-8 pt-8 pb-6 border-b border-white/10">
               <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
                 ORDER SUMMARY
@@ -262,7 +277,6 @@ export default function Join() {
               </p>
             </div>
           </div>
-
         </motion.div>
       </div>
     </div>

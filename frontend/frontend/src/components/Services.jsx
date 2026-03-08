@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const services = [
   { title: "Gym Access", desc: "Unlimited gym sessions", path: "/home/gym" },
@@ -28,6 +28,21 @@ const cardVariants = {
 
 export default function Services() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleServiceClick = (path) => {
+    const isLoggedIn =
+      !!localStorage.getItem("token") || !!localStorage.getItem("adminToken");
+
+    if (!isLoggedIn) {
+      navigate("/home/login", {
+        state: { backgroundLocation: location },
+      });
+      return;
+    }
+
+    navigate(path);
+  };
 
   return (
     <section
@@ -81,7 +96,7 @@ export default function Services() {
           <motion.div
             key={i}
             variants={cardVariants}
-            onClick={() => navigate(s.path)}
+            onClick={() => handleServiceClick(s.path)}
             className="group relative cursor-pointer rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent hover:scale-[1.03] transition-transform duration-300"
           >
             <div className="relative rounded-3xl p-8 bg-white/[0.05] backdrop-blur-xl border border-white/10 shadow-[0_25px_70px_rgba(0,0,0,0.6)] overflow-hidden group-hover:border-green-400/40 transition-all duration-300">

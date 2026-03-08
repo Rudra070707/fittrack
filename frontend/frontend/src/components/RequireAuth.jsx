@@ -25,7 +25,7 @@ export default function RequireAuth({ children, adminOnly = false }) {
   if (!token && !adminToken) {
     return (
       <Navigate
-        to="/login"
+        to="/home/login"
         replace
         state={{
           from: location.pathname,
@@ -52,7 +52,7 @@ export default function RequireAuth({ children, adminOnly = false }) {
       localStorage.removeItem("user");
       return (
         <Navigate
-          to="/login"
+          to="/home/login"
           replace
           state={{ backgroundLocation: { pathname: "/home" } }}
         />

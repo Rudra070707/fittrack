@@ -6,7 +6,7 @@ export default function Hero() {
   const location = useLocation();
 
   const openLogin = () => {
-    navigate("/login", { state: { backgroundLocation: location } });
+    navigate("/home/login", { state: { backgroundLocation: location } });
   };
 
   return (

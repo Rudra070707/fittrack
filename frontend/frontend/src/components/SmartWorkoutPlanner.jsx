@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { API_BASE } from "../api";
 
 export default function SmartWorkoutPlanner() {
   const [goal, setGoal] = useState("");
@@ -19,7 +20,7 @@ export default function SmartWorkoutPlanner() {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5000/api/workout/generate", {
+      const res = await axios.post(`${API_BASE}/workout/generate`, {
         goal,
         level,
         days: Number(days),
@@ -32,7 +33,10 @@ export default function SmartWorkoutPlanner() {
 
       setPlan(res.data.plan);
     } catch (err) {
-      console.error("Workout plan generate error:", err?.response?.data || err.message);
+      console.error(
+        "Workout plan generate error:",
+        err?.response?.data || err.message
+      );
       alert(err?.response?.data?.message || "Server error generating workout plan");
     } finally {
       setLoading(false);

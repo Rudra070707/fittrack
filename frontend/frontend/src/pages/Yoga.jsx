@@ -9,7 +9,13 @@ export default function Yoga() {
       duration: "15–20 min",
       goal: "Flexibility + Stress Relief",
       desc: "Simple poses + breathing to improve posture and calm the mind.",
-      list: ["Tadasana", "Cat-Cow", "Child Pose", "Downward Dog", "Breathing (3 min)"],
+      list: [
+        "Tadasana",
+        "Cat-Cow",
+        "Child Pose",
+        "Downward Dog",
+        "Breathing (3 min)",
+      ],
     },
     {
       title: "Strength & Balance",
@@ -17,7 +23,13 @@ export default function Yoga() {
       duration: "25–30 min",
       goal: "Core Strength + Stability",
       desc: "Build balance and strength safely with controlled transitions.",
-      list: ["Plank Hold", "Warrior I/II", "Chair Pose", "Bridge Pose", "Cooldown Stretch"],
+      list: [
+        "Plank Hold",
+        "Warrior I/II",
+        "Chair Pose",
+        "Bridge Pose",
+        "Cooldown Stretch",
+      ],
     },
     {
       title: "Advanced Mobility",
@@ -25,7 +37,13 @@ export default function Yoga() {
       duration: "35–40 min",
       goal: "Deep Mobility + Endurance",
       desc: "Longer holds + deeper stretches for experienced users.",
-      list: ["Sun Salutation", "Cobra Pose", "Pigeon Stretch", "Seated Forward Fold", "Box Breathing"],
+      list: [
+        "Sun Salutation",
+        "Cobra Pose",
+        "Pigeon Stretch",
+        "Seated Forward Fold",
+        "Box Breathing",
+      ],
     },
   ];
 
@@ -40,17 +58,32 @@ export default function Yoga() {
     {
       title: "15-min Morning Mobility",
       time: "15 min",
-      points: ["Neck + shoulder release", "Spine mobility", "Hip opener stretch", "2-min breathing"],
+      points: [
+        "Neck + shoulder release",
+        "Spine mobility",
+        "Hip opener stretch",
+        "2-min breathing",
+      ],
     },
     {
       title: "10-min Stress Reset",
       time: "10 min",
-      points: ["Box breathing", "Child pose", "Seated twist", "Slow forward fold"],
+      points: [
+        "Box breathing",
+        "Child pose",
+        "Seated twist",
+        "Slow forward fold",
+      ],
     },
     {
       title: "20-min Full Body Flow",
       time: "20 min",
-      points: ["Warm-up flow", "Standing balance", "Core hold", "Cooldown stretch"],
+      points: [
+        "Warm-up flow",
+        "Standing balance",
+        "Core hold",
+        "Cooldown stretch",
+      ],
     },
   ];
 
@@ -83,8 +116,9 @@ export default function Yoga() {
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-3xl leading-relaxed">
-            Improve flexibility, reduce stress, and build strength safely with guided yoga routines
-            and injury-safe support — inspired by premium fitness platforms.
+            Improve flexibility, reduce stress, and build strength safely with
+            guided yoga routines and injury-safe support — inspired by premium
+            fitness platforms.
           </p>
         </div>
 
@@ -102,7 +136,9 @@ export default function Yoga() {
                 "Helps stress control and sleep quality",
               ].map((text, i) => (
                 <li key={i} className="flex gap-3 items-start">
-                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">✓</span>
+                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">
+                    ✓
+                  </span>
                   <span className="leading-relaxed">{text}</span>
                 </li>
               ))}
@@ -131,20 +167,30 @@ export default function Yoga() {
 
             <div className="space-y-3 text-gray-200 leading-relaxed">
               <p>
-                <span className="text-green-400 font-semibold">Beginners</span> starting a healthy routine.
+                <span className="text-green-400 font-semibold">Beginners</span>{" "}
+                starting a healthy routine.
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Office workers</span> dealing with stiffness or back pain risk.
+                <span className="text-green-400 font-semibold">
+                  Office workers
+                </span>{" "}
+                dealing with stiffness or back pain risk.
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Fitness users</span> who need mobility and recovery.
+                <span className="text-green-400 font-semibold">
+                  Fitness users
+                </span>{" "}
+                who need mobility and recovery.
               </p>
             </div>
 
             <div className="mt-7 p-5 rounded-2xl bg-green-400/10 border border-green-400/20">
-              <p className="text-green-300 text-xs tracking-[0.22em]">SIMPLE ROUTINE</p>
+              <p className="text-green-300 text-xs tracking-[0.22em]">
+                SIMPLE ROUTINE
+              </p>
               <p className="text-gray-200 mt-2 text-sm">
-                15 minutes daily (stretch + breathing) is enough to see noticeable mobility improvements.
+                15 minutes daily (stretch + breathing) is enough to see
+                noticeable mobility improvements.
               </p>
             </div>
           </div>
@@ -169,7 +215,9 @@ export default function Yoga() {
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">{p.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  {p.desc}
+                </p>
 
                 <div className="text-sm text-gray-400 space-y-1 mb-4">
                   <p>⏱ Duration: {p.duration}</p>
@@ -177,7 +225,9 @@ export default function Yoga() {
                 </div>
 
                 <div className="border-t border-white/10 pt-4">
-                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">EXERCISES</p>
+                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">
+                    EXERCISES
+                  </p>
                   <ul className="space-y-2 text-gray-200 text-sm">
                     {p.list.map((x, idx) => (
                       <li key={idx} className="flex gap-2 items-start">
@@ -259,14 +309,18 @@ export default function Yoga() {
 
         {/* Final CTA */}
         <div className="mt-14 bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_80px_rgba(0,0,0,0.55)] text-center">
-          <p className="text-green-300 text-xs tracking-[0.22em]">READY TO START?</p>
+          <p className="text-green-300 text-xs tracking-[0.22em]">
+            READY TO START?
+          </p>
 
           <h2 className="text-2xl md:text-3xl font-extrabold mt-3">
-            Start Your Yoga Journey with <span className="text-green-400">FitTrack</span>
+            Start Your Yoga Journey with{" "}
+            <span className="text-green-400">FitTrack</span>
           </h2>
 
           <p className="text-gray-300 mt-3 max-w-2xl mx-auto leading-relaxed">
-            Choose a program, follow quick routines, and build a daily habit — just like premium gym apps.
+            Choose a program, follow quick routines, and build a daily habit —
+            just like premium gym apps.
           </p>
 
           <div className="mt-7 flex gap-4 justify-center flex-wrap">

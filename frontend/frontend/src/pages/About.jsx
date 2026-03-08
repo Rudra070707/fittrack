@@ -26,7 +26,6 @@ export default function About() {
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white px-6 py-28 overflow-hidden">
-
       {/* Animated soft glow */}
       <motion.div
         className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-green-400/20 blur-[180px] rounded-full"
@@ -35,7 +34,6 @@ export default function About() {
       />
 
       <div className="max-w-6xl mx-auto relative">
-
         <motion.p
           className="text-green-400 font-semibold tracking-[0.3em] text-xs"
           initial={{ opacity: 0, y: 20 }}
@@ -61,14 +59,19 @@ export default function About() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          FitTrack is a modern fitness & gym management platform designed to help users
-          plan workouts, follow healthy routines, and track progress—while keeping the
-          experience smooth, clean, and easy to use.
+          FitTrack is a modern fitness & gym management platform designed to help
+          users plan workouts, follow healthy routines, and track progress—while
+          keeping the experience smooth, clean, and easy to use.
         </motion.p>
 
         {/* Chips */}
         <div className="mt-10 flex flex-wrap gap-3">
-          {["Workout Planner", "Diet Guidance", "Progress Tracking", "Injury-Safe"].map((t, i) => (
+          {[
+            "Workout Planner",
+            "Diet Guidance",
+            "Progress Tracking",
+            "Injury-Safe",
+          ].map((t, i) => (
             <span
               key={i}
               className="px-4 py-2 rounded-full text-sm bg-white/5 border border-white/10 backdrop-blur-xl text-gray-200 hover:border-green-400/40 hover:shadow-[0_0_20px_rgba(34,197,94,0.25)] transition-all duration-300"

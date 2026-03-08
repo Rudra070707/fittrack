@@ -35,9 +35,10 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // ✅ modal routes must match /home/login and /home/signup
   const modalOpen = useMemo(() => {
     const p = location.pathname;
-    return p === "/login" || p === "/signup";
+    return p === "/home/login" || p === "/home/signup";
   }, [location.pathname]);
 
   const state = location.state;
@@ -217,7 +218,7 @@ export default function App() {
         {modalOpen && (
           <Routes location={location}>
             <Route
-              path="/login"
+              path="login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" onSuccess={closeModalSuccess} />
@@ -225,7 +226,7 @@ export default function App() {
               }
             />
             <Route
-              path="/signup"
+              path="signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" onSuccess={closeModalSuccess} />

@@ -10,7 +10,12 @@ export default function Zumba() {
       duration: "20–30 min",
       goal: "Stamina + Fun cardio",
       desc: "Easy steps, low impact options, perfect to start consistency.",
-      list: ["Warm-up groove (5 min)", "Basic steps (10 min)", "Fun combo (10 min)", "Cooldown stretch (5 min)"],
+      list: [
+        "Warm-up groove (5 min)",
+        "Basic steps (10 min)",
+        "Fun combo (10 min)",
+        "Cooldown stretch (5 min)",
+      ],
     },
     {
       title: "Fat Loss Party",
@@ -18,7 +23,12 @@ export default function Zumba() {
       duration: "30–40 min",
       goal: "Calorie burn + Conditioning",
       desc: "Higher energy tracks with full-body movement and faster pace.",
-      list: ["Warm-up (5 min)", "Dance cardio (20 min)", "HIIT bursts (8 min)", "Cooldown (5 min)"],
+      list: [
+        "Warm-up (5 min)",
+        "Dance cardio (20 min)",
+        "HIIT bursts (8 min)",
+        "Cooldown (5 min)",
+      ],
     },
     {
       title: "Power Zumba",
@@ -26,7 +36,12 @@ export default function Zumba() {
       duration: "40–50 min",
       goal: "Endurance + Performance",
       desc: "Longer sessions, intense tracks, strong core engagement.",
-      list: ["Warm-up (6 min)", "Power combos (25 min)", "Core finisher (8 min)", "Cooldown (6 min)"],
+      list: [
+        "Warm-up (6 min)",
+        "Power combos (25 min)",
+        "Core finisher (8 min)",
+        "Cooldown (6 min)",
+      ],
     },
   ];
 
@@ -66,8 +81,8 @@ export default function Zumba() {
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-3xl leading-relaxed">
-            Fun, high-energy cardio that improves stamina, burns calories, and keeps you consistent—
-            without feeling like a “boring workout”.
+            Fun, high-energy cardio that improves stamina, burns calories, and keeps
+            you consistent—without feeling like a “boring workout”.
           </p>
         </div>
 
@@ -83,7 +98,9 @@ export default function Zumba() {
                 "Track routine + progress with FitTrack",
               ].map((text, i) => (
                 <li key={i} className="flex gap-3 items-start">
-                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">✓</span>
+                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">
+                    ✓
+                  </span>
                   <span className="leading-relaxed">{text}</span>
                 </li>
               ))}
@@ -113,13 +130,16 @@ export default function Zumba() {
 
             <div className="space-y-3 text-gray-200 leading-relaxed">
               <p>
-                <span className="text-green-400 font-semibold">Frequency:</span> 3–5 days/week
+                <span className="text-green-400 font-semibold">Frequency:</span>{" "}
+                3–5 days/week
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Session:</span> 30–45 minutes
+                <span className="text-green-400 font-semibold">Session:</span>{" "}
+                30–45 minutes
               </p>
               <p>
-                <span className="text-green-400 font-semibold">Goal:</span> Fat loss + stamina + consistency
+                <span className="text-green-400 font-semibold">Goal:</span> Fat
+                loss + stamina + consistency
               </p>
             </div>
 
@@ -175,7 +195,9 @@ export default function Zumba() {
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">{p.desc}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                  {p.desc}
+                </p>
 
                 <div className="text-sm text-gray-400 space-y-1 mb-4">
                   <p>⏱ Duration: {p.duration}</p>
@@ -183,7 +205,9 @@ export default function Zumba() {
                 </div>
 
                 <div className="border-t border-white/10 pt-4">
-                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">SESSION FLOW</p>
+                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">
+                    SESSION FLOW
+                  </p>
                   <ul className="space-y-2 text-gray-200 text-sm">
                     {p.list.map((x, idx) => (
                       <li key={idx} className="flex gap-2 items-start">
@@ -215,7 +239,8 @@ export default function Zumba() {
           </h2>
 
           <p className="text-gray-300 mt-3 max-w-2xl mx-auto leading-relaxed">
-            Pick a plan, follow weekly frequency, and track progress like premium fitness apps.
+            Pick a plan, follow weekly frequency, and track progress like premium
+            fitness apps.
           </p>
 
           <div className="mt-7 flex gap-4 justify-center flex-wrap">

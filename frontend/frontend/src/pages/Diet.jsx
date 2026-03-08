@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { API_BASE } from "../api";
 
 export default function Diet() {
   const [height, setHeight] = useState("");
@@ -72,8 +73,7 @@ export default function Diet() {
     setDietPlan(null);
 
     try {
-      // ✅ CORRECT API (matches server.js + routes)
-      const res = await axios.post("http://localhost:5000/api/diet", {
+      const res = await axios.post(`${API_BASE}/diet`, {
         height: Number(height),
         weight: Number(weight),
         goal,

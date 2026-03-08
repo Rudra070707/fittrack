@@ -38,7 +38,7 @@ export default function Navbar({ onOpenServices }) {
   }, [shouldHide]);
 
   const openLogin = () => {
-    navigate("/login", { state: { backgroundLocation: location } });
+    navigate("/home/login", { state: { backgroundLocation: location } });
   };
 
   const scrollToSection = (id) => {
@@ -109,7 +109,7 @@ export default function Navbar({ onOpenServices }) {
           </div>
 
           <Link
-            to="/login"
+            to="/home/login"
             state={{ backgroundLocation: location }}
             className="px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition shadow-[0_0_28px_rgba(34,197,94,0.55)]"
           >

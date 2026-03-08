@@ -34,7 +34,6 @@ export default function SelectRole() {
   const glowXS = useSpring(glowX, { stiffness: 220, damping: 26 });
   const glowYS = useSpring(glowY, { stiffness: 220, damping: 26 });
 
-  // ✅ FIX: define hook at top level, not inside conditional JSX
   const glowBg = useTransform([glowXS, glowYS], ([x, y]) => {
     return `radial-gradient(280px circle at ${x}px ${y}px,
       rgba(34,197,94,0.22),

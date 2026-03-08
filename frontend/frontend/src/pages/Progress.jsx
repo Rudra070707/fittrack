@@ -45,9 +45,7 @@ export default function Progress() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-2xl font-bold mb-2">
-              Your Progress Data
-            </h2>
+            <h2 className="text-2xl font-bold mb-2">Your Progress Data</h2>
 
             <p className="text-gray-300 mb-6 text-sm">
               Log entries regularly to see trends and improvements clearly.

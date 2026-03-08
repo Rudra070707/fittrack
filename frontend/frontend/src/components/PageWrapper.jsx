@@ -7,7 +7,10 @@ export default function PageWrapper({ children }) {
     out: { opacity: 0, y: -20 },
   };
 
-  const transition = { duration: 0.4, ease: "easeInOut" };
+  const transition = {
+    duration: 0.4,
+    ease: "easeInOut",
+  };
 
   return (
     <motion.div

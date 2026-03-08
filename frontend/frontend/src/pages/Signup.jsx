@@ -99,11 +99,17 @@ export default function Signup({ mode = "page", onSuccess }) {
         return;
       }
 
-      if (onSuccess) onSuccess();
+      // ✅ In modal mode, let parent decide what to do next
+      if (mode === "modal" && onSuccess) {
+        onSuccess();
+        return;
+      }
 
-      // after signup → open login as modal with same background
+      // ✅ Page mode → open login
       navigate("/home/login", {
-        state: { backgroundLocation: location.state?.backgroundLocation || location },
+        state: {
+          backgroundLocation: location.state?.backgroundLocation || location,
+        },
       });
     } catch (err) {
       console.error(err);

@@ -1,7 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 export default function ServicesSubnav({ show }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   if (!show) return null;
 
   const items = [
@@ -16,6 +19,21 @@ export default function ServicesSubnav({ show }) {
     // ✅ NEW FEATURE TAB
     { name: "Rewards", to: "/home/gamification" },
   ];
+
+  const handleProtectedClick = (e, to) => {
+    const isLoggedIn =
+      !!localStorage.getItem("token") || !!localStorage.getItem("adminToken");
+
+    if (!isLoggedIn) {
+      e.preventDefault();
+      navigate("/home/login", {
+        state: { backgroundLocation: location },
+      });
+      return;
+    }
+
+    navigate(to);
+  };
 
   return (
     <motion.div
@@ -43,6 +61,7 @@ export default function ServicesSubnav({ show }) {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={(e) => handleProtectedClick(e, item.to)}
               className={({ isActive }) =>
                 `
                 whitespace-nowrap

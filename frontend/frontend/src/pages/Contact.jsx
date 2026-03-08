@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { API_BASE } from "../api";
 
 export default function Contact() {
   const rawWhatsapp = import.meta.env.VITE_WHATSAPP_NUMBER || "";
@@ -31,14 +32,11 @@ export default function Contact() {
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/contact`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fullName, email, subject, message }),
-        }
-      );
+      const res = await fetch(`${API_BASE}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, subject, message }),
+      });
 
       const data = await res.json().catch(() => ({}));
 
@@ -77,9 +75,7 @@ ${message}`;
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white px-6 py-28 overflow-hidden">
-
       <div className="max-w-6xl mx-auto">
-
         {/* Heading */}
         <motion.p
           className="text-green-400 font-semibold tracking-widest text-sm mb-4"
@@ -107,7 +103,6 @@ ${message}`;
         </motion.p>
 
         <div className="grid md:grid-cols-2 gap-10">
-
           {/* LEFT SIDE - FORM */}
           <motion.form
             onSubmit={handleSubmit}
@@ -115,10 +110,7 @@ ${message}`;
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
           >
-
-            <h2 className="text-2xl font-bold mb-2">
-              Send a message
-            </h2>
+            <h2 className="text-2xl font-bold mb-2">Send a message</h2>
 
             <p className="text-gray-400 mb-6 text-sm">
               We usually respond within 24 hours.
@@ -131,7 +123,6 @@ ${message}`;
             )}
 
             <div className="space-y-4">
-
               <input
                 type="text"
                 placeholder="Full Name"
@@ -174,10 +165,8 @@ ${message}`;
               <p className="text-xs text-gray-500 text-center">
                 After saving, WhatsApp will open to send instantly.
               </p>
-
             </div>
           </motion.form>
-
 
           {/* RIGHT SIDE - INFO */}
           <motion.div
@@ -185,16 +174,11 @@ ${message}`;
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
           >
-
             {/* Contact Details */}
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-
-              <h3 className="text-xl font-bold mb-6">
-                Contact Details
-              </h3>
+              <h3 className="text-xl font-bold mb-6">Contact Details</h3>
 
               <div className="space-y-4 text-gray-300">
-
                 <div className="flex justify-between">
                   <span className="text-gray-500">Support Email</span>
                   <span className="font-semibold text-white">
@@ -228,17 +212,12 @@ ${message}`;
                     Mon–Sat, 6AM–10PM
                   </span>
                 </div>
-
               </div>
             </div>
 
-
             {/* Quick Help */}
             <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-
-              <h3 className="text-xl font-bold mb-4">
-                Quick Help
-              </h3>
+              <h3 className="text-xl font-bold mb-4">Quick Help</h3>
 
               <ul className="space-y-3 text-gray-300">
                 {[
@@ -255,18 +234,14 @@ ${message}`;
               </ul>
 
               <div className="mt-6 p-4 rounded-xl bg-black/30 border border-white/10">
-                <p className="text-xs text-gray-500 tracking-widest">
-                  TIP
-                </p>
+                <p className="text-xs text-gray-500 tracking-widest">TIP</p>
                 <p className="text-gray-300 mt-2 text-sm">
-                  For fastest support, include your registered email and plan name.
+                  For fastest support, include your registered email and plan
+                  name.
                 </p>
               </div>
-
             </div>
-
           </motion.div>
-
         </div>
       </div>
     </section>

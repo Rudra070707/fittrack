@@ -28,7 +28,7 @@ export default function ChangePassword() {
 
       if (!res?.success) return alert(res?.message || "Failed");
 
-      // ✅ IMPORTANT: update localStorage user to unlock routes
+      // ✅ update localStorage user to unlock routes
       const stored = localStorage.getItem("user");
       if (stored) {
         const u = JSON.parse(stored);
@@ -54,6 +54,7 @@ export default function ChangePassword() {
         <h2 className="text-3xl font-extrabold">
           Change <span className="text-green-400">Password</span>
         </h2>
+
         <p className="text-gray-300 mt-2">
           For your security, please set a new password.
         </p>
@@ -99,7 +100,8 @@ export default function ChangePassword() {
         </button>
 
         <p className="text-xs text-gray-400 mt-4 text-center">
-          Tip: Use at least 8 characters with numbers/symbols for stronger security.
+          Tip: Use at least 8 characters with numbers/symbols for stronger
+          security.
         </p>
       </form>
     </div>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { API_BASE } from "../api";
 
 export default function Chatbot() {
   const location = useLocation();
@@ -67,7 +68,7 @@ export default function Chatbot() {
     setSuggestions([]);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
+      const res = await axios.post(`${API_BASE}/chat`, {
         message: msg,
         page: getContext(),
         language, // 🌐 MUST be sent

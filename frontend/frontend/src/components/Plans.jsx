@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getPlans } from "../api";
 
 const containerVariants = {
@@ -24,8 +24,13 @@ const cardVariants = {
 
 const Plans = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const isLoggedIn = useMemo(() => {
+    return !!localStorage.getItem("token") || !!localStorage.getItem("adminToken");
+  }, []);
 
   useEffect(() => {
     const run = async () => {
@@ -41,6 +46,19 @@ const Plans = () => {
   const formatINR = (num) => Number(num || 0).toLocaleString("en-IN");
 
   const choosePlan = (plan) => {
+    if (!isLoggedIn) {
+      navigate("/home/login", {
+        state: {
+          backgroundLocation: location,
+          selectedPlan: {
+            plan: plan.name,
+            planCode: plan.code,
+          },
+        },
+      });
+      return;
+    }
+
     navigate("/home/join", {
       state: {
         plan: plan.name,
@@ -86,7 +104,7 @@ const Plans = () => {
           viewport={{ once: true, amount: 0.3 }}
           className="relative max-w-6xl mx-auto mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-3"
         >
-          {plans.map((plan, i) => {
+          {plans.map((plan) => {
             const isPopular = !!plan.highlight;
 
             return (
@@ -94,7 +112,7 @@ const Plans = () => {
                 key={plan._id}
                 variants={cardVariants}
                 whileHover={{ y: -8 }}
-                className={`group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent`}
+                className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
               >
                 <div
                   className={`

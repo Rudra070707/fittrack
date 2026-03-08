@@ -38,16 +38,21 @@ export default function PaymentModal({
   if (!open) return null;
 
   const validate = () => {
-    if (method === "upi" && (!upiId || !upiId.includes("@")))
+    if (method === "upi" && (!upiId || !upiId.includes("@"))) {
       return "Enter a valid UPI ID";
+    }
+
     if (method === "card") {
-      if (card.number.replace(/\s/g, "").length < 12)
+      if (card.number.replace(/\s/g, "").length < 12) {
         return "Invalid card number";
+      }
       if (!card.name) return "Card holder required";
-      if (!/^\d{2}\/\d{2}$/.test(card.expiry))
+      if (!/^\d{2}\/\d{2}$/.test(card.expiry)) {
         return "Expiry must be MM/YY";
+      }
       if (card.cvv.length < 3) return "Invalid CVV";
     }
+
     return null;
   };
 

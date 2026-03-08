@@ -14,11 +14,13 @@ export default function Gamification() {
       setErr("");
       setLoading(true);
       const res = await getGamification();
+
       if (!res?.success) {
         setErr(res?.message || "Failed to load gamification");
         setData(null);
         return;
       }
+
       setData(res.gamification);
     } catch (e) {
       console.error(e);

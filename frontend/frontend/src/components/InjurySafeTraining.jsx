@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../api";
 
 export default function InjurySafeTraining() {
   const [injuryInput, setInjuryInput] = useState("");
@@ -18,7 +19,7 @@ export default function InjurySafeTraining() {
         return;
       }
 
-      const res = await axios.post("http://localhost:5000/api/injury-safe/generate", { text });
+      const res = await axios.post(`${API_BASE}/injury-safe/generate`, { text });
 
       setBodyPart(res.data.bodyPart);
       setPlan(res.data.plan);

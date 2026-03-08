@@ -29,12 +29,9 @@ export default function ProgressTracker() {
     ? rawToken.split(" ")[1]
     : rawToken;
 
-  const headers = useMemo(
-    () => ({
-      Authorization: token ? `Bearer ${token}` : "",
-    }),
-    [token]
-  );
+  const headers = useMemo(() => {
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }, [token]);
 
   const [entries, setEntries] = useState([]);
   const [days, setDays] = useState(30);
