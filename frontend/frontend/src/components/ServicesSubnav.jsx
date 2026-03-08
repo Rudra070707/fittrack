@@ -5,7 +5,9 @@ export default function ServicesSubnav({ show }) {
   const location = useLocation();
   const navigate = useNavigate();
 
-  if (!show) return null;
+  const isUserLoggedIn = !!localStorage.getItem("token");
+
+  if (!show || !isUserLoggedIn) return null;
 
   const items = [
     { name: "Diet Planner", to: "/home/diet" },
@@ -15,16 +17,11 @@ export default function ServicesSubnav({ show }) {
     { name: "Gym Access", to: "/home/gym" },
     { name: "Zumba", to: "/home/zumba" },
     { name: "Yoga", to: "/home/yoga" },
-
-    // ✅ NEW FEATURE TAB
     { name: "Rewards", to: "/home/gamification" },
   ];
 
   const handleProtectedClick = (e, to) => {
-    const isLoggedIn =
-      !!localStorage.getItem("token") || !!localStorage.getItem("adminToken");
-
-    if (!isLoggedIn) {
+    if (!isUserLoggedIn) {
       e.preventDefault();
       navigate("/home/login", {
         state: { backgroundLocation: location },
@@ -49,7 +46,6 @@ export default function ServicesSubnav({ show }) {
         relative
       "
     >
-      {/* subtle glow background */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-10 left-1/3 w-[350px] h-[100px] bg-green-400/10 blur-[70px] rounded-full" />
         <div className="absolute -top-10 right-1/3 w-[350px] h-[100px] bg-emerald-400/10 blur-[70px] rounded-full" />

@@ -8,14 +8,13 @@ export default function Navbar({ onOpenServices }) {
   const navigate = useNavigate();
   const [logo, setLogo] = useState(null);
 
-  const hideOnRoutes = useMemo(
-    () => ["/home/login", "/login", "/home/signup", "/signup"],
-    []
-  );
+  const hideOnRoutes = useMemo(() => ["/home/login", "/home/signup"], []);
 
   const shouldHide = hideOnRoutes.includes(location.pathname);
 
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
+
+  const isUserLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
     let mounted = true;
@@ -39,6 +38,14 @@ export default function Navbar({ onOpenServices }) {
 
   const openLogin = () => {
     navigate("/home/login", { state: { backgroundLocation: location } });
+  };
+
+  const goProtectedOrLogin = (path) => {
+    if (!isUserLoggedIn) {
+      openLogin();
+      return;
+    }
+    navigate(path);
   };
 
   const scrollToSection = (id) => {
@@ -86,7 +93,8 @@ export default function Navbar({ onOpenServices }) {
 
           <div className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-300">
             <button
-              onClick={openLogin}
+              type="button"
+              onClick={() => goProtectedOrLogin("/home/about")}
               className="hover:text-white transition"
             >
               About
@@ -101,20 +109,23 @@ export default function Navbar({ onOpenServices }) {
             </button>
 
             <button
-              onClick={openLogin}
+              type="button"
+              onClick={() => goProtectedOrLogin("/home/contact")}
               className="hover:text-white transition"
             >
               Contact Us
             </button>
           </div>
 
-          <Link
-            to="/home/login"
-            state={{ backgroundLocation: location }}
-            className="px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition shadow-[0_0_28px_rgba(34,197,94,0.55)]"
-          >
-            Login
-          </Link>
+          {!isUserLoggedIn && (
+            <Link
+              to="/home/login"
+              state={{ backgroundLocation: location }}
+              className="px-5 py-2 text-sm font-semibold rounded-xl text-black bg-green-400 hover:bg-green-500 transition shadow-[0_0_28px_rgba(34,197,94,0.55)]"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </nav>
     </header>
