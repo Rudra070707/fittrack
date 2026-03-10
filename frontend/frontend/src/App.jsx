@@ -31,7 +31,12 @@ import ChangePassword from "./pages/ChangePassword";
 import AuthModal from "./components/AuthModal";
 import Gamification from "./pages/Gamification";
 
+// ADMIN
+import AdminLogin from "./admin/pages/AdminLogin";
+import AdminLayout from "./admin/AdminLayout";
+
 export default function App() {
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -51,6 +56,7 @@ export default function App() {
 
   useEffect(() => {
     const id = location.state?.scrollTo;
+
     if (id) {
       setTimeout(() => {
         const el = document.getElementById(id);
@@ -68,22 +74,41 @@ export default function App() {
     navigate("/home", { replace: true });
   };
 
+  const isAdminRoute = location.pathname.startsWith("/admin");
+
   return (
     <>
-      <Navbar />
-      <ServicesSubnav show={!modalOpen} />
+      {!isAdminRoute && <Navbar />}
+      {!isAdminRoute && <ServicesSubnav show={!modalOpen} />}
 
       <AnimatePresence mode="wait">
+
         <motion.main
           key={(backgroundLocation || location).pathname}
-          initial={{ opacity: 0, scale: 0.985 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.985 }}
-          transition={{ duration: 0.35 }}
+
+          initial={{ opacity: 0, y: 20, scale: 0.985 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.985 }}
+
+          transition={{
+            duration: 0.4,
+            ease: [0.22, 1, 0.36, 1]
+          }}
+
+          style={{
+            minHeight: "100vh",
+            willChange: "transform, opacity"
+          }}
         >
+
           <Routes location={backgroundLocation || location}>
+
+            {/* default route */}
+            <Route path="/" element={<Navigate to="/home" replace />} />
+
+            {/* HOME */}
             <Route
-              index
+              path="/home"
               element={
                 <>
                   <Hero />
@@ -94,95 +119,106 @@ export default function App() {
             />
 
             <Route
-              path="about"
+              path="/home/about"
               element={
                 <RequireAuth>
                   <About />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="contact"
+              path="/home/contact"
               element={
                 <RequireAuth>
                   <Contact />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="gym"
+              path="/home/gym"
               element={
                 <RequireAuth>
                   <Gym />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="zumba"
+              path="/home/zumba"
               element={
                 <RequireAuth>
                   <Zumba />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="yoga"
+              path="/home/yoga"
               element={
                 <RequireAuth>
                   <Yoga />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="diet"
+              path="/home/diet"
               element={
                 <RequireAuth>
                   <Diet />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="workout"
+              path="/home/workout"
               element={
                 <RequireAuth>
                   <SmartWorkoutPlanner />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="progress"
+              path="/home/progress"
               element={
                 <RequireAuth>
                   <Progress />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="injury"
+              path="/home/injury"
               element={
                 <RequireAuth>
                   <InjurySafe />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="gamification"
+              path="/home/gamification"
               element={
                 <RequireAuth>
                   <Gamification />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="join"
+              path="/home/join"
               element={
                 <RequireAuth>
                   <Join />
                 </RequireAuth>
               }
             />
+
             <Route
-              path="change-password"
+              path="/home/change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -190,27 +226,36 @@ export default function App() {
               }
             />
 
+            {/* ADMIN */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/*" element={<AdminLayout />} />
+
+            {/* fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
+
           </Routes>
+
         </motion.main>
+
       </AnimatePresence>
 
-      <Footer />
-      <Chatbot />
+      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <Chatbot />}
 
       <AnimatePresence>
-        {modalOpen && (
+        {modalOpen && !isAdminRoute && (
           <Routes location={location}>
             <Route
-              path="login"
+              path="/home/login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" onSuccess={closeModalSuccess} />
                 </AuthModal>
               }
             />
+
             <Route
-              path="signup"
+              path="/home/signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" onSuccess={closeModalSuccess} />
@@ -220,6 +265,7 @@ export default function App() {
           </Routes>
         )}
       </AnimatePresence>
+
     </>
   );
 }

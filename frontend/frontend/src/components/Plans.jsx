@@ -13,7 +13,7 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.95 },
+  hidden: { opacity: 0, y: 50, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
@@ -69,7 +69,23 @@ const Plans = () => {
 
   return (
     <section className="relative py-32 px-6 bg-[#05070c] text-white overflow-hidden">
-      {/* Heading */}
+
+      {/* background glow */}
+      <div className="pointer-events-none absolute inset-0">
+        <motion.div
+          className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-green-400/15 blur-[180px] rounded-full"
+          animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          className="absolute bottom-0 -right-32 w-[700px] h-[700px] bg-emerald-500/12 blur-[200px] rounded-full"
+          animate={{ x: [0, -80, 0], y: [0, -40, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* heading */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +127,7 @@ const Plans = () => {
               <motion.div
                 key={plan._id}
                 variants={cardVariants}
-                whileHover={{ y: -8 }}
+                whileHover={{ y: -12, scale: 1.02 }}
                 className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
               >
                 <div
@@ -120,11 +136,12 @@ const Plans = () => {
                     ${
                       isPopular
                         ? "border-green-400/40 bg-white/10 shadow-[0_0_45px_rgba(34,197,94,0.35)]"
-                        : "border-white/10 bg-white/6"
+                        : "border-white/10 bg-white/[0.06]"
                     }
                     transition-all duration-300
                   `}
                 >
+
                   {isPopular && (
                     <div className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-400/15 border border-green-400/30 text-green-300">
                       Most Popular
@@ -165,6 +182,7 @@ const Plans = () => {
                   >
                     Choose Plan
                   </button>
+
                 </div>
               </motion.div>
             );

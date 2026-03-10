@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const services = [
-  { title: "Gym Access", desc: "Unlimited gym sessions", path: "/home/gym" },
-  { title: "Zumba", desc: "Daily dance workouts", path: "/home/zumba" },
-  { title: "Yoga", desc: "Mind & body balance", path: "/home/yoga" },
+  { title: "Gym Access", desc: "Unlimited gym sessions", path: "/home/gym", icon: "💪" },
+  { title: "Zumba", desc: "Daily dance workouts", path: "/home/zumba", icon: "💃" },
+  { title: "Yoga", desc: "Mind & body balance", path: "/home/yoga", icon: "🧘" },
 ];
 
 const containerVariants = {
@@ -17,7 +17,7 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 40, scale: 0.96 },
+  hidden: { opacity: 0, y: 50, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
@@ -49,13 +49,15 @@ export default function Services() {
       id="services"
       className="relative py-32 px-6 bg-[#05070c] text-white overflow-hidden"
     >
-      {/* Background glow */}
+
+      {/* background glow */}
       <div className="pointer-events-none absolute inset-0">
         <motion.div
           className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-green-400/15 blur-[180px] rounded-full"
           animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
         />
+
         <motion.div
           className="absolute bottom-0 -right-32 w-[700px] h-[700px] bg-emerald-500/12 blur-[200px] rounded-full"
           animate={{ x: [0, -80, 0], y: [0, -40, 0] }}
@@ -63,7 +65,7 @@ export default function Services() {
         />
       </div>
 
-      {/* Heading */}
+      {/* heading */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +86,7 @@ export default function Services() {
         </p>
       </motion.div>
 
-      {/* Cards */}
+      {/* cards */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -96,15 +98,18 @@ export default function Services() {
           <motion.div
             key={i}
             variants={cardVariants}
+            whileHover={{ y: -12, scale: 1.03 }}
             onClick={() => handleServiceClick(s.path)}
-            className="group relative cursor-pointer rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent hover:scale-[1.03] transition-transform duration-300"
+            className="group relative cursor-pointer rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
           >
             <div className="relative rounded-3xl p-8 bg-white/[0.05] backdrop-blur-xl border border-white/10 shadow-[0_25px_70px_rgba(0,0,0,0.6)] overflow-hidden group-hover:border-green-400/40 transition-all duration-300">
+
               {/* hover glow */}
               <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(600px_circle_at_20%_10%,rgba(34,197,94,0.25),transparent_45%)]" />
 
+              {/* floating icon */}
               <motion.div
-                animate={{ y: [0, -6, 0] }}
+                animate={{ y: [0, -8, 0] }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
@@ -112,17 +117,22 @@ export default function Services() {
                   delay: i * 0.4,
                 }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-green-400/15 border border-green-400/25 flex items-center justify-center text-green-300 font-bold text-xl shadow-[0_0_25px_rgba(34,197,94,0.25)]">
-                  {i + 1}
+                <div className="w-14 h-14 rounded-2xl bg-green-400/15 border border-green-400/25 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(34,197,94,0.25)]">
+                  {s.icon}
                 </div>
               </motion.div>
 
               <h3 className="text-2xl font-bold mt-6">{s.title}</h3>
+
               <p className="text-gray-400 mt-3">{s.desc}</p>
 
-              <div className="mt-8 text-sm text-green-300 group-hover:translate-x-1 transition-transform duration-300">
+              <motion.div
+                className="mt-8 text-sm text-green-300 flex items-center gap-2"
+                whileHover={{ x: 6 }}
+              >
                 Explore →
-              </div>
+              </motion.div>
+
             </div>
           </motion.div>
         ))}

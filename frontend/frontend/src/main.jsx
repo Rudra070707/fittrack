@@ -9,8 +9,9 @@ import AdminLayout from "./admin/AdminLayout";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-      {/* OPEN PROJECT → HOME */}
-      <Route path="/" element={<Navigate to="/home" replace />} />
+
+      {/* OPEN PROJECT → ADMIN LOGIN */}
+      <Route path="/" element={<Navigate to="/admin/login" replace />} />
 
       {/* CUSTOMER SIDE */}
       <Route path="/home/*" element={<App />} />
@@ -18,8 +19,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       {/* ADMIN PANEL */}
       <Route path="/admin/*" element={<AdminLayout />} />
 
-      {/* SAFETY */}
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      {/* SAFETY FALLBACK */}
+      <Route path="*" element={<Navigate to="/admin/login" replace />} />
+
     </Routes>
   </BrowserRouter>
 );
