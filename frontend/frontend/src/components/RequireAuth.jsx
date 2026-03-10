@@ -21,21 +21,20 @@ export default function RequireAuth({ children, adminOnly = false }) {
     return children;
   }
 
-  // 🔐 USER ROUTES → ONLY user token allowed
+  // 🔐 USER ROUTES
   if (!token) {
     return (
       <Navigate
         to="/home/login"
-        replace
         state={{
           from: location.pathname,
-          backgroundLocation: { pathname: "/home" },
+          backgroundLocation: location,
         }}
       />
     );
   }
 
-  // 🔁 FORCE PASSWORD CHANGE (users only)
+  // 🔁 FORCE PASSWORD CHANGE
   try {
     const user = storedUser ? JSON.parse(storedUser) : null;
 
@@ -46,14 +45,16 @@ export default function RequireAuth({ children, adminOnly = false }) {
     if (user?.mustChangePassword === true && !isOnChangePassword) {
       return <Navigate to="/home/change-password" replace />;
     }
-  } catch {
+  } catch (err) {
+    console.error("Auth parse error:", err);
+
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+
     return (
       <Navigate
         to="/home/login"
-        replace
-        state={{ backgroundLocation: { pathname: "/home" } }}
+        state={{ backgroundLocation: location }}
       />
     );
   }
