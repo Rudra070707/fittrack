@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export default function Zumba() {
-  // These are PROGRAMS (not membership plans) ✅ keep hardcoded
   const zumbaPlans = [
     {
       title: "Beginner Burn",
@@ -52,13 +51,15 @@ export default function Zumba() {
     { title: "Full Body", sub: "Arms, legs, core—everything moves" },
   ];
 
-  // ✅ Choose which membership plan should be used when user clicks "Join"
   const joinState = { plan: "Premium Plan", planCode: "premium" };
 
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
+
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-gray-800" />
 
+      {/* Glow Effects */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 -left-24 w-[520px] h-[520px] bg-green-500/10 blur-[160px] rounded-full" />
         <div className="absolute bottom-0 -right-24 w-[560px] h-[560px] bg-emerald-400/10 blur-[170px] rounded-full" />
@@ -69,8 +70,10 @@ export default function Zumba() {
         className="relative max-w-6xl mx-auto px-6 py-16"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.45 }}
       >
+
+        {/* Header */}
         <div className="mb-12">
           <p className="text-green-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / ZUMBA
@@ -81,33 +84,33 @@ export default function Zumba() {
           </h1>
 
           <p className="text-gray-300 mt-4 max-w-3xl leading-relaxed">
-            Fun, high-energy cardio that improves stamina, burns calories, and keeps
-            you consistent—without feeling like a “boring workout”.
+            Fun, high-energy cardio that improves stamina, burns calories,
+            and keeps you consistent without boring workouts.
           </p>
         </div>
 
+        {/* Top Cards */}
         <div className="grid lg:grid-cols-2 gap-8">
-          <div className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_80px_rgba(0,0,0,0.55)]">
+
+          {/* Highlights */}
+          <div className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-xl">
             <h2 className="text-2xl font-bold mb-6">Highlights</h2>
 
             <ul className="space-y-4 text-gray-200">
               {[
-                "Cardio + full body movement for better endurance",
+                "Cardio + full body movement for endurance",
                 "Great for weight loss & mood boost",
-                "Suitable for beginners—easy to start",
+                "Suitable for beginners",
                 "Track routine + progress with FitTrack",
               ].map((text, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="text-green-400 font-bold text-lg leading-none mt-0.5">
-                    ✓
-                  </span>
-                  <span className="leading-relaxed">{text}</span>
+                <li key={i} className="flex gap-3">
+                  <span className="text-green-400 font-bold">✓</span>
+                  <span>{text}</span>
                 </li>
               ))}
             </ul>
 
             <div className="mt-8 flex gap-4 flex-wrap">
-              {/* ✅ Pass plan state so Join.jsx shows LIVE price/features */}
               <Link
                 to="/home/join"
                 state={joinState}
@@ -125,28 +128,34 @@ export default function Zumba() {
             </div>
           </div>
 
-          <div className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_80px_rgba(0,0,0,0.65)]">
+          {/* Recommended Plan */}
+          <div className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-xl">
             <h2 className="text-2xl font-bold mb-6">Recommended plan</h2>
 
-            <div className="space-y-3 text-gray-200 leading-relaxed">
+            <div className="space-y-3 text-gray-200">
               <p>
                 <span className="text-green-400 font-semibold">Frequency:</span>{" "}
                 3–5 days/week
               </p>
+
               <p>
                 <span className="text-green-400 font-semibold">Session:</span>{" "}
                 30–45 minutes
               </p>
+
               <p>
-                <span className="text-green-400 font-semibold">Goal:</span> Fat
-                loss + stamina + consistency
+                <span className="text-green-400 font-semibold">Goal:</span>{" "}
+                Fat loss + stamina
               </p>
             </div>
 
             <div className="mt-7 p-5 rounded-2xl bg-green-400/10 border border-green-400/20">
-              <p className="text-green-300 text-xs tracking-[0.22em]">PRO TIP</p>
+              <p className="text-green-300 text-xs tracking-[0.22em]">
+                PRO TIP
+              </p>
+
               <p className="text-gray-200 mt-2 text-sm">
-                Pair Zumba with a basic diet plan for faster results.
+                Pair Zumba with a diet plan for faster results.
               </p>
 
               <Link
@@ -159,8 +168,9 @@ export default function Zumba() {
           </div>
         </div>
 
+        {/* Focus Areas */}
         <div className="mt-14">
-          <h2 className="text-2xl md:text-3xl font-extrabold mb-6">
+          <h2 className="text-3xl font-extrabold mb-6">
             Focus <span className="text-green-400">Areas</span>
           </h2>
 
@@ -168,7 +178,7 @@ export default function Zumba() {
             {focusAreas.map((f, i) => (
               <div
                 key={i}
-                className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
+                className="bg-white/6 border border-white/10 rounded-2xl p-6"
               >
                 <p className="font-bold text-lg">{f.title}</p>
                 <p className="text-gray-400 text-sm mt-2">{f.sub}</p>
@@ -177,8 +187,9 @@ export default function Zumba() {
           </div>
         </div>
 
+        {/* Programs */}
         <div className="mt-14">
-          <h2 className="text-2xl md:text-3xl font-extrabold mb-6">
+          <h2 className="text-3xl font-extrabold mb-6">
             Zumba <span className="text-green-400">Programs</span>
           </h2>
 
@@ -186,81 +197,43 @@ export default function Zumba() {
             {zumbaPlans.map((p, i) => (
               <div
                 key={i}
-                className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-7 shadow-[0_25px_80px_rgba(0,0,0,0.55)] hover:shadow-[0_0_40px_rgba(34,197,94,0.18)] transition"
+                className="bg-white/6 border border-white/10 rounded-3xl p-7 shadow-xl"
               >
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex justify-between mb-3">
                   <h3 className="text-xl font-bold">{p.title}</h3>
-                  <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10 text-gray-200">
+
+                  <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10">
                     {p.level}
                   </span>
                 </div>
 
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                  {p.desc}
+                <p className="text-gray-300 text-sm mb-4">{p.desc}</p>
+
+                <p className="text-gray-400 text-sm mb-4">
+                  ⏱ {p.duration} • 🎯 {p.goal}
                 </p>
 
-                <div className="text-sm text-gray-400 space-y-1 mb-4">
-                  <p>⏱ Duration: {p.duration}</p>
-                  <p>🎯 Goal: {p.goal}</p>
-                </div>
+                <ul className="space-y-2 text-sm">
+                  {p.list.map((x, idx) => (
+                    <li key={idx} className="flex gap-2">
+                      <span className="text-green-400">•</span>
+                      {x}
+                    </li>
+                  ))}
+                </ul>
 
-                <div className="border-t border-white/10 pt-4">
-                  <p className="text-gray-300 text-xs tracking-[0.22em] mb-3">
-                    SESSION FLOW
-                  </p>
-                  <ul className="space-y-2 text-gray-200 text-sm">
-                    {p.list.map((x, idx) => (
-                      <li key={idx} className="flex gap-2 items-start">
-                        <span className="text-green-400 mt-0.5">•</span>
-                        <span>{x}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* ✅ Pass plan state */}
-                  <Link
-                    to="/home/join"
-                    state={joinState}
-                    className="mt-5 inline-block w-full text-center bg-green-400 text-black font-semibold py-3 rounded-xl hover:bg-green-500 transition"
-                  >
-                    Start Program
-                  </Link>
-                </div>
+                <Link
+                  to="/home/join"
+                  state={joinState}
+                  className="mt-5 block text-center bg-green-400 text-black font-semibold py-3 rounded-xl hover:bg-green-500 transition"
+                >
+                  Start Program
+                </Link>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-14 bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_80px_rgba(0,0,0,0.55)] text-center">
-          <p className="text-green-300 text-xs tracking-[0.22em]">READY TO MOVE?</p>
-
-          <h2 className="text-2xl md:text-3xl font-extrabold mt-3">
-            Make Cardio Fun with <span className="text-green-400">Zumba</span>
-          </h2>
-
-          <p className="text-gray-300 mt-3 max-w-2xl mx-auto leading-relaxed">
-            Pick a plan, follow weekly frequency, and track progress like premium
-            fitness apps.
-          </p>
-
-          <div className="mt-7 flex gap-4 justify-center flex-wrap">
-            {/* ✅ Pass plan state */}
-            <Link
-              to="/home/join"
-              state={joinState}
-              className="bg-green-400 text-black font-semibold px-8 py-3 rounded-xl hover:bg-green-500 transition"
-            >
-              Join Zumba Program
-            </Link>
-
-            <Link
-              to="/home/diet"
-              className="border border-white/15 px-8 py-3 rounded-xl hover:bg-white hover:text-black transition"
-            >
-              Open Diet Planner
-            </Link>
-          </div>
-        </div>
       </motion.div>
     </section>
   );

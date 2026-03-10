@@ -58,6 +58,7 @@ ${message}`;
       )}`;
 
       setSuccess("Message saved! Opening WhatsApp…");
+
       setFullName("");
       setEmail("");
       setSubject("");
@@ -66,7 +67,7 @@ ${message}`;
       setTimeout(() => {
         window.open(url, "_blank", "noopener,noreferrer");
       }, 250);
-    } catch (err) {
+    } catch {
       alert("Server error.");
     } finally {
       setLoading(false);
@@ -74,11 +75,29 @@ ${message}`;
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white px-6 py-28 overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+    <section className="relative min-h-screen bg-[#05070c] text-white px-6 py-28 overflow-hidden">
+
+      {/* Background glow */}
+      <motion.div
+        className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
+        animate={{ x: [0, 80, 0], y: [0, 50, 0] }}
+        transition={{ duration: 18, repeat: Infinity }}
+      />
+
+      <motion.div
+        className="absolute bottom-0 -right-40 w-[650px] h-[650px] bg-emerald-500/15 blur-[220px] rounded-full"
+        animate={{ x: [0, -80, 0], y: [0, -60, 0] }}
+        transition={{ duration: 20, repeat: Infinity }}
+      />
+
+      {/* subtle grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
+
+      <div className="max-w-6xl mx-auto relative">
+
         {/* Heading */}
         <motion.p
-          className="text-green-400 font-semibold tracking-widest text-sm mb-4"
+          className="text-green-400 font-semibold tracking-[0.3em] text-xs mb-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
@@ -103,10 +122,11 @@ ${message}`;
         </motion.p>
 
         <div className="grid md:grid-cols-2 gap-10">
-          {/* LEFT SIDE - FORM */}
+
+          {/* FORM */}
           <motion.form
             onSubmit={handleSubmit}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all duration-300"
+            className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_70px_rgba(0,0,0,0.6)] hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -123,12 +143,13 @@ ${message}`;
             )}
 
             <div className="space-y-4">
+
               <input
                 type="text"
                 placeholder="Full Name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400/80 outline-none"
+                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400 outline-none"
               />
 
               <input
@@ -136,7 +157,7 @@ ${message}`;
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400/80 outline-none"
+                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400 outline-none"
               />
 
               <input
@@ -144,7 +165,7 @@ ${message}`;
                 placeholder="Subject"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400/80 outline-none"
+                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400 outline-none"
               />
 
               <textarea
@@ -152,33 +173,37 @@ ${message}`;
                 placeholder="Your Message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400/80 outline-none"
+                className="w-full p-3 rounded-xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400 outline-none"
               />
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
                 disabled={loading}
-                className="w-full py-3 rounded-2xl font-bold bg-green-400 text-black hover:bg-green-500 transition-all"
+                className="w-full py-3 rounded-2xl font-bold bg-green-400 text-black hover:bg-green-500 transition"
               >
                 {loading ? "Sending..." : "Send Message"}
-              </button>
+              </motion.button>
 
               <p className="text-xs text-gray-500 text-center">
                 After saving, WhatsApp will open to send instantly.
               </p>
+
             </div>
           </motion.form>
 
-          {/* RIGHT SIDE - INFO */}
+          {/* INFO */}
           <motion.div
             className="space-y-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            {/* Contact Details */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+
+            <div className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8">
               <h3 className="text-xl font-bold mb-6">Contact Details</h3>
 
               <div className="space-y-4 text-gray-300">
+
                 <div className="flex justify-between">
                   <span className="text-gray-500">Support Email</span>
                   <span className="font-semibold text-white">
@@ -212,11 +237,12 @@ ${message}`;
                     Mon–Sat, 6AM–10PM
                   </span>
                 </div>
+
               </div>
             </div>
 
-            {/* Quick Help */}
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+            <div className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+
               <h3 className="text-xl font-bold mb-4">Quick Help</h3>
 
               <ul className="space-y-3 text-gray-300">
@@ -228,19 +254,13 @@ ${message}`;
                 ].map((item, i) => (
                   <li key={i} className="flex gap-3">
                     <span className="text-green-400 font-bold">✓</span>
-                    <span>{item}</span>
+                    {item}
                   </li>
                 ))}
               </ul>
 
-              <div className="mt-6 p-4 rounded-xl bg-black/30 border border-white/10">
-                <p className="text-xs text-gray-500 tracking-widest">TIP</p>
-                <p className="text-gray-300 mt-2 text-sm">
-                  For fastest support, include your registered email and plan
-                  name.
-                </p>
-              </div>
             </div>
+
           </motion.div>
         </div>
       </div>
