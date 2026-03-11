@@ -85,16 +85,13 @@ export default function App() {
 
         <motion.main
           key={(backgroundLocation || location).pathname}
-
           initial={{ opacity: 0, y: 20, scale: 0.985 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.985 }}
-
           transition={{
             duration: 0.4,
             ease: [0.22, 1, 0.36, 1]
           }}
-
           style={{
             minHeight: "100vh",
             willChange: "transform, opacity"
@@ -226,9 +223,13 @@ export default function App() {
               }
             />
 
-            {/* ADMIN */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/*" element={<AdminLayout />} />
+            {/* ADMIN ROUTES (LOCAL ONLY) */}
+            {import.meta.env.DEV && (
+              <>
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin/*" element={<AdminLayout />} />
+              </>
+            )}
 
             {/* fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
