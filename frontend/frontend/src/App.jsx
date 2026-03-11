@@ -31,10 +31,6 @@ import ChangePassword from "./pages/ChangePassword";
 import AuthModal from "./components/AuthModal";
 import Gamification from "./pages/Gamification";
 
-// ADMIN
-import AdminLogin from "./admin/pages/AdminLogin";
-import AdminLayout from "./admin/AdminLayout";
-
 export default function App() {
 
   const location = useLocation();
@@ -74,12 +70,10 @@ export default function App() {
     navigate("/home", { replace: true });
   };
 
-  const isAdminRoute = location.pathname.startsWith("/admin");
-
   return (
     <>
-      {!isAdminRoute && <Navbar />}
-      {!isAdminRoute && <ServicesSubnav show={!modalOpen} />}
+      <Navbar />
+      <ServicesSubnav show={!modalOpen} />
 
       <AnimatePresence mode="wait">
 
@@ -223,14 +217,6 @@ export default function App() {
               }
             />
 
-            {/* ADMIN ROUTES (LOCAL ONLY) */}
-            {import.meta.env.DEV && (
-              <>
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route path="/admin/*" element={<AdminLayout />} />
-              </>
-            )}
-
             {/* fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
 
@@ -240,11 +226,11 @@ export default function App() {
 
       </AnimatePresence>
 
-      {!isAdminRoute && <Footer />}
-      {!isAdminRoute && <Chatbot />}
+      <Footer />
+      <Chatbot />
 
       <AnimatePresence>
-        {modalOpen && !isAdminRoute && (
+        {modalOpen && (
           <Routes location={location}>
             <Route
               path="/home/login"
