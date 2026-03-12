@@ -17,7 +17,7 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.96 },
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
@@ -47,22 +47,32 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="relative py-32 px-6 bg-[#05070c] text-white overflow-hidden"
+      className="
+      relative
+      py-28
+      px-6
+      bg-[#05070c]
+      text-white
+      overflow-hidden
+      scroll-mt-32
+      "
     >
 
       {/* background glow */}
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 z-0">
+
         <motion.div
-          className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-green-400/15 blur-[180px] rounded-full"
+          className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-green-400/15 blur-[200px] rounded-full"
           animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
         />
 
         <motion.div
-          className="absolute bottom-0 -right-32 w-[700px] h-[700px] bg-emerald-500/12 blur-[200px] rounded-full"
+          className="absolute bottom-0 -right-32 w-[750px] h-[750px] bg-emerald-500/12 blur-[220px] rounded-full"
           animate={{ x: [0, -80, 0], y: [0, -40, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         />
+
       </div>
 
       {/* heading */}
@@ -71,7 +81,7 @@ export default function Services() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-20 relative"
+        className="relative z-10 text-center mb-20"
       >
         <p className="text-green-400 font-semibold tracking-[0.3em] text-xs">
           WHAT WE OFFER
@@ -92,22 +102,59 @@ export default function Services() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.3 }}
-        className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto relative"
+        className="
+        relative z-10
+        grid
+        md:grid-cols-3
+        gap-10
+        max-w-6xl
+        mx-auto
+        "
       >
         {services.map((s, i) => (
           <motion.div
             key={i}
             variants={cardVariants}
-            whileHover={{ y: -12, scale: 1.03 }}
+            whileHover={{ y: -10, scale: 1.03 }}
             onClick={() => handleServiceClick(s.path)}
-            className="group relative cursor-pointer rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
+            className="
+            group
+            relative
+            cursor-pointer
+            rounded-3xl
+            p-[1px]
+            bg-gradient-to-br
+            from-white/15
+            via-white/5
+            to-transparent
+            "
           >
-            <div className="relative rounded-3xl p-8 bg-white/[0.05] backdrop-blur-xl border border-white/10 shadow-[0_25px_70px_rgba(0,0,0,0.6)] overflow-hidden group-hover:border-green-400/40 transition-all duration-300">
+
+            <div className="
+            relative
+            rounded-3xl
+            p-8
+            bg-white/[0.05]
+            backdrop-blur-xl
+            border border-white/10
+            shadow-[0_25px_70px_rgba(0,0,0,0.6)]
+            overflow-hidden
+            group-hover:border-green-400/40
+            transition-all
+            duration-300
+            ">
 
               {/* hover glow */}
-              <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-[radial-gradient(600px_circle_at_20%_10%,rgba(34,197,94,0.25),transparent_45%)]" />
+              <div className="
+              pointer-events-none
+              absolute inset-0
+              opacity-0
+              group-hover:opacity-100
+              transition-opacity duration-300
+              bg-[radial-gradient(600px_circle_at_20%_10%,rgba(34,197,94,0.25),transparent_45%)]
+              " />
 
-              {/* floating icon */}
+              {/* icon */}
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{
@@ -117,7 +164,15 @@ export default function Services() {
                   delay: i * 0.4,
                 }}
               >
-                <div className="w-14 h-14 rounded-2xl bg-green-400/15 border border-green-400/25 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(34,197,94,0.25)]">
+                <div className="
+                w-14 h-14
+                rounded-2xl
+                bg-green-400/15
+                border border-green-400/25
+                flex items-center justify-center
+                text-2xl
+                shadow-[0_0_25px_rgba(34,197,94,0.25)]
+                ">
                   {s.icon}
                 </div>
               </motion.div>
@@ -134,9 +189,11 @@ export default function Services() {
               </motion.div>
 
             </div>
+
           </motion.div>
         ))}
       </motion.div>
+
     </section>
   );
 }

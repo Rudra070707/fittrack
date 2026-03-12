@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* global reset */
+* {
+  box-sizing: border-box;
+}
+
+/* ensure full height layouts work */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* base theme */
+body {
+  margin: 0;
+  background: #05070c;
+  color: white;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* remove horizontal scroll caused by glow effects */
+body {
+  overflow-x: hidden;
+}
+
+/* smoother scrolling */
+html {
+  scroll-behavior: smooth;
+}

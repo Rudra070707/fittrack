@@ -13,7 +13,7 @@ const containerVariants = {
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.96 },
+  hidden: { opacity: 0, y: 40, scale: 0.96 },
   show: {
     opacity: 1,
     y: 0,
@@ -25,6 +25,7 @@ const cardVariants = {
 const Plans = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,12 +35,19 @@ const Plans = () => {
 
   useEffect(() => {
     const run = async () => {
-      setLoading(true);
-      const res = await getPlans();
-      if (res.success) setPlans(res.plans || []);
-      else setPlans([]);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const res = await getPlans();
+        if (res?.success) setPlans(res.plans || []);
+        else setPlans([]);
+      } catch (err) {
+        console.error("Plan fetch error:", err);
+        setPlans([]);
+      } finally {
+        setLoading(false);
+      }
     };
+
     run();
   }, []);
 
@@ -68,21 +76,32 @@ const Plans = () => {
   };
 
   return (
-    <section className="relative py-32 px-6 bg-[#05070c] text-white overflow-hidden">
+    <section
+      className="
+      relative
+      py-28
+      px-6
+      bg-[#05070c]
+      text-white
+      overflow-hidden
+      "
+    >
 
       {/* background glow */}
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 z-0">
+
         <motion.div
-          className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-green-400/15 blur-[180px] rounded-full"
+          className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-green-400/15 blur-[200px] rounded-full"
           animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
         />
 
         <motion.div
-          className="absolute bottom-0 -right-32 w-[700px] h-[700px] bg-emerald-500/12 blur-[200px] rounded-full"
+          className="absolute bottom-0 -right-32 w-[750px] h-[750px] bg-emerald-500/12 blur-[220px] rounded-full"
           animate={{ x: [0, -80, 0], y: [0, -40, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
         />
+
       </div>
 
       {/* heading */}
@@ -91,7 +110,7 @@ const Plans = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="relative max-w-6xl mx-auto text-center"
+        className="relative z-10 max-w-6xl mx-auto text-center"
       >
         <p className="text-green-400 font-semibold tracking-[0.3em] text-xs">
           PRICING
@@ -106,19 +125,30 @@ const Plans = () => {
         </p>
       </motion.div>
 
+      {/* loading */}
       {loading && (
-        <div className="text-center mt-16 text-gray-400">
+        <div className="relative z-10 text-center mt-16 text-gray-400">
           Loading plans...
         </div>
       )}
 
+      {/* plans */}
       {!loading && plans.length > 0 && (
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
-          className="relative max-w-6xl mx-auto mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-3"
+          className="
+          relative z-10
+          max-w-6xl
+          mx-auto
+          mt-20
+          grid
+          gap-10
+          md:grid-cols-2
+          lg:grid-cols-3
+          "
         >
           {plans.map((plan) => {
             const isPopular = !!plan.highlight;
@@ -127,18 +157,32 @@ const Plans = () => {
               <motion.div
                 key={plan._id}
                 variants={cardVariants}
-                whileHover={{ y: -12, scale: 1.02 }}
-                className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
+                whileHover={{ y: -10, scale: 1.02 }}
+                className="
+                group
+                relative
+                rounded-3xl
+                p-[1px]
+                bg-gradient-to-br
+                from-white/15
+                via-white/5
+                to-transparent
+                "
               >
+
                 <div
                   className={`
-                    relative rounded-3xl p-8 backdrop-blur-xl border
-                    ${
-                      isPopular
-                        ? "border-green-400/40 bg-white/10 shadow-[0_0_45px_rgba(34,197,94,0.35)]"
-                        : "border-white/10 bg-white/[0.06]"
-                    }
-                    transition-all duration-300
+                  relative
+                  rounded-3xl
+                  p-8
+                  backdrop-blur-xl
+                  border
+                  ${
+                    isPopular
+                      ? "border-green-400/40 bg-white/10 shadow-[0_0_45px_rgba(34,197,94,0.35)]"
+                      : "border-white/10 bg-white/[0.06]"
+                  }
+                  transition-all duration-300
                   `}
                 >
 
@@ -172,18 +216,25 @@ const Plans = () => {
                   <button
                     onClick={() => choosePlan(plan)}
                     className={`
-                      mt-8 w-full rounded-2xl py-3 font-semibold transition-all duration-300
-                      ${
-                        isPopular
-                          ? "bg-green-400 text-black hover:bg-green-500 shadow-[0_0_30px_rgba(34,197,94,0.55)]"
-                          : "bg-white/10 hover:bg-white/20"
-                      }
+                    mt-8
+                    w-full
+                    rounded-2xl
+                    py-3
+                    font-semibold
+                    transition-all
+                    duration-300
+                    ${
+                      isPopular
+                        ? "bg-green-400 text-black hover:bg-green-500 shadow-[0_0_30px_rgba(34,197,94,0.55)]"
+                        : "bg-white/10 hover:bg-white/20"
+                    }
                     `}
                   >
                     Choose Plan
                   </button>
 
                 </div>
+
               </motion.div>
             );
           })}

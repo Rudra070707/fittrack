@@ -17,12 +17,13 @@ export default function Navbar() {
 
   const hideOnRoutes = useMemo(() => ["/home/login", "/home/signup"], []);
   const shouldHide = hideOnRoutes.includes(location.pathname);
+
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
 
-  // detect scroll for navbar glow
+  // scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+      setScrolled(window.scrollY > 20);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -36,6 +37,7 @@ export default function Navbar() {
     };
 
     syncAuth();
+
     window.addEventListener("storage", syncAuth);
     window.addEventListener("focus", syncAuth);
 
@@ -48,6 +50,7 @@ export default function Navbar() {
   // fetch logo
   useEffect(() => {
     let mounted = true;
+
     if (shouldHide) return;
 
     axios
@@ -91,46 +94,53 @@ export default function Navbar() {
   if (shouldHide) return null;
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-[60]">
+
       <motion.nav
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.35 }}
         className={`h-16 backdrop-blur-xl border-b border-white/10 relative overflow-hidden transition-all duration-300
-        ${scrolled
-          ? "bg-[#05070c]/95 shadow-[0_10px_40px_rgba(0,0,0,0.7)]"
-          : "bg-[#05070c]/70"}`}
+        ${
+          scrolled
+            ? "bg-[#05070c]/95 shadow-[0_12px_40px_rgba(0,0,0,0.75)]"
+            : "bg-[#05070c]/70"
+        }`}
       >
-        {/* glow background */}
+
+        {/* background glow */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-green-400/12 blur-[80px] rounded-full" />
-          <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-emerald-400/12 blur-[80px] rounded-full" />
+          <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-green-400/10 blur-[90px] rounded-full" />
+          <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-emerald-400/10 blur-[90px] rounded-full" />
         </div>
 
         <div className="relative max-w-7xl mx-auto h-full px-6 md:px-8 flex items-center justify-between">
 
           {/* Logo */}
           <Link to="/home" className="flex items-center gap-3 group">
+
             {logo ? (
               <img
                 src={`${BASE_URL}${logo}`}
                 alt="FitTrack Logo"
-                className="h-9 w-auto drop-shadow-[0_0_18px_rgba(34,197,94,0.45)] group-hover:scale-105 transition"
+                className="h-9 w-auto drop-shadow-[0_0_20px_rgba(34,197,94,0.45)] group-hover:scale-105 transition duration-300"
                 onError={() => setLogo(null)}
               />
             ) : (
-              <div className="flex flex-col leading-none">
-                <span className="text-xl font-extrabold text-white tracking-tight">
+              <div className="flex flex-col leading-none select-none">
+                <span className="text-xl font-extrabold tracking-tight text-white">
                   Fit<span className="text-green-400">Track</span>
                 </span>
+
                 <span className="text-[11px] text-gray-400 tracking-[0.22em] uppercase mt-1">
                   Smart Fitness
                 </span>
               </div>
             )}
+
           </Link>
 
-          {/* nav links */}
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10 text-sm font-medium text-gray-300">
 
             <button
@@ -156,12 +166,13 @@ export default function Navbar() {
               onClick={() => goProtectedOrLogin("/home/contact")}
               className="relative hover:text-white transition group"
             >
-              Contact Us
+              Contact
               <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-green-400 transition-all group-hover:w-full" />
             </button>
+
           </div>
 
-          {/* login button */}
+          {/* Login Button */}
           {!isUserLoggedIn && (
             <Link
               to="/home/login"
@@ -171,8 +182,11 @@ export default function Navbar() {
               Login
             </Link>
           )}
+
         </div>
+
       </motion.nav>
+
     </header>
   );
 }

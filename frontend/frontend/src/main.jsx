@@ -9,31 +9,35 @@ import AdminLayout from "./admin/AdminLayout";
 const isDev = import.meta.env.DEV;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <Routes>
+  <React.StrictMode>
+    <BrowserRouter>
 
-      {/* OPEN PROJECT */}
-      {isDev ? (
-        <Route path="/" element={<Navigate to="/admin/login" replace />} />
-      ) : (
-        <Route path="/" element={<Navigate to="/home" replace />} />
-      )}
+      <Routes>
 
-      {/* CUSTOMER SIDE */}
-      <Route path="/home/*" element={<App />} />
+        {/* OPEN PROJECT */}
+        {isDev ? (
+          <Route path="/" element={<Navigate to="/admin/login" replace />} />
+        ) : (
+          <Route path="/" element={<Navigate to="/home" replace />} />
+        )}
 
-      {/* ADMIN PANEL (LOCAL ONLY) */}
-      {isDev && (
-        <Route path="/admin/*" element={<AdminLayout />} />
-      )}
+        {/* CUSTOMER SIDE */}
+        <Route path="/home/*" element={<App />} />
 
-      {/* SAFETY FALLBACK */}
-      {isDev ? (
-        <Route path="*" element={<Navigate to="/admin/login" replace />} />
-      ) : (
-        <Route path="*" element={<Navigate to="/home" replace />} />
-      )}
+        {/* ADMIN PANEL (LOCAL ONLY) */}
+        {isDev && (
+          <Route path="/admin/*" element={<AdminLayout />} />
+        )}
 
-    </Routes>
-  </BrowserRouter>
+        {/* FALLBACK */}
+        {isDev ? (
+          <Route path="*" element={<Navigate to="/admin/login" replace />} />
+        ) : (
+          <Route path="*" element={<Navigate to="/home" replace />} />
+        )}
+
+      </Routes>
+
+    </BrowserRouter>
+  </React.StrictMode>
 );

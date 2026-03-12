@@ -71,30 +71,32 @@ export default function App() {
   };
 
   return (
-    <>
+    <div className="bg-[#05070c] text-white min-h-screen">
+
+      {/* Top Navigation */}
       <Navbar />
+
+      {/* Services Sub Navigation */}
       <ServicesSubnav show={!modalOpen} />
 
+      {/* Page Content */}
       <AnimatePresence mode="wait">
 
         <motion.main
           key={(backgroundLocation || location).pathname}
-          initial={{ opacity: 0, y: 20, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.985 }}
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
           transition={{
-            duration: 0.4,
+            duration: 0.45,
             ease: [0.22, 1, 0.36, 1]
           }}
-          style={{
-            minHeight: "100vh",
-            willChange: "transform, opacity"
-          }}
+          className="relative z-10"
         >
 
           <Routes location={backgroundLocation || location}>
 
-            {/* default route */}
+            {/* Default */}
             <Route path="/" element={<Navigate to="/home" replace />} />
 
             {/* HOME */}
@@ -108,6 +110,8 @@ export default function App() {
                 </>
               }
             />
+
+            {/* PROTECTED ROUTES */}
 
             <Route
               path="/home/about"
@@ -226,12 +230,18 @@ export default function App() {
 
       </AnimatePresence>
 
+      {/* Footer */}
       <Footer />
+
+      {/* AI Chatbot */}
       <Chatbot />
+
+      {/* Auth Modals */}
 
       <AnimatePresence>
         {modalOpen && (
           <Routes location={location}>
+
             <Route
               path="/home/login"
               element={
@@ -249,10 +259,11 @@ export default function App() {
                 </AuthModal>
               }
             />
+
           </Routes>
         )}
       </AnimatePresence>
 
-    </>
+    </div>
   );
 }

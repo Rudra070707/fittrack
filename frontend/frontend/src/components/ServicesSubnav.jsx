@@ -18,15 +18,15 @@ export default function ServicesSubnav({ show }) {
     { name: "Rewards", to: "/home/gamification" },
   ];
 
-  const handleProtectedClick = (e, to) => {
+  const handleProtectedClick = (e) => {
     const isUserLoggedIn = !!localStorage.getItem("token");
 
     if (!isUserLoggedIn) {
       e.preventDefault();
+
       navigate("/home/login", {
         state: { backgroundLocation: location },
       });
-      return;
     }
   };
 
@@ -36,41 +36,57 @@ export default function ServicesSubnav({ show }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35 }}
       className="
-        sticky top-16 z-40
+        sticky top-16 z-[55]
         backdrop-blur-xl
-        bg-[#070b10]/80
+        bg-[#070b10]/85
         border-b border-white/10
-        shadow-[0_12px_40px_rgba(0,0,0,0.45)]
-        relative
+        shadow-[0_14px_45px_rgba(0,0,0,0.55)]
       "
     >
-      {/* background glow */}
-      <div className="pointer-events-none absolute inset-0">
+      {/* animated background glow */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
         <motion.div
-          className="absolute -top-10 left-1/3 w-[350px] h-[100px] bg-green-400/10 blur-[70px] rounded-full"
+          className="absolute -top-12 left-1/3 w-[420px] h-[120px] bg-green-400/10 blur-[90px] rounded-full"
           animate={{ x: [0, 40, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
 
         <motion.div
-          className="absolute -top-10 right-1/3 w-[350px] h-[100px] bg-emerald-400/10 blur-[70px] rounded-full"
+          className="absolute -top-12 right-1/3 w-[420px] h-[120px] bg-emerald-400/10 blur-[90px] rounded-full"
           animate={{ x: [0, -40, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          transition={{
+            duration: 14,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
         />
+
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-8 py-3">
+      {/* nav container */}
+      <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-3">
 
-        <div className="flex items-center gap-3 overflow-x-auto no-scrollbar justify-center">
+        <div className="
+          flex items-center
+          justify-center
+          gap-3
+          overflow-x-auto
+          whitespace-nowrap
+          no-scrollbar
+        ">
 
           {items.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
-              onClick={(e) => handleProtectedClick(e, item.to)}
+              onClick={handleProtectedClick}
               className={({ isActive }) =>
                 `
-                whitespace-nowrap
                 px-4 py-2
                 text-sm font-medium
                 rounded-full
@@ -96,6 +112,7 @@ export default function ServicesSubnav({ show }) {
         </div>
 
       </div>
+
     </motion.div>
   );
 }

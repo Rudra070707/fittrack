@@ -27,22 +27,33 @@ export default function Hero() {
   return (
     <section
       id="about"
-      className="relative min-h-[calc(100vh-128px)] pt-20 bg-[#05070c] text-white flex flex-col justify-center items-center text-center px-6 overflow-hidden"
+      className="
+      relative
+      min-h-screen
+      flex flex-col
+      justify-center
+      items-center
+      text-center
+      px-6
+      overflow-hidden
+      bg-[#05070c]
+      text-white
+      "
     >
       {/* Animated Glow Background */}
       <motion.div
-        className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
+        className="absolute -top-40 -left-40 w-[650px] h-[650px] bg-green-400/20 blur-[220px] rounded-full"
         animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
       />
 
       <motion.div
-        className="absolute -bottom-60 -right-60 w-[700px] h-[700px] bg-emerald-600/18 blur-[220px] rounded-full"
+        className="absolute -bottom-60 -right-60 w-[750px] h-[750px] bg-emerald-600/18 blur-[240px] rounded-full"
         animate={{ x: [0, -70, 0], y: [0, -60, 0] }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* subtle grid texture */}
+      {/* Grid Texture */}
       <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
       {/* Floating Icons */}
@@ -70,52 +81,57 @@ export default function Hero() {
         ❤️
       </motion.div>
 
-      {/* Heading */}
-      <motion.h1
-        className="text-4xl md:text-6xl font-bold mb-6 leading-tight"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9 }}
-      >
-        Fitness That Fits{" "}
-        <span className="text-green-400 drop-shadow-[0_0_25px_rgba(34,197,94,0.6)]">
-          Your Life
-        </span>
-      </motion.h1>
+      {/* Hero Content */}
+      <div className="relative z-10 max-w-4xl">
 
-      {/* Subtitle */}
-      <motion.p
-        className="text-gray-300 max-w-2xl mb-10 text-lg md:text-xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2 }}
-      >
-        Access gyms, yoga, zumba & personal training with one smart membership.
-      </motion.p>
-
-      {/* Buttons */}
-      <motion.div
-        className="flex gap-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.6 }}
-      >
-        <button
-          type="button"
-          onClick={handleGetStarted}
-          className="bg-green-400 text-black font-bold px-7 py-3 rounded-xl shadow-[0_18px_55px_rgba(0,0,0,0.55)] hover:scale-110 transition animate-pulse"
+        {/* Heading */}
+        <motion.h1
+          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9 }}
         >
-          Get Started
-        </button>
+          Fitness That Fits{" "}
+          <span className="text-green-400 drop-shadow-[0_0_25px_rgba(34,197,94,0.6)]">
+            Your Life
+          </span>
+        </motion.h1>
 
-        <a
-          href="#services"
-          onClick={handleLearnMore}
-          className="border border-white/40 px-7 py-3 rounded-xl text-white hover:bg-white hover:text-black transition"
+        {/* Subtitle */}
+        <motion.p
+          className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg md:text-xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2 }}
         >
-          Learn More
-        </a>
-      </motion.div>
+          Access gyms, yoga, zumba & personal training with one smart membership.
+        </motion.p>
+
+        {/* Buttons */}
+        <motion.div
+          className="flex gap-4 justify-center flex-wrap"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.6 }}
+        >
+          <button
+            type="button"
+            onClick={handleGetStarted}
+            className="bg-green-400 text-black font-bold px-7 py-3 rounded-xl shadow-[0_18px_55px_rgba(0,0,0,0.55)] hover:scale-110 transition"
+          >
+            Get Started
+          </button>
+
+          <a
+            href="#services"
+            onClick={handleLearnMore}
+            className="border border-white/40 px-7 py-3 rounded-xl text-white hover:bg-white hover:text-black transition"
+          >
+            Learn More
+          </a>
+        </motion.div>
+
+      </div>
 
       {/* Scroll Indicator */}
       <motion.div
@@ -125,6 +141,7 @@ export default function Hero() {
       >
         Scroll ↓
       </motion.div>
+
     </section>
   );
 }
