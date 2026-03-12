@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { API_BASE } from "../api";
 
 export default function Contact() {
+
   const rawWhatsapp = import.meta.env.VITE_WHATSAPP_NUMBER || "";
   const WHATSAPP_NUMBER = String(rawWhatsapp).replace(/[^\d]/g, "");
 
@@ -17,6 +18,7 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess("");
+
     if (loading) return;
 
     if (!fullName || !email || !subject || !message) {
@@ -67,6 +69,7 @@ ${message}`;
       setTimeout(() => {
         window.open(url, "_blank", "noopener,noreferrer");
       }, 250);
+
     } catch {
       alert("Server error.");
     } finally {
@@ -75,9 +78,9 @@ ${message}`;
   };
 
   return (
-    <section className="relative min-h-screen bg-[#05070c] text-white px-6 py-28 overflow-hidden">
+    <section className="relative pt-32 pb-28 px-6 bg-[#05070c] text-white overflow-hidden">
 
-      {/* Background glow */}
+      {/* Glow background */}
       <motion.div
         className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
         animate={{ x: [0, 80, 0], y: [0, 50, 0] }}
@@ -90,7 +93,7 @@ ${message}`;
         transition={{ duration: 20, repeat: Infinity }}
       />
 
-      {/* subtle grid */}
+      {/* grid texture */}
       <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
       <div className="max-w-6xl mx-auto relative">
@@ -123,14 +126,17 @@ ${message}`;
 
         <div className="grid md:grid-cols-2 gap-10">
 
-          {/* FORM */}
+          {/* CONTACT FORM */}
           <motion.form
             onSubmit={handleSubmit}
             className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_25px_70px_rgba(0,0,0,0.6)] hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className="text-2xl font-bold mb-2">Send a message</h2>
+
+            <h2 className="text-2xl font-bold mb-2">
+              Send a message
+            </h2>
 
             <p className="text-gray-400 mb-6 text-sm">
               We usually respond within 24 hours.
@@ -192,7 +198,7 @@ ${message}`;
             </div>
           </motion.form>
 
-          {/* INFO */}
+          {/* CONTACT INFO */}
           <motion.div
             className="space-y-8"
             initial={{ opacity: 0, y: 30 }}
@@ -200,7 +206,10 @@ ${message}`;
           >
 
             <div className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-              <h3 className="text-xl font-bold mb-6">Contact Details</h3>
+
+              <h3 className="text-xl font-bold mb-6">
+                Contact Details
+              </h3>
 
               <div className="space-y-4 text-gray-300">
 
@@ -243,7 +252,9 @@ ${message}`;
 
             <div className="bg-white/[0.05] backdrop-blur-xl border border-white/10 rounded-3xl p-8">
 
-              <h3 className="text-xl font-bold mb-4">Quick Help</h3>
+              <h3 className="text-xl font-bold mb-4">
+                Quick Help
+              </h3>
 
               <ul className="space-y-3 text-gray-300">
                 {[
@@ -262,8 +273,11 @@ ${message}`;
             </div>
 
           </motion.div>
+
         </div>
+
       </div>
+
     </section>
   );
 }
