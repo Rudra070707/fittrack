@@ -29,7 +29,7 @@ export default function Hero() {
       id="about"
       className="
       relative
-      min-h-screen
+      min-h-[calc(100vh-128px)]
       flex flex-col
       justify-center
       items-center
