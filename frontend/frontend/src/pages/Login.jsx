@@ -14,7 +14,6 @@ export default function Login({ mode = "page", onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ NEW: support redirectTo from services
   const redirectTo =
     location.state?.redirectTo ||
     location.state?.from ||
@@ -66,6 +65,7 @@ export default function Login({ mode = "page", onSuccess }) {
     my.set(e.clientY);
 
     if (!wrapRef.current) return;
+
     const rect = wrapRef.current.getBoundingClientRect();
 
     const relX = e.clientX - rect.left;
@@ -111,13 +111,11 @@ export default function Login({ mode = "page", onSuccess }) {
       if (data.token) localStorage.setItem("token", data.token);
       if (data.user) localStorage.setItem("user", JSON.stringify(data.user));
 
-      // modal mode
       if (mode === "modal" && onSuccess) {
         onSuccess();
         return;
       }
 
-      // page mode redirect
       navigate(safeRedirect, { replace: true, state: redirectState });
 
     } catch (err) {
@@ -128,12 +126,84 @@ export default function Login({ mode = "page", onSuccess }) {
     }
   };
 
-  /* ---------- FORM UI (UNCHANGED) ---------- */
-
   const Form = (
     <div ref={wrapRef} className="relative z-10 w-full max-w-md">
-      {/* UI unchanged */}
-      {/* Your full form UI continues exactly same */}
+
+      <motion.form
+        onSubmit={handleSubmit}
+        style={{ rotateX: tiltXS, rotateY: tiltYS }}
+        className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-xl"
+      >
+
+        <h2 className="text-2xl font-bold text-white text-center mb-6">
+          Login
+        </h2>
+
+        <div className="mb-4">
+          <label className="text-sm text-gray-300 block mb-2">Email</label>
+          <input
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e)=>setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="text-sm text-gray-300 block mb-2">Password</label>
+
+          <div className="relative">
+            <input
+              type={showPass ? "text" : "password"}
+              placeholder="Enter password"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg bg-black/40 border border-white/10 text-white focus:outline-none"
+            />
+
+            <button
+              type="button"
+              onClick={()=>setShowPass(!showPass)}
+              className="absolute right-3 top-3 text-xs text-gray-400"
+            >
+              {showPass ? "HIDE" : "SHOW"}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-red-400 text-sm mb-4">{error}</p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-green-400 hover:bg-green-500 text-black font-semibold py-3 rounded-lg"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <p className="text-center text-gray-400 text-sm mt-4">
+          Don't have an account?{" "}
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/home/signup", {
+                state: {
+                  backgroundLocation:
+                    location.state?.backgroundLocation || location,
+                },
+              })
+            }
+            className="text-green-400"
+          >
+            Signup
+          </button>
+        </p>
+
+      </motion.form>
+
     </div>
   );
 
@@ -141,7 +211,7 @@ export default function Login({ mode = "page", onSuccess }) {
 
   return (
     <section
-      className="relative min-h-screen w-full overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"
+      className="relative min-h-screen flex items-center justify-center px-6 bg-slate-950"
       onMouseMove={isFinePointer ? onMove : undefined}
       onMouseLeave={isFinePointer ? onLeave : undefined}
     >
