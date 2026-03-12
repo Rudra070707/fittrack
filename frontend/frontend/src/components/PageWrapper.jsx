@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 
 export default function PageWrapper({ children }) {
 
   const variants = {
     initial: {
       opacity: 0,
-      y: 30,
-      scale: 0.98
+      y: 28,
+      scale: 0.985
     },
     in: {
       opacity: 1,
@@ -15,15 +16,20 @@ export default function PageWrapper({ children }) {
     },
     out: {
       opacity: 0,
-      y: -30,
-      scale: 0.98
+      y: -24,
+      scale: 0.985
     }
   };
 
   const transition = {
     duration: 0.45,
-    ease: [0.22, 1, 0.36, 1]   // smoother easing
+    ease: [0.22, 1, 0.36, 1]
   };
+
+  // optional: scroll to top on page change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   return (
     <motion.div
@@ -34,7 +40,8 @@ export default function PageWrapper({ children }) {
       transition={transition}
       style={{
         minHeight: "100vh",
-        willChange: "transform, opacity"
+        willChange: "transform, opacity",
+        transform: "translateZ(0)"
       }}
     >
       {children}

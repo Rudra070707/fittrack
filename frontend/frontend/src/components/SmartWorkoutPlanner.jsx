@@ -53,57 +53,75 @@ export default function SmartWorkoutPlanner() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-gray-800" />
+      {/* Animated background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-      {/* Glows */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-24 -left-24 w-[520px] h-[520px] bg-green-500/10 blur-[160px] rounded-full" />
-        <div className="absolute bottom-0 -right-24 w-[560px] h-[560px] bg-emerald-400/10 blur-[170px] rounded-full" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+
+        <motion.div
+          className="absolute inset-0 opacity-80"
+          animate={{
+            background: [
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)"
+            ]
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+
       </div>
 
       <motion.div
         className="relative max-w-6xl mx-auto px-6 py-16"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45 }}
       >
 
         {/* Header */}
         <div className="mb-12">
-          <p className="text-green-400 font-semibold tracking-[0.28em] text-xs">
+
+          <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / WORKOUT PLANNER
           </p>
 
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
-            Smart <span className="text-green-400">Workout Planner</span>
+            Smart{" "}
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+              Workout Planner
+            </span>
           </h1>
 
-          <p className="text-gray-300 mt-4 max-w-2xl">
+          <p className="text-white/65 mt-4 max-w-2xl">
             Generate a personalized workout routine based on your goal,
             experience level and weekly availability.
           </p>
+
         </div>
 
-        {/* Main grid */}
+        {/* Grid */}
         <div className="grid lg:grid-cols-3 gap-8">
 
           {/* Form */}
           <motion.div
-            className="lg:col-span-2 bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-7 shadow-[0_25px_80px_rgba(0,0,0,0.65)]"
             whileHover={{ scale: 1.01 }}
+            className="lg:col-span-2 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
           >
 
-            <h2 className="text-2xl font-bold mb-6">Your Preferences</h2>
+            <h2 className="text-2xl font-bold mb-6">
+              Your Preferences
+            </h2>
 
             <div className="grid md:grid-cols-2 gap-5">
 
               <select
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
-                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400"
+                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
               >
                 <option value="">Select goal</option>
                 <option>Weight Loss</option>
@@ -115,7 +133,7 @@ export default function SmartWorkoutPlanner() {
               <select
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
-                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400"
+                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
               >
                 <option value="">Select level</option>
                 <option>Beginner</option>
@@ -126,7 +144,7 @@ export default function SmartWorkoutPlanner() {
               <select
                 value={days}
                 onChange={(e) => setDays(e.target.value)}
-                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/10 focus:ring-2 focus:ring-green-400"
+                className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
               >
                 <option value="">Select days</option>
                 <option value="3">3 days</option>
@@ -141,7 +159,7 @@ export default function SmartWorkoutPlanner() {
               disabled={loading}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.96 }}
-              className="mt-8 px-8 py-3 rounded-2xl bg-green-400 text-black font-semibold shadow-[0_0_30px_rgba(34,197,94,0.55)] hover:bg-green-500"
+              className="mt-8 px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] hover:scale-[1.02] transition"
             >
               {loading ? "Generating..." : "Generate Workout Plan"}
             </motion.button>
@@ -150,17 +168,21 @@ export default function SmartWorkoutPlanner() {
 
           {/* Tips */}
           <motion.div
-            className="bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-7 shadow-[0_25px_80px_rgba(0,0,0,0.55)]"
             whileHover={{ scale: 1.02 }}
+            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
           >
 
-            <h3 className="text-xl font-bold mb-4">Training Tips</h3>
+            <h3 className="text-xl font-bold mb-4">
+              Training Tips
+            </h3>
 
-            <ul className="space-y-4 text-gray-300 text-sm">
+            <ul className="space-y-4 text-white/70 text-sm">
+
               <li>• Warm up before workouts</li>
               <li>• Focus on proper form</li>
               <li>• Rest muscle groups properly</li>
               <li>• Track progress weekly</li>
+
             </ul>
 
           </motion.div>
@@ -170,7 +192,7 @@ export default function SmartWorkoutPlanner() {
         {/* Result */}
         {plan && (
           <motion.div
-            className="mt-12 bg-white/6 backdrop-blur-xl border border-white/10 rounded-3xl p-8"
+            className="mt-12 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
@@ -186,14 +208,14 @@ export default function SmartWorkoutPlanner() {
                 <motion.div
                   key={day}
                   whileHover={{ scale: 1.04 }}
-                  className="rounded-2xl bg-black/30 border border-white/10 p-5"
+                  className="rounded-2xl bg-black/30 border border-white/12 p-5"
                 >
 
-                  <p className="text-green-400 font-semibold mb-3">
+                  <p className="text-emerald-400 font-semibold mb-3">
                     Day {i + 1}
                   </p>
 
-                  <ul className="space-y-2 text-gray-200 text-sm">
+                  <ul className="space-y-2 text-white/80 text-sm">
 
                     {workouts.map((w, idx) => (
                       <li key={idx}>• {w}</li>
@@ -211,6 +233,6 @@ export default function SmartWorkoutPlanner() {
         )}
 
       </motion.div>
-    </div>
+    </section>
   );
 }

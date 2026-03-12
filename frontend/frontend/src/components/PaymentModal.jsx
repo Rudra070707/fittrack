@@ -30,6 +30,7 @@ export default function PaymentModal({
   );
 
   useEffect(() => {
+
     if (!open) return;
 
     setMethod("upi");
@@ -90,12 +91,14 @@ export default function PaymentModal({
     });
 
     onClose?.();
+
   };
 
   return (
     <AnimatePresence>
 
       {open && (
+
         <motion.div
           className="fixed inset-0 z-[60] flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
@@ -105,7 +108,7 @@ export default function PaymentModal({
 
           {/* backdrop */}
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/75 backdrop-blur-md"
             onClick={() => !processing && onClose()}
           />
 
@@ -115,11 +118,19 @@ export default function PaymentModal({
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 20, scale: 0.98, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="relative w-full max-w-lg rounded-3xl bg-[#0b0f14] border border-white/10 shadow-2xl overflow-hidden"
+            className="
+            relative w-full max-w-lg
+            rounded-3xl
+            backdrop-blur-2xl
+            bg-[#0b0f14]/95
+            border border-white/10
+            shadow-[0_30px_90px_rgba(0,0,0,0.8)]
+            overflow-hidden
+            "
           >
 
             {/* header */}
-            <div className="px-6 py-4 bg-gradient-to-r from-green-400 to-emerald-500 text-black flex justify-between">
+            <div className="px-6 py-4 bg-gradient-to-r from-green-400 to-emerald-500 text-black flex justify-between items-center">
 
               <div>
                 <p className="text-lg font-bold">
@@ -134,7 +145,7 @@ export default function PaymentModal({
               {step === "form" && (
                 <button
                   onClick={onClose}
-                  className="text-xs bg-black/20 px-3 py-1 rounded-full"
+                  className="text-xs bg-black/20 px-3 py-1 rounded-full hover:bg-black/30"
                 >
                   Close
                 </button>
@@ -147,30 +158,35 @@ export default function PaymentModal({
 
               {step === "form" && (
                 <>
-                  <p className="text-white font-semibold mb-2">
+
+                  <p className="text-white font-semibold mb-1">
                     {planName}
                   </p>
 
-                  <p className="text-green-300 font-bold mb-4">
+                  <p className="text-green-400 font-bold text-lg mb-5">
                     ₹{amount}
                   </p>
 
                   {/* method selector */}
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex gap-2 mb-5">
 
                     {["upi", "card", "netbanking"].map((m) => (
+
                       <button
                         key={m}
                         onClick={() => setMethod(m)}
-                        className={`px-3 py-2 rounded-xl text-sm border transition
+                        className={`
+                        flex-1 py-2 rounded-xl text-sm border transition
                         ${
                           method === m
-                            ? "bg-green-400 text-black"
-                            : "bg-white/5 text-white hover:bg-white/10"
-                        }`}
+                            ? "bg-green-400 text-black border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)]"
+                            : "bg-white/5 text-white border-white/10 hover:bg-white/10"
+                        }
+                        `}
                       >
                         {m.toUpperCase()}
                       </button>
+
                     ))}
 
                   </div>
@@ -181,7 +197,14 @@ export default function PaymentModal({
                       value={upiId}
                       onChange={(e) => setUpiId(e.target.value)}
                       placeholder="name@upi"
-                      className="w-full bg-black/40 px-3 py-3 rounded-xl text-white focus:ring-2 focus:ring-green-400 outline-none"
+                      className="
+                      w-full bg-black/40
+                      px-4 py-3 rounded-xl
+                      border border-white/10
+                      text-white
+                      focus:ring-2 focus:ring-green-400
+                      outline-none
+                      "
                     />
                   )}
 
@@ -191,7 +214,7 @@ export default function PaymentModal({
 
                       <input
                         placeholder="Card Number"
-                        className="w-full bg-black/40 px-3 py-3 rounded-xl"
+                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
                         value={card.number}
                         onChange={(e) =>
                           setCard({ ...card, number: e.target.value })
@@ -200,7 +223,7 @@ export default function PaymentModal({
 
                       <input
                         placeholder="Name on Card"
-                        className="w-full bg-black/40 px-3 py-3 rounded-xl"
+                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
                         value={card.name}
                         onChange={(e) =>
                           setCard({ ...card, name: e.target.value })
@@ -211,7 +234,7 @@ export default function PaymentModal({
 
                         <input
                           placeholder="MM/YY"
-                          className="w-full bg-black/40 px-3 py-3 rounded-xl"
+                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
                           value={card.expiry}
                           onChange={(e) =>
                             setCard({ ...card, expiry: e.target.value })
@@ -220,7 +243,7 @@ export default function PaymentModal({
 
                         <input
                           placeholder="CVV"
-                          className="w-full bg-black/40 px-3 py-3 rounded-xl"
+                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
                           value={card.cvv}
                           onChange={(e) =>
                             setCard({ ...card, cvv: e.target.value })
@@ -228,6 +251,7 @@ export default function PaymentModal({
                         />
 
                       </div>
+
                     </div>
                   )}
 
@@ -236,7 +260,7 @@ export default function PaymentModal({
                     <select
                       value={bank}
                       onChange={(e) => setBank(e.target.value)}
-                      className="w-full bg-black/40 px-3 py-3 rounded-xl text-white"
+                      className="w-full bg-black/40 px-4 py-3 rounded-xl text-white border border-white/10"
                     >
                       <option>SBI</option>
                       <option>HDFC</option>
@@ -250,16 +274,22 @@ export default function PaymentModal({
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.96 }}
                     onClick={payNow}
-                    className="mt-6 w-full py-3 rounded-2xl bg-green-400 text-black font-bold shadow-[0_0_25px_rgba(34,197,94,0.45)]"
+                    className="
+                    mt-6 w-full py-3 rounded-2xl
+                    bg-gradient-to-r from-green-400 to-emerald-500
+                    text-black font-bold
+                    shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                    "
                   >
                     Pay ₹{amount}
                   </motion.button>
+
                 </>
               )}
 
               {/* processing */}
               {step === "processing" && (
-                <div className="text-center py-10">
+                <div className="text-center py-12">
 
                   <div className="mx-auto w-12 h-12 border-4 border-white/10 border-t-green-400 rounded-full animate-spin" />
 
@@ -272,12 +302,12 @@ export default function PaymentModal({
 
               {/* success */}
               {step === "success" && (
-                <div className="text-center py-10">
+                <div className="text-center py-12">
 
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="mx-auto w-14 h-14 rounded-full bg-green-400/20 flex items-center justify-center text-green-300 text-2xl"
+                    className="mx-auto w-16 h-16 rounded-full bg-green-400/20 flex items-center justify-center text-green-300 text-3xl"
                   >
                     ✓
                   </motion.div>
@@ -286,7 +316,7 @@ export default function PaymentModal({
                     Payment Successful
                   </p>
 
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-gray-400 text-sm mt-1">
                     Your subscription has been activated successfully.
                   </p>
 
@@ -294,6 +324,7 @@ export default function PaymentModal({
               )}
 
             </div>
+
           </motion.div>
         </motion.div>
       )}

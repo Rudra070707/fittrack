@@ -94,173 +94,110 @@ export default function Join() {
     !!selectedPlan?.code && !!form.name && !!form.email && !!form.phone;
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Background glow */}
-      <motion.div
-        className="absolute -top-32 -left-32 w-[520px] h-[520px] bg-green-400/20 blur-[200px] rounded-full"
-        animate={{ x: [0, 70, 0], y: [0, 40, 0] }}
-        transition={{ duration: 18, repeat: Infinity }}
-      />
+      {/* Animated background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-      <motion.div
-        className="absolute bottom-0 -right-32 w-[560px] h-[560px] bg-emerald-400/20 blur-[200px] rounded-full"
-        animate={{ x: [0, -70, 0], y: [0, -50, 0] }}
-        transition={{ duration: 20, repeat: Infinity }}
-      />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-16">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]"/>
 
         <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="w-full max-w-5xl grid lg:grid-cols-2 gap-8"
+          className="absolute inset-0 opacity-80"
+          animate={{
+            background:[
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)"
+            ]
+          }}
+          transition={{duration:16,repeat:Infinity,ease:"easeInOut"}}
+        />
+
+      </div>
+
+      <div className="relative max-w-5xl mx-auto px-6 py-20">
+
+        <motion.div
+          initial={{opacity:0,y:35}}
+          animate={{opacity:1,y:0}}
+          transition={{duration:0.6}}
+          className="grid lg:grid-cols-2 gap-8"
         >
 
           {/* LEFT FORM */}
           <motion.div
-            whileHover={{ scale: 1.01 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_20px_70px_rgba(0,0,0,0.6)] overflow-hidden"
+            whileHover={{scale:1.01}}
+            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
           >
 
             <div className="px-8 pt-8 pb-6 border-b border-white/10">
 
-              <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
+              <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
                 MEMBERSHIP CHECKOUT
               </p>
 
               <h2 className="text-3xl md:text-4xl font-extrabold mt-3">
-                Confirm your <span className="text-green-400">membership</span>
+                Confirm your{" "}
+                <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                  membership
+                </span>
               </h2>
 
-              <p className="text-gray-300 mt-3">
+              <p className="text-white/60 mt-3">
                 Enter your details to activate your plan instantly.
               </p>
 
             </div>
 
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="px-8 py-8 space-y-5"
-            >
+            <form onSubmit={(e)=>e.preventDefault()} className="px-8 py-8 space-y-5">
 
-              {/* Name */}
-              <div>
-                <label className="text-sm text-gray-300 font-medium">
-                  Full Name
-                </label>
+              {["name","email","phone","age"].map((field,i)=>(
+                <div key={field}>
+                  <label className="text-sm text-white/70 font-medium capitalize">
+                    {field}
+                  </label>
 
-                <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400 transition">
+                  <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/12 px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-400">
 
-                  <span className="text-green-400">👤</span>
+                    <input
+                      type={field==="age"?"number":field==="email"?"email":"text"}
+                      className="w-full bg-transparent outline-none text-white placeholder-white/40"
+                      placeholder={`Enter ${field}`}
+                      value={form[field]}
+                      onChange={(e)=>setForm({...form,[field]:e.target.value})}
+                    />
 
-                  <input
-                    className="w-full bg-transparent outline-none text-white placeholder-gray-500"
-                    placeholder="Enter full name"
-                    value={form.name}
-                    onChange={(e) =>
-                      setForm({ ...form, name: e.target.value })
-                    }
-                  />
-
+                  </div>
                 </div>
-              </div>
+              ))}
 
-              {/* Email */}
+              {/* Plan display */}
               <div>
-                <label className="text-sm text-gray-300 font-medium">
-                  Email
-                </label>
-
-                <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400 transition">
-
-                  <span className="text-green-400">📧</span>
-
-                  <input
-                    type="email"
-                    className="w-full bg-transparent outline-none text-white placeholder-gray-500"
-                    placeholder="Enter email"
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
-                    }
-                  />
-
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="text-sm text-gray-300 font-medium">
-                  Phone Number
-                </label>
-
-                <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400 transition">
-
-                  <span className="text-green-400">📞</span>
-
-                  <input
-                    className="w-full bg-transparent outline-none text-white placeholder-gray-500"
-                    placeholder="Enter phone number"
-                    value={form.phone}
-                    onChange={(e) =>
-                      setForm({ ...form, phone: e.target.value })
-                    }
-                  />
-
-                </div>
-              </div>
-
-              {/* Age */}
-              <div>
-                <label className="text-sm text-gray-300 font-medium">
-                  Age
-                </label>
-
-                <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/10 px-4 py-3 focus-within:ring-2 focus-within:ring-green-400 transition">
-
-                  <span className="text-green-400">🎂</span>
-
-                  <input
-                    type="number"
-                    className="w-full bg-transparent outline-none text-white placeholder-gray-500"
-                    placeholder="Enter age"
-                    value={form.age}
-                    onChange={(e) =>
-                      setForm({ ...form, age: e.target.value })
-                    }
-                  />
-
-                </div>
-              </div>
-
-              {/* Plan */}
-              <div>
-                <label className="text-sm text-gray-300 font-medium">
+                <label className="text-sm text-white/70 font-medium">
                   Selected Plan
                 </label>
 
-                <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+                <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/6 border border-white/12 px-4 py-3">
 
                   <div>
-                    <p className="text-green-300 font-bold">
+                    <p className="text-emerald-300 font-bold">
                       {form.planName}
                     </p>
 
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-white/50">
                       Plan selected from previous page
                     </p>
                   </div>
 
-                  <span className="text-xs px-3 py-1 rounded-full bg-green-400/15 border border-green-400/25 text-green-300">
+                  <span className="text-xs px-3 py-1 rounded-full bg-emerald-400/15 border border-emerald-400/25 text-emerald-300">
                     Locked
                   </span>
 
                 </div>
               </div>
 
-              {/* Checkout */}
               <DemoCheckout
                 planName={form.planName}
                 amount={selectedPlan?.price || 0}
@@ -287,18 +224,19 @@ export default function Join() {
               />
 
             </form>
+
           </motion.div>
 
           {/* RIGHT SUMMARY */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_20px_70px_rgba(0,0,0,0.5)] h-fit overflow-hidden"
+            initial={{opacity:0,x:20}}
+            animate={{opacity:1,x:0}}
+            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] h-fit overflow-hidden"
           >
 
             <div className="px-8 pt-8 pb-6 border-b border-white/10">
 
-              <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
+              <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
                 ORDER SUMMARY
               </p>
 
@@ -310,9 +248,9 @@ export default function Join() {
 
             <div className="px-8 py-8 space-y-6">
 
-              <div className="rounded-2xl border border-white/10 bg-black/25 p-6">
+              <div className="rounded-2xl border border-white/12 bg-black/30 p-6">
 
-                <p className="text-green-300 text-xs font-semibold tracking-wider">
+                <p className="text-emerald-300 text-xs font-semibold tracking-wider">
                   {meta.tag}
                 </p>
 
@@ -320,13 +258,13 @@ export default function Join() {
                   {form.planName}
                 </h4>
 
-                <p className="text-gray-300 mt-2">{meta.priceText}</p>
+                <p className="text-white/70 mt-2">{meta.priceText}</p>
 
-                <ul className="mt-6 space-y-2 text-gray-200">
+                <ul className="mt-6 space-y-2 text-white/80">
 
-                  {meta.perks.map((p, idx) => (
+                  {meta.perks.map((p,idx)=>(
                     <li key={idx} className="flex gap-2">
-                      <span className="text-green-400 font-bold">✓</span>
+                      <span className="text-emerald-400 font-bold">✓</span>
                       {p}
                     </li>
                   ))}
@@ -335,7 +273,7 @@ export default function Join() {
 
               </div>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-white/40">
                 By confirming, you agree to FitTrack membership terms.
               </p>
 
@@ -346,6 +284,6 @@ export default function Join() {
         </motion.div>
 
       </div>
-    </div>
+    </section>
   );
 }

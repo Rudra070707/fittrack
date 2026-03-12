@@ -9,22 +9,30 @@ export default function Gyms() {
   ];
 
   return (
-    <section className="relative min-h-screen bg-[#05070c] text-white px-6 py-24 overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Background glow */}
-      <motion.div
-        className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
-        animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
-        transition={{ duration: 16, repeat: Infinity }}
-      />
+      {/* Animated background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
-      <motion.div
-        className="absolute bottom-0 -right-40 w-[650px] h-[650px] bg-emerald-500/15 blur-[220px] rounded-full"
-        animate={{ x: [0, -80, 0], y: [0, -60, 0] }}
-        transition={{ duration: 18, repeat: Infinity }}
-      />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
 
-      <div className="max-w-6xl mx-auto relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+
+        <motion.div
+          className="absolute inset-0 opacity-80"
+          animate={{
+            background: [
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)"
+            ]
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-6 py-24">
 
         {/* Heading */}
         <motion.h1
@@ -32,23 +40,27 @@ export default function Gyms() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          Find <span className="text-green-400">Gyms Near You</span>
+          Find{" "}
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            Gyms Near You
+          </span>
         </motion.h1>
 
-        <p className="text-gray-400 mb-10">
+        <p className="text-white/60 mb-10">
           Discover gyms and fitness centers around your location.
         </p>
 
         {/* Search */}
-        <div className="mb-10">
+        <div className="mb-12">
           <input
             type="text"
             placeholder="Enter city or location"
             className="
               w-full px-5 py-3 rounded-2xl
-              bg-white/5 border border-white/10
-              focus:ring-2 focus:ring-green-400
-              outline-none backdrop-blur-xl
+              bg-black/30 border border-white/12
+              backdrop-blur-xl
+              focus:ring-2 focus:ring-emerald-400
+              outline-none text-white placeholder-white/40
             "
           />
         </div>
@@ -61,24 +73,26 @@ export default function Gyms() {
               key={i}
               whileHover={{ y: -10 }}
               className="
-                bg-white/5 backdrop-blur-xl
-                border border-white/10
+                bg-white/6 backdrop-blur-2xl
+                border border-white/12
                 rounded-3xl p-6
-                shadow-[0_20px_60px_rgba(0,0,0,0.55)]
+                shadow-[0_26px_90px_rgba(0,0,0,0.65)]
               "
             >
 
               <h2 className="font-bold text-xl">{gym.name}</h2>
 
-              <p className="text-gray-400 mt-2">
+              <p className="text-white/60 mt-2">
                 {gym.status} • {gym.distance} away
               </p>
 
               <button
                 className="
                   mt-5 w-full py-2 rounded-xl
-                  bg-green-400 text-black font-semibold
-                  hover:bg-green-500 transition
+                  bg-gradient-to-r from-emerald-500 to-emerald-400
+                  text-slate-950 font-semibold
+                  shadow-[0_12px_34px_rgba(34,197,94,0.25)]
+                  hover:scale-[1.02] transition
                 "
               >
                 View Gym

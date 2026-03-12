@@ -36,7 +36,6 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // detect login/signup modal routes
   const modalOpen = useMemo(() => {
     const p = location.pathname;
     return p.startsWith("/home/login") || p.startsWith("/home/signup");
@@ -72,65 +71,97 @@ export default function App() {
   };
 
   return (
-    <div className="bg-[#05070c] text-white min-h-screen">
 
-      <Navbar />
+    <div className="relative bg-[#05070c] text-white min-h-screen overflow-hidden">
 
-      <ServicesSubnav show={!modalOpen} />
+      {/* GLOBAL BACKGROUND SYSTEM */}
 
-      <AnimatePresence mode="wait">
+      <div className="pointer-events-none absolute inset-0">
 
-        <motion.main
-          key={(backgroundLocation || location).pathname}
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{
-            duration: 0.45,
-            ease: [0.22, 1, 0.36, 1]
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
+
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+
+        <motion.div
+          className="absolute inset-0 opacity-80"
+          animate={{
+            background: [
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)",
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)"
+            ]
           }}
-          className="relative z-10"
-        >
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
 
-          <Routes location={backgroundLocation || location}>
+      </div>
 
-            {/* HOME PAGE */}
-            <Route
-              path="/"
-              element={
-                <>
-                  <Hero />
-                  <Services />
-                  <Plans />
-                </>
-              }
-            />
+      {/* MAIN UI */}
 
-            {/* PROTECTED ROUTES */}
-            <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
-            <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
-            <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
-            <Route path="zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
-            <Route path="yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
-            <Route path="diet" element={<RequireAuth><Diet /></RequireAuth>} />
-            <Route path="workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
-            <Route path="progress" element={<RequireAuth><Progress /></RequireAuth>} />
-            <Route path="injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
-            <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
-            <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
-            <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+      <div className="relative z-10">
 
-            <Route path="*" element={<Navigate to="/home" replace />} />
+        <Navbar />
 
-          </Routes>
+        <ServicesSubnav show={!modalOpen} />
 
-        </motion.main>
+        <AnimatePresence mode="wait">
 
-      </AnimatePresence>
+          <motion.main
+            key={(backgroundLocation || location).pathname}
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{
+              duration: 0.45,
+              ease: [0.22, 1, 0.36, 1]
+            }}
+            className="relative z-10 pt-10"
+          >
 
-      <Footer />
+            <Routes location={backgroundLocation || location}>
 
-      <Chatbot />
+              {/* HOME PAGE */}
+
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Hero />
+                    <Services />
+                    <Plans />
+                  </>
+                }
+              />
+
+              {/* PROTECTED ROUTES */}
+
+              <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
+              <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
+              <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
+              <Route path="zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
+              <Route path="yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
+              <Route path="diet" element={<RequireAuth><Diet /></RequireAuth>} />
+              <Route path="workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
+              <Route path="progress" element={<RequireAuth><Progress /></RequireAuth>} />
+              <Route path="injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
+              <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
+              <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
+              <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+
+              <Route path="*" element={<Navigate to="/home" replace />} />
+
+            </Routes>
+
+          </motion.main>
+
+        </AnimatePresence>
+
+        <Footer />
+
+        <Chatbot />
+
+      </div>
 
       {/* AUTH MODALS */}
 

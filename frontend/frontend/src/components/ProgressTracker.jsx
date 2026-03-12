@@ -98,11 +98,13 @@ export default function ProgressTracker() {
   }, [year, month, token]);
 
   const addEntry = async () => {
+
     if (!weight && !bodyFat && !didWorkout) {
       return alert("Enter weight/body fat or mark workout.");
     }
 
     try {
+
       const payload = {
         date,
         weightKg: weight === "" ? null : Number(weight),
@@ -136,6 +138,7 @@ export default function ProgressTracker() {
   };
 
   const currentStreak = useMemo(() => {
+
     if (!entries.length) return 0;
 
     const workoutSet = new Set(
@@ -155,6 +158,7 @@ export default function ProgressTracker() {
     }
 
     return streak;
+
   }, [entries]);
 
   const latest = entries.length ? entries[entries.length - 1] : null;
@@ -192,27 +196,29 @@ export default function ProgressTracker() {
   }, [weight, latest, height]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
 
-      {/* Streak Card */}
+      {/* Streak */}
       <motion.div
         whileHover={{ scale: 1.02 }}
-        className="bg-white/10 p-5 rounded-xl text-center"
+        className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 text-center shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
       >
-        <p className="text-gray-300">Current Streak</p>
-        <p className="text-3xl font-bold text-green-400">
-          {currentStreak} days
+        <p className="text-white/60 text-sm">Current Streak</p>
+        <p className="text-4xl font-extrabold text-emerald-400">
+          {currentStreak}
         </p>
+        <p className="text-white/50 text-sm">days</p>
       </motion.div>
 
       {/* Inputs */}
       <div className="grid md:grid-cols-3 gap-6">
+
         <input
           type="number"
           placeholder="Height (cm)"
           value={height}
           onChange={(e) => setHeight(e.target.value)}
-          className="input"
+          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
         />
 
         <input
@@ -220,7 +226,7 @@ export default function ProgressTracker() {
           placeholder="Weight (kg)"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          className="input"
+          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
         />
 
         <input
@@ -228,36 +234,38 @@ export default function ProgressTracker() {
           placeholder="Body Fat %"
           value={bodyFat}
           onChange={(e) => setBodyFat(e.target.value)}
-          className="input"
+          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
         />
+
       </div>
 
-      {/* Save button */}
+      {/* Save Button */}
       <motion.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.95 }}
         onClick={addEntry}
-        className="w-full bg-green-400 text-black font-semibold py-3 rounded-lg"
+        className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)]"
       >
         Save Entry
       </motion.button>
 
-      {/* BMI */}
+      {/* BMI Cards */}
       {bmiValue && (
-        <div className="grid md:grid-cols-3 gap-4">
 
-          <div className="bg-white/10 p-4 rounded-xl text-center">
-            <p>BMI</p>
-            <p className="text-2xl text-green-400">{bmiValue}</p>
+        <div className="grid md:grid-cols-3 gap-6">
+
+          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
+            <p className="text-white/60 text-sm">BMI</p>
+            <p className="text-2xl font-bold text-emerald-400">{bmiValue}</p>
           </div>
 
-          <div className="bg-white/10 p-4 rounded-xl text-center">
-            <p>Status</p>
-            <p>{bmiStatus(bmiValue)}</p>
+          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
+            <p className="text-white/60 text-sm">Status</p>
+            <p className="text-lg">{bmiStatus(bmiValue)}</p>
           </div>
 
-          <div className="bg-white/10 p-4 rounded-xl text-center">
-            <p>Last Saved</p>
+          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
+            <p className="text-white/60 text-sm">Last Saved</p>
             <p>
               {latest
                 ? new Date(latest.date).toLocaleDateString("en-IN")
@@ -266,21 +274,26 @@ export default function ProgressTracker() {
           </div>
 
         </div>
+
       )}
 
       {/* Chart */}
       {entries.length > 0 ? (
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white/10 rounded-xl p-4 h-[380px]"
+          className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 h-[380px]"
         >
           <Line data={data} options={options} />
         </motion.div>
+
       ) : (
-        <div className="bg-white/10 p-5 text-center text-gray-300">
+
+        <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 text-center text-white/60">
           No progress saved yet.
         </div>
+
       )}
 
     </div>
