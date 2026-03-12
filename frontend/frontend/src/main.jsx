@@ -6,21 +6,33 @@ import App from "./App";
 import "./index.css";
 import AdminLayout from "./admin/AdminLayout";
 
+const isDev = import.meta.env.DEV;
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
 
-      {/* OPEN PROJECT → ADMIN LOGIN */}
-      <Route path="/" element={<Navigate to="/admin/login" replace />} />
+      {/* OPEN PROJECT */}
+      {isDev ? (
+        <Route path="/" element={<Navigate to="/admin/login" replace />} />
+      ) : (
+        <Route path="/" element={<Navigate to="/home" replace />} />
+      )}
 
       {/* CUSTOMER SIDE */}
       <Route path="/home/*" element={<App />} />
 
-      {/* ADMIN PANEL */}
-      <Route path="/admin/*" element={<AdminLayout />} />
+      {/* ADMIN PANEL (LOCAL ONLY) */}
+      {isDev && (
+        <Route path="/admin/*" element={<AdminLayout />} />
+      )}
 
       {/* SAFETY FALLBACK */}
-      <Route path="*" element={<Navigate to="/admin/login" replace />} />
+      {isDev ? (
+        <Route path="*" element={<Navigate to="/admin/login" replace />} />
+      ) : (
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      )}
 
     </Routes>
   </BrowserRouter>
