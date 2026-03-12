@@ -27,7 +27,7 @@ export default function Hero() {
   return (
     <section
       id="about"
-      className="relative min-h-[calc(100vh-64px)] bg-[#05070c] text-white flex flex-col justify-center items-center text-center px-6 overflow-hidden"
+      className="relative min-h-[calc(100vh-128px)] pt-20 bg-[#05070c] text-white flex flex-col justify-center items-center text-center px-6 overflow-hidden"
     >
       {/* Animated Glow Background */}
       <motion.div
