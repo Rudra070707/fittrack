@@ -9,13 +9,13 @@ export default function Footer() {
       bg-[#05070c]
       text-gray-400
       text-center
-      py-16
+      py-20
       border-t border-white/10
       overflow-hidden
       "
     >
 
-      {/* background glow */}
+      {/* glow background */}
       <div className="pointer-events-none absolute inset-0 z-0">
 
         <motion.div
@@ -32,10 +32,13 @@ export default function Footer() {
 
       </div>
 
+      {/* subtle grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
+
       <div className="relative z-10 max-w-6xl mx-auto px-6">
 
         {/* logo */}
-        <h2 className="text-2xl font-extrabold text-white tracking-tight">
+        <h2 className="text-3xl font-extrabold text-white tracking-tight">
           Fit<span className="text-green-400">Track</span>
         </h2>
 
@@ -44,61 +47,32 @@ export default function Footer() {
         </p>
 
         {/* divider */}
-        <div className="w-24 h-[2px] bg-green-400/40 mx-auto mt-6 mb-8" />
+        <div className="w-28 h-[2px] bg-green-400/40 mx-auto mt-6 mb-10 rounded-full" />
 
         {/* social icons */}
-        <div className="flex justify-center gap-8 mb-8 text-xl">
+        <div className="flex justify-center gap-8 mb-10 text-xl">
 
-          <a
-            href="#"
-            className="
-            w-10 h-10
-            flex items-center justify-center
-            rounded-xl
-            bg-white/5
-            border border-white/10
-            hover:border-green-400/40
-            hover:text-green-400
-            transition
-            transform hover:scale-110
-            "
-          >
-            🌐
-          </a>
-
-          <a
-            href="#"
-            className="
-            w-10 h-10
-            flex items-center justify-center
-            rounded-xl
-            bg-white/5
-            border border-white/10
-            hover:border-green-400/40
-            hover:text-green-400
-            transition
-            transform hover:scale-110
-            "
-          >
-            📧
-          </a>
-
-          <a
-            href="#"
-            className="
-            w-10 h-10
-            flex items-center justify-center
-            rounded-xl
-            bg-white/5
-            border border-white/10
-            hover:border-green-400/40
-            hover:text-green-400
-            transition
-            transform hover:scale-110
-            "
-          >
-            💬
-          </a>
+          {["🌐", "📧", "💬"].map((icon, i) => (
+            <a
+              key={i}
+              href="#"
+              className="
+              w-11 h-11
+              flex items-center justify-center
+              rounded-xl
+              bg-white/5
+              border border-white/10
+              backdrop-blur-xl
+              hover:border-green-400/40
+              hover:text-green-400
+              hover:shadow-[0_0_20px_rgba(34,197,94,0.35)]
+              transition
+              transform hover:scale-110
+              "
+            >
+              {icon}
+            </a>
+          ))}
 
         </div>
 

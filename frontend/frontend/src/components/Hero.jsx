@@ -5,14 +5,12 @@ export default function Hero() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Always open login modal
   const handleGetStarted = () => {
     navigate("/home/login", {
       state: { backgroundLocation: location },
     });
   };
 
-  // Open About page
   const handleLearnMore = (e) => {
     e.preventDefault();
     navigate("/home/about");
@@ -34,23 +32,24 @@ export default function Hero() {
       text-white
       "
     >
-      {/* Animated Glow Background */}
+
+      {/* Background glow (same style as other pages) */}
       <motion.div
-        className="absolute -top-40 -left-40 w-[650px] h-[650px] bg-green-400/20 blur-[220px] rounded-full"
+        className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
         animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 16, repeat: Infinity }}
       />
 
       <motion.div
-        className="absolute -bottom-60 -right-60 w-[750px] h-[750px] bg-emerald-600/18 blur-[240px] rounded-full"
-        animate={{ x: [0, -70, 0], y: [0, -60, 0] }}
-        transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-0 -right-40 w-[650px] h-[650px] bg-emerald-500/15 blur-[220px] rounded-full"
+        animate={{ x: [0, -80, 0], y: [0, -60, 0] }}
+        transition={{ duration: 18, repeat: Infinity }}
       />
 
-      {/* Grid Texture */}
-      <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
+      {/* subtle grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
-      {/* Floating Icons */}
+      {/* Floating Icons (unchanged) */}
       <motion.div
         className="absolute text-green-400 text-4xl left-12 top-40 opacity-40"
         animate={{ y: [0, -25, 0] }}
@@ -80,20 +79,20 @@ export default function Hero() {
 
         {/* Heading */}
         <motion.h1
-          className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+          className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
         >
           Fitness That Fits{" "}
-          <span className="text-green-400 drop-shadow-[0_0_25px_rgba(34,197,94,0.6)]">
+          <span className="text-green-400">
             Your Life
           </span>
         </motion.h1>
 
         {/* Subtitle */}
         <motion.p
-          className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg md:text-xl"
+          className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg md:text-xl leading-relaxed"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.2 }}
@@ -108,10 +107,20 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.6 }}
         >
+
           <button
             type="button"
             onClick={handleGetStarted}
-            className="bg-green-400 text-black font-bold px-7 py-3 rounded-xl shadow-[0_18px_55px_rgba(0,0,0,0.55)] hover:scale-110 transition"
+            className="
+            px-7 py-3
+            rounded-2xl
+            font-bold
+            bg-green-400
+            text-black
+            hover:bg-green-500
+            shadow-[0_0_35px_rgba(34,197,94,0.45)]
+            transition
+            "
           >
             Get Started
           </button>
@@ -119,17 +128,27 @@ export default function Hero() {
           <a
             href="/home/about"
             onClick={handleLearnMore}
-            className="border border-white/40 px-7 py-3 rounded-xl text-white hover:bg-white hover:text-black transition"
+            className="
+            px-7 py-3
+            rounded-2xl
+            border border-white/20
+            bg-white/5
+            backdrop-blur-xl
+            hover:border-green-400/40
+            hover:bg-white/10
+            transition
+            "
           >
             Learn More
           </a>
+
         </motion.div>
 
       </div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 text-gray-400 text-sm"
+        className="absolute bottom-8 text-gray-400 text-sm tracking-wide"
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
       >
