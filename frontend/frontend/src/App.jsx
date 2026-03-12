@@ -73,10 +73,10 @@ export default function App() {
   return (
     <div className="bg-[#05070c] text-white min-h-screen">
 
-      {/* Top Navigation */}
+      {/* Navbar */}
       <Navbar />
 
-      {/* Services Sub Navigation */}
+      {/* Services Subnav */}
       <ServicesSubnav show={!modalOpen} />
 
       {/* Page Content */}
@@ -96,12 +96,9 @@ export default function App() {
 
           <Routes location={backgroundLocation || location}>
 
-            {/* Default */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
-
-            {/* HOME */}
+            {/* HOME PAGE */}
             <Route
-              path="/home"
+              index
               element={
                 <>
                   <Hero />
@@ -114,7 +111,7 @@ export default function App() {
             {/* PROTECTED ROUTES */}
 
             <Route
-              path="/home/about"
+              path="about"
               element={
                 <RequireAuth>
                   <About />
@@ -123,7 +120,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/contact"
+              path="contact"
               element={
                 <RequireAuth>
                   <Contact />
@@ -132,7 +129,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/gym"
+              path="gym"
               element={
                 <RequireAuth>
                   <Gym />
@@ -141,7 +138,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/zumba"
+              path="zumba"
               element={
                 <RequireAuth>
                   <Zumba />
@@ -150,7 +147,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/yoga"
+              path="yoga"
               element={
                 <RequireAuth>
                   <Yoga />
@@ -159,7 +156,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/diet"
+              path="diet"
               element={
                 <RequireAuth>
                   <Diet />
@@ -168,7 +165,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/workout"
+              path="workout"
               element={
                 <RequireAuth>
                   <SmartWorkoutPlanner />
@@ -177,7 +174,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/progress"
+              path="progress"
               element={
                 <RequireAuth>
                   <Progress />
@@ -186,7 +183,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/injury"
+              path="injury"
               element={
                 <RequireAuth>
                   <InjurySafe />
@@ -195,7 +192,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/gamification"
+              path="gamification"
               element={
                 <RequireAuth>
                   <Gamification />
@@ -204,7 +201,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/join"
+              path="join"
               element={
                 <RequireAuth>
                   <Join />
@@ -213,7 +210,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/change-password"
+              path="change-password"
               element={
                 <RequireAuth>
                   <ChangePassword />
@@ -233,7 +230,7 @@ export default function App() {
       {/* Footer */}
       <Footer />
 
-      {/* AI Chatbot */}
+      {/* Chatbot */}
       <Chatbot />
 
       {/* Auth Modals */}
