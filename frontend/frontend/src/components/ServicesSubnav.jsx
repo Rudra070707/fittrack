@@ -18,14 +18,17 @@ export default function ServicesSubnav({ show }) {
     { name: "Rewards", to: "/home/gamification" },
   ];
 
-  const handleProtectedClick = (e) => {
+  const handleProtectedClick = (e, target) => {
     const isUserLoggedIn = !!localStorage.getItem("token");
 
     if (!isUserLoggedIn) {
       e.preventDefault();
 
       navigate("/home/login", {
-        state: { backgroundLocation: location },
+        state: {
+          backgroundLocation: location,
+          redirectTo: target
+        },
       });
     }
   };
@@ -84,7 +87,7 @@ export default function ServicesSubnav({ show }) {
             <NavLink
               key={item.to}
               to={item.to}
-              onClick={handleProtectedClick}
+              onClick={(e) => handleProtectedClick(e, item.to)}
               className={({ isActive }) =>
                 `
                 px-4 py-2

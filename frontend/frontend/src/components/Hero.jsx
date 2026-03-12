@@ -21,7 +21,9 @@ export default function Hero() {
   const handleLearnMore = (e) => {
     e.preventDefault();
     const el = document.getElementById("services");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   return (

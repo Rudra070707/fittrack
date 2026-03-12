@@ -98,6 +98,18 @@ export default function App() {
 
             {/* HOME PAGE */}
             <Route
+              path="/home"
+              element={
+                <>
+                  <Hero />
+                  <Services />
+                  <Plans />
+                </>
+              }
+            />
+
+            {/* DEFAULT INDEX */}
+            <Route
               index
               element={
                 <>

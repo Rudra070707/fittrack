@@ -82,7 +82,8 @@ export default function Navbar() {
   };
 
   const scrollToServices = () => {
-    if (location.pathname !== "/home" && location.pathname !== "/") {
+    // If not on home page, navigate first then scroll
+    if (!location.pathname.startsWith("/home") || location.pathname !== "/home") {
       navigate("/home", { state: { scrollTo: "services" } });
       return;
     }
