@@ -32,7 +32,7 @@ export default function Hero() {
       "
     >
 
-      {/* Background glow (same style as other pages) */}
+      {/* Background glow */}
       <motion.div
         className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
         animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
@@ -48,7 +48,12 @@ export default function Hero() {
       {/* subtle grid */}
       <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
-      {/* Floating Icons (unchanged) */}
+      {/* ⭐ Glow beam behind title */}
+      <div className="pointer-events-none absolute inset-0 flex justify-center">
+        <div className="w-[520px] h-[360px] bg-green-400/10 blur-[150px] rounded-full" />
+      </div>
+
+      {/* Floating Icons */}
       <motion.div
         className="absolute text-green-400 text-4xl left-12 top-40 opacity-40"
         animate={{ y: [0, -25, 0] }}
@@ -76,7 +81,6 @@ export default function Hero() {
       {/* Hero Content */}
       <div className="relative z-10 max-w-4xl">
 
-        {/* Heading */}
         <motion.h1
           className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight"
           initial={{ opacity: 0, y: 40 }}
@@ -89,7 +93,6 @@ export default function Hero() {
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
         <motion.p
           className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg md:text-xl leading-relaxed"
           initial={{ opacity: 0 }}
@@ -99,7 +102,6 @@ export default function Hero() {
           Access gyms, yoga, zumba & personal training with one smart membership.
         </motion.p>
 
-        {/* Buttons */}
         <motion.div
           className="flex gap-4 justify-center flex-wrap"
           initial={{ opacity: 0 }}
@@ -108,18 +110,8 @@ export default function Hero() {
         >
 
           <button
-            type="button"
             onClick={handleGetStarted}
-            className="
-            px-7 py-3
-            rounded-2xl
-            font-bold
-            bg-green-400
-            text-black
-            hover:bg-green-500
-            shadow-[0_0_35px_rgba(34,197,94,0.45)]
-            transition
-            "
+            className="px-7 py-3 rounded-2xl font-bold bg-green-400 text-black hover:bg-green-500 shadow-[0_0_35px_rgba(34,197,94,0.45)] transition"
           >
             Get Started
           </button>
@@ -127,16 +119,7 @@ export default function Hero() {
           <a
             href="/home/about"
             onClick={handleLearnMore}
-            className="
-            px-7 py-3
-            rounded-2xl
-            border border-white/20
-            bg-white/5
-            backdrop-blur-xl
-            hover:border-green-400/40
-            hover:bg-white/10
-            transition
-            "
+            className="px-7 py-3 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-xl hover:border-green-400/40 hover:bg-white/10 transition"
           >
             Learn More
           </a>
@@ -147,12 +130,15 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 text-gray-400 text-sm tracking-wide"
+        className="absolute bottom-10 text-gray-400 text-sm"
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
       >
         Scroll ↓
       </motion.div>
+
+      {/* Fade into Services */}
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#05070c]" />
 
     </section>
   );
