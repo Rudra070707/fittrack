@@ -36,9 +36,10 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // FIXED modal detection
   const modalOpen = useMemo(() => {
     const p = location.pathname;
-    return p === "/home/login" || p === "/home/signup";
+    return p.startsWith("/home/login") || p.startsWith("/home/signup");
   }, [location.pathname]);
 
   const state = location.state;
@@ -73,13 +74,10 @@ export default function App() {
   return (
     <div className="bg-[#05070c] text-white min-h-screen">
 
-      {/* Navbar */}
       <Navbar />
 
-      {/* Services Subnav */}
       <ServicesSubnav show={!modalOpen} />
 
-      {/* Page Content */}
       <AnimatePresence mode="wait">
 
         <motion.main
@@ -108,7 +106,6 @@ export default function App() {
               }
             />
 
-            {/* DEFAULT INDEX */}
             <Route
               index
               element={
@@ -122,115 +119,19 @@ export default function App() {
 
             {/* PROTECTED ROUTES */}
 
-            <Route
-              path="about"
-              element={
-                <RequireAuth>
-                  <About />
-                </RequireAuth>
-              }
-            />
+            <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
+            <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
+            <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
+            <Route path="zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
+            <Route path="yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
+            <Route path="diet" element={<RequireAuth><Diet /></RequireAuth>} />
+            <Route path="workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
+            <Route path="progress" element={<RequireAuth><Progress /></RequireAuth>} />
+            <Route path="injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
+            <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
+            <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
+            <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
 
-            <Route
-              path="contact"
-              element={
-                <RequireAuth>
-                  <Contact />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="gym"
-              element={
-                <RequireAuth>
-                  <Gym />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="zumba"
-              element={
-                <RequireAuth>
-                  <Zumba />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="yoga"
-              element={
-                <RequireAuth>
-                  <Yoga />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="diet"
-              element={
-                <RequireAuth>
-                  <Diet />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="workout"
-              element={
-                <RequireAuth>
-                  <SmartWorkoutPlanner />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="progress"
-              element={
-                <RequireAuth>
-                  <Progress />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="injury"
-              element={
-                <RequireAuth>
-                  <InjurySafe />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="gamification"
-              element={
-                <RequireAuth>
-                  <Gamification />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="join"
-              element={
-                <RequireAuth>
-                  <Join />
-                </RequireAuth>
-              }
-            />
-
-            <Route
-              path="change-password"
-              element={
-                <RequireAuth>
-                  <ChangePassword />
-                </RequireAuth>
-              }
-            />
-
-            {/* fallback */}
             <Route path="*" element={<Navigate to="/home" replace />} />
 
           </Routes>
@@ -239,13 +140,11 @@ export default function App() {
 
       </AnimatePresence>
 
-      {/* Footer */}
       <Footer />
 
-      {/* Chatbot */}
       <Chatbot />
 
-      {/* Auth Modals */}
+      {/* AUTH MODALS */}
 
       <AnimatePresence>
         {modalOpen && (
