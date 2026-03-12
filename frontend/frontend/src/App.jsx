@@ -36,7 +36,7 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // FIXED modal detection
+  // detect login/signup modal routes
   const modalOpen = useMemo(() => {
     const p = location.pathname;
     return p.startsWith("/home/login") || p.startsWith("/home/signup");
@@ -47,7 +47,7 @@ export default function App() {
 
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-    if (modalOpen) return { pathname: "/home" };
+    if (modalOpen) return { pathname: "/" };
     return null;
   }, [stateBg, modalOpen]);
 
@@ -96,18 +96,7 @@ export default function App() {
 
             {/* HOME PAGE */}
             <Route
-              path="/home"
-              element={
-                <>
-                  <Hero />
-                  <Services />
-                  <Plans />
-                </>
-              }
-            />
-
-            <Route
-              index
+              path="/"
               element={
                 <>
                   <Hero />
@@ -118,7 +107,6 @@ export default function App() {
             />
 
             {/* PROTECTED ROUTES */}
-
             <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
             <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
             <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
@@ -151,7 +139,7 @@ export default function App() {
           <Routes location={location}>
 
             <Route
-              path="/home/login"
+              path="login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" onSuccess={closeModalSuccess} />
@@ -160,7 +148,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/signup"
+              path="signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" onSuccess={closeModalSuccess} />
