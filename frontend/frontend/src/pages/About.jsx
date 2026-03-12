@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 export default function About() {
+
   const cards = [
     {
       title: "What FitTrack Provides",
@@ -25,7 +26,7 @@ export default function About() {
   ];
 
   return (
-    <section className="relative min-h-screen bg-[#05070c] text-white px-6 py-28 overflow-hidden">
+    <section className="relative pt-32 pb-28 px-6 bg-[#05070c] text-white overflow-hidden">
 
       {/* Animated glow backgrounds */}
       <motion.div
@@ -95,6 +96,7 @@ export default function About() {
 
         {/* Info cards */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
+
           {cards.map((card, i) => (
             <motion.div
               key={i}
@@ -104,10 +106,16 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
             >
-              <h3 className="text-xl font-bold mb-4">{card.title}</h3>
-              <p className="text-gray-300 leading-relaxed">{card.desc}</p>
+              <h3 className="text-xl font-bold mb-4">
+                {card.title}
+              </h3>
+
+              <p className="text-gray-300 leading-relaxed">
+                {card.desc}
+              </p>
             </motion.div>
           ))}
+
         </div>
 
         {/* Core features */}
@@ -117,9 +125,12 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl font-bold mb-6">Core Features</h2>
+          <h2 className="text-3xl font-bold mb-6">
+            Core Features
+          </h2>
 
           <ul className="space-y-4">
+
             {features.map((f, idx) => (
               <motion.li
                 key={idx}
@@ -132,10 +143,13 @@ export default function About() {
                 {f}
               </motion.li>
             ))}
+
           </ul>
+
         </motion.div>
 
       </div>
+
     </section>
   );
 }
