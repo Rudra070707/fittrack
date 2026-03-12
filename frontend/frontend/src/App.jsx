@@ -72,16 +72,19 @@ export default function App() {
 
   return (
 
-    <div className="relative bg-[#05070c] text-white min-h-screen overflow-hidden">
+    <div className="relative text-white min-h-screen overflow-hidden">
 
-      {/* GLOBAL BACKGROUND SYSTEM */}
+      {/* ================= GLOBAL BACKGROUND ================= */}
 
-      <div className="pointer-events-none absolute inset-0">
+      <div className="pointer-events-none absolute inset-0 -z-10">
 
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
+        {/* base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
 
+        {/* subtle radial light */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
+        {/* animated glow orbs */}
         <motion.div
           className="absolute inset-0 opacity-80"
           animate={{
@@ -95,9 +98,15 @@ export default function App() {
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
         />
 
+        {/* subtle grid texture */}
+        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
+
+        {/* ⭐ premium grain overlay (Apple/Stripe trick) */}
+        <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
       </div>
 
-      {/* MAIN UI */}
+      {/* ================= MAIN UI ================= */}
 
       <div className="relative z-10">
 
@@ -116,12 +125,12 @@ export default function App() {
               duration: 0.45,
               ease: [0.22, 1, 0.36, 1]
             }}
-            className="relative z-10 pt-10"
+            className="relative pt-10"
           >
 
             <Routes location={backgroundLocation || location}>
 
-              {/* HOME PAGE */}
+              {/* HOME */}
 
               <Route
                 path="/"
@@ -163,7 +172,7 @@ export default function App() {
 
       </div>
 
-      {/* AUTH MODALS */}
+      {/* ================= AUTH MODALS ================= */}
 
       <AnimatePresence>
         {modalOpen && (

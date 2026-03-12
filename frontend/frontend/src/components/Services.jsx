@@ -31,26 +31,25 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="relative py-28 px-6 text-white overflow-hidden scroll-mt-32"
+      className="relative py-32 px-6 text-white overflow-hidden scroll-mt-32"
     >
 
-      {/* ⭐ top fade from hero */}
-      <div className="pointer-events-none absolute -top-32 left-0 w-full h-32 bg-gradient-to-b from-[#05070c] to-transparent z-10" />
+      {/* subtle transition from hero */}
+      <div className="pointer-events-none absolute -top-32 left-0 w-full h-32 bg-gradient-to-b from-[#05070c] to-transparent" />
 
-      {/* background glow */}
+      {/* glow accents */}
       <motion.div
-        className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-green-400/15 blur-[200px] rounded-full"
+        className="absolute -top-32 -left-32 w-[650px] h-[650px] bg-green-400/10 blur-[200px] rounded-full"
         animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
         transition={{ duration: 16, repeat: Infinity }}
       />
 
       <motion.div
-        className="absolute bottom-0 -right-32 w-[750px] h-[750px] bg-emerald-400/12 blur-[220px] rounded-full"
+        className="absolute bottom-0 -right-32 w-[750px] h-[750px] bg-emerald-400/10 blur-[220px] rounded-full"
         animate={{ x: [0, -80, 0], y: [0, -40, 0] }}
         transition={{ duration: 18, repeat: Infinity }}
       />
 
-      {/* heading */}
       <div className="relative z-10 text-center mb-20">
 
         <p className="text-green-400 tracking-[0.3em] text-xs font-semibold">
@@ -67,24 +66,22 @@ export default function Services() {
 
       </div>
 
-      {/* cards */}
       <div className="relative z-10 grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
 
         {services.map((s, i) => (
 
           <motion.div
             key={i}
-            whileHover={{ y: -12, scale: 1.03 }}
+            whileHover={{ y: -10, scale: 1.03 }}
             onClick={() => handleServiceClick(s.path)}
-            className="group cursor-pointer relative rounded-3xl p-[1px] bg-gradient-to-br from-white/15 via-white/5 to-transparent"
+            className="group cursor-pointer relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent"
           >
 
-            <div className="relative rounded-3xl p-8 bg-white/[0.06] backdrop-blur-2xl border border-white/10 shadow-[0_30px_100px_rgba(0,0,0,0.65)] overflow-hidden">
+            <div className="relative rounded-3xl p-8 bg-white/[0.05] backdrop-blur-xl border border-white/10 shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
 
-              {/* ⭐ glass shine */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.08),transparent)]" />
 
-              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-green-400/15 border border-green-400/25 text-2xl shadow-[0_0_20px_rgba(34,197,94,0.35)]">
+              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-green-400/15 border border-green-400/25 text-2xl">
                 {s.icon}
               </div>
 
