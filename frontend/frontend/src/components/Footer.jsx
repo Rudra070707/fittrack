@@ -6,7 +6,6 @@ export default function Footer() {
       id="contact"
       className="
       relative
-      bg-[#05070c]
       text-gray-400
       text-center
       py-20

@@ -28,7 +28,6 @@ export default function Hero() {
       text-center
       px-6
       overflow-hidden
-      bg-[#05070c]
       text-white
       "
     >
