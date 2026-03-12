@@ -5,25 +5,17 @@ export default function Hero() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Always open login modal
   const handleGetStarted = () => {
-    const isUserLoggedIn = !!localStorage.getItem("token");
-
-    if (isUserLoggedIn) {
-      navigate("/home/join");
-      return;
-    }
-
     navigate("/home/login", {
       state: { backgroundLocation: location },
     });
   };
 
+  // Open About page
   const handleLearnMore = (e) => {
     e.preventDefault();
-    const el = document.getElementById("services");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    navigate("/home/about");
   };
 
   return (
@@ -125,7 +117,7 @@ export default function Hero() {
           </button>
 
           <a
-            href="#services"
+            href="/home/about"
             onClick={handleLearnMore}
             className="border border-white/40 px-7 py-3 rounded-xl text-white hover:bg-white hover:text-black transition"
           >
