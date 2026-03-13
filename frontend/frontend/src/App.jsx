@@ -31,6 +31,8 @@ import ChangePassword from "./pages/ChangePassword";
 import AuthModal from "./components/AuthModal";
 import Gamification from "./pages/Gamification";
 
+import SelectRole from "./pages/SelectRole"; // ⭐ added
+
 export default function App() {
 
   const location = useLocation();
@@ -46,7 +48,7 @@ export default function App() {
 
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-    if (modalOpen) return { pathname: "/" };
+    if (modalOpen) return { pathname: "/home" }; // ⭐ fixed
     return null;
   }, [stateBg, modalOpen]);
 
@@ -78,13 +80,10 @@ export default function App() {
 
       <div className="pointer-events-none absolute inset-0 -z-10">
 
-        {/* base gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
 
-        {/* subtle radial light */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
-        {/* animated glow orbs */}
         <motion.div
           className="absolute inset-0 opacity-80"
           animate={{
@@ -98,10 +97,8 @@ export default function App() {
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* subtle grid texture */}
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
 
-        {/* ⭐ premium grain overlay (Apple/Stripe trick) */}
         <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
       </div>
@@ -130,8 +127,10 @@ export default function App() {
 
             <Routes location={backgroundLocation || location}>
 
-              {/* HOME */}
+              {/* ⭐ ROLE SELECT PAGE */}
+              <Route path="/home" element={<SelectRole />} />
 
+              {/* MAIN LANDING PAGE */}
               <Route
                 path="/"
                 element={
