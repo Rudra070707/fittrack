@@ -128,7 +128,7 @@ export default function App() {
             <Routes location={backgroundLocation || location}>
 
               {/* ⭐ ROLE SELECT PAGE */}
-              <Route path="/home" element={<SelectRole />} />
+              <Route path="/" element={<SelectRole />} />
 
               {/* MAIN LANDING PAGE */}
               <Route
