@@ -31,7 +31,7 @@ import ChangePassword from "./pages/ChangePassword";
 import AuthModal from "./components/AuthModal";
 import Gamification from "./pages/Gamification";
 
-import SelectRole from "./pages/SelectRole"; // ⭐ added
+import SelectRole from "./pages/SelectRole";
 
 export default function App() {
 
@@ -48,7 +48,7 @@ export default function App() {
 
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-    if (modalOpen) return { pathname: "/home" }; // ⭐ fixed
+    if (modalOpen) return { pathname: "/home" };
     return null;
   }, [stateBg, modalOpen]);
 
@@ -76,7 +76,7 @@ export default function App() {
 
     <div className="relative text-white min-h-screen overflow-hidden">
 
-      {/* ================= GLOBAL BACKGROUND ================= */}
+      {/* GLOBAL BACKGROUND */}
 
       <div className="pointer-events-none absolute inset-0 -z-10">
 
@@ -88,10 +88,9 @@ export default function App() {
           className="absolute inset-0 opacity-80"
           animate={{
             background: [
-              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
-              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
-              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)",
-              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)"
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(34,197,94,0.20), transparent 55%)",
+              "radial-gradient(circle at 70% 20%, rgba(34,197,94,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(16,185,129,0.18), transparent 55%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(34,197,94,0.20), transparent 55%)",
             ]
           }}
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
@@ -99,11 +98,9 @@ export default function App() {
 
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
 
-        <div className="absolute inset-0 opacity-[0.05] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-
       </div>
 
-      {/* ================= MAIN UI ================= */}
+      {/* MAIN UI */}
 
       <div className="relative z-10">
 
@@ -118,21 +115,16 @@ export default function App() {
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{
-              duration: 0.45,
-              ease: [0.22, 1, 0.36, 1]
-            }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="relative pt-10"
           >
 
             <Routes location={backgroundLocation || location}>
 
-              {/* ⭐ ROLE SELECT PAGE */}
-              <Route path="/" element={<SelectRole />} />
+              {/* HOME LANDING */}
 
-              {/* MAIN LANDING PAGE */}
               <Route
-                path="/"
+                path="/home"
                 element={
                   <>
                     <Hero />
@@ -142,20 +134,24 @@ export default function App() {
                 }
               />
 
+              {/* ROLE SELECT PAGE */}
+
+              <Route path="/home/select" element={<SelectRole />} />
+
               {/* PROTECTED ROUTES */}
 
-              <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
-              <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
-              <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
-              <Route path="zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
-              <Route path="yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
-              <Route path="diet" element={<RequireAuth><Diet /></RequireAuth>} />
-              <Route path="workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
-              <Route path="progress" element={<RequireAuth><Progress /></RequireAuth>} />
-              <Route path="injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
-              <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
-              <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
-              <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+              <Route path="/home/about" element={<RequireAuth><About /></RequireAuth>} />
+              <Route path="/home/contact" element={<RequireAuth><Contact /></RequireAuth>} />
+              <Route path="/home/gym" element={<RequireAuth><Gym /></RequireAuth>} />
+              <Route path="/home/zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
+              <Route path="/home/yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
+              <Route path="/home/diet" element={<RequireAuth><Diet /></RequireAuth>} />
+              <Route path="/home/workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
+              <Route path="/home/progress" element={<RequireAuth><Progress /></RequireAuth>} />
+              <Route path="/home/injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
+              <Route path="/home/gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
+              <Route path="/home/join" element={<RequireAuth><Join /></RequireAuth>} />
+              <Route path="/home/change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
 
               <Route path="*" element={<Navigate to="/home" replace />} />
 
@@ -171,14 +167,16 @@ export default function App() {
 
       </div>
 
-      {/* ================= AUTH MODALS ================= */}
+      {/* AUTH MODALS */}
 
       <AnimatePresence>
+
         {modalOpen && (
+
           <Routes location={location}>
 
             <Route
-              path="login"
+              path="/home/login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" onSuccess={closeModalSuccess} />
@@ -187,7 +185,7 @@ export default function App() {
             />
 
             <Route
-              path="signup"
+              path="/home/signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" onSuccess={closeModalSuccess} />
@@ -196,7 +194,9 @@ export default function App() {
             />
 
           </Routes>
+
         )}
+
       </AnimatePresence>
 
     </div>

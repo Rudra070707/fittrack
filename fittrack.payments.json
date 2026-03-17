@@ -1,0 +1,17 @@
+[{
+  "_id": {
+    "$oid": "697e107f90f02dfad098dee0"
+  },
+  "userId": {
+    "$oid": "697e0f6f90f02dfad098ded1"
+  },
+  "amount": 9999,
+  "plan": "Basic Plan",
+  "status": "success",
+  "date": {
+    "$date": "2026-01-31T14:23:59.709Z"
+  },
+  "__v": 0,
+  "userEmail": "rudra1@gmail.com",
+  "userName": "Rudra"
+}]

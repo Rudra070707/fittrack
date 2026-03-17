@@ -1,0 +1,46 @@
+[{
+  "_id": {
+    "$oid": "696a6b2846453379fb574952"
+  },
+  "date": {
+    "$date": "2026-01-15T18:30:00.000Z"
+  },
+  "userId": {
+    "$oid": "6954d9f3d212ace4f063dd82"
+  },
+  "__v": 0,
+  "bodyFat": 10,
+  "createdAt": {
+    "$date": "2026-01-16T16:45:28.662Z"
+  },
+  "didWorkout": true,
+  "updatedAt": {
+    "$date": "2026-01-16T16:46:11.654Z"
+  },
+  "weightKg": 70,
+  "workoutMinutes": 30,
+  "workoutType": "Push"
+},
+{
+  "_id": {
+    "$oid": "696b8bc546453379fb574953"
+  },
+  "userId": {
+    "$oid": "696b88f11584c073b22f9df9"
+  },
+  "date": {
+    "$date": "2026-01-16T18:30:00.000Z"
+  },
+  "__v": 0,
+  "bodyFat": 18,
+  "createdAt": {
+    "$date": "2026-01-17T13:16:53.388Z"
+  },
+  "didWorkout": true,
+  "updatedAt": {
+    "$date": "2026-01-17T13:16:53.388Z"
+  },
+  "weightKg": 70,
+  "workoutMinutes": 45,
+  "workoutType": "Push"
+}]

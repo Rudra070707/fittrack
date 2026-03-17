@@ -1,0 +1,53 @@
+[{
+  "_id": {
+    "$oid": "696a3f59935682e87afe664e"
+  },
+  "name": "Basic Plan",
+  "code": "basic",
+  "price": 999,
+  "durationMonths": 1,
+  "features": [
+    "Gym Access",
+    "Locker Facility",
+    "Basic Support"
+  ],
+  "highlight": false,
+  "__v": 0,
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "696a3f59935682e87afe664f"
+  },
+  "name": "Premium Plan",
+  "code": "premium",
+  "price": 1999,
+  "durationMonths": 1,
+  "features": [
+    "Gym + Zumba + Yoga",
+    "Personal Trainer",
+    "Diet Consultation",
+    "Priority Support"
+  ],
+  "highlight": true,
+  "__v": 0,
+  "description": ""
+},
+{
+  "_id": {
+    "$oid": "696a3f59935682e87afe6650"
+  },
+  "name": "Elite Plan",
+  "code": "elite",
+  "price": 2999,
+  "durationMonths": 1,
+  "features": [
+    "All Premium Benefits",
+    "AI Diet Assistant",
+    "Workout Analytics",
+    "VIP Lounge Access"
+  ],
+  "highlight": false,
+  "__v": 0,
+  "description": ""
+}]

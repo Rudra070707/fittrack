@@ -1,0 +1,128 @@
+[{
+  "_id": {
+    "$oid": "696b88f11584c073b22f9df9"
+  },
+  "name": "Test User",
+  "email": "testuser@gmail.com",
+  "password": "$2b$10$/N1PiTx.Rul5Pyu3Wq9SXuk0.TWCXG5sjn/iO5zEP5PGWvnEGYsom",
+  "role": "user",
+  "createdAt": {
+    "$date": "2026-01-17T13:04:49.478Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-17T13:04:49.478Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "696c86861cc6d275f6142167"
+  },
+  "name": "Demo User",
+  "email": "demo12345@gmail.com",
+  "password": "$2b$10$Pe4X0gdqlSi7.vshrkQ3Ku6QdYV2GWELbVUsyM5u1hYSz4DfsLtxG",
+  "role": "user",
+  "plan": "Basic Plan",
+  "planStart": {
+    "$date": "2026-01-18T07:06:45.956Z"
+  },
+  "planEnd": {
+    "$date": "2026-02-18T07:06:45.956Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-18T07:06:46.198Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-18T07:06:46.198Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "696c86de1cc6d275f614217f"
+  },
+  "name": "Rudra",
+  "email": "rudra@gmail.com",
+  "password": "$2b$10$GmQ35yc9bbZ40CyXdfJrxebMU9D0B79xqe66asfzvWgH8IIRBfeW2",
+  "role": "user",
+  "plan": "Elite Plan",
+  "planStart": {
+    "$date": "2026-01-18T07:09:31.287Z"
+  },
+  "planEnd": {
+    "$date": "2026-02-18T07:09:31.287Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-18T07:08:14.572Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-18T07:09:31.287Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "696c8bbbe3ef24e7cf0a5490"
+  },
+  "name": "Yadnesh ",
+  "email": "yadnesh@gmail.com",
+  "password": "$2b$10$b/orTIOPyDE5CAvsWD.OLuifCAf3RKNgBoawLTMqG3LAuSW2aXpVO",
+  "role": "user",
+  "plan": "Premium Plan",
+  "planStart": {
+    "$date": "2026-01-18T07:28:58.975Z"
+  },
+  "planEnd": {
+    "$date": "2026-02-18T07:28:58.975Z"
+  },
+  "createdAt": {
+    "$date": "2026-01-18T07:28:59.228Z"
+  },
+  "updatedAt": {
+    "$date": "2026-01-18T07:28:59.228Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "697e0f6f90f02dfad098ded1"
+  },
+  "name": "Rudra",
+  "email": "rudra1@gmail.com",
+  "password": "$2b$10$3EZ/xEhzs5ah2qvauAycwOWZPEdwPaWc/G0rsHNG/xkms19aCYtaK",
+  "role": "user",
+  "mustChangePassword": false,
+  "createdAt": {
+    "$date": "2026-01-31T14:19:27.979Z"
+  },
+  "updatedAt": {
+    "$date": "2026-02-01T08:08:22.172Z"
+  },
+  "__v": 0,
+  "phone": "9370563484",
+  "plan": "Basic Plan",
+  "planEnd": {
+    "$date": "2026-03-01T08:08:22.143Z"
+  },
+  "planStart": {
+    "$date": "2026-02-01T08:08:22.143Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "69883419faa99c32be8a6358"
+  },
+  "name": "Rudra",
+  "email": "hxizkbbbff@gmail.com",
+  "password": "$2b$10$/OR0e6r/jdmYvs7ouSrGredzU6QjCWk1xPgoJJzUo7dzo5FyVAwq.",
+  "role": "user",
+  "mustChangePassword": false,
+  "zumbaNotify": true,
+  "createdAt": {
+    "$date": "2026-02-08T06:58:33.952Z"
+  },
+  "updatedAt": {
+    "$date": "2026-02-08T06:58:33.952Z"
+  },
+  "__v": 0
+}]

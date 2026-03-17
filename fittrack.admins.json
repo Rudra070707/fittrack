@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "6952822634c5f5aed7487828"
+  },
+  "email": "admin@fittrack.com",
+  "password": "$2b$10$Whw2dE4ljTt0DEWAHpLfV.ct9nrhmiaBmCGag3Q3QWB6ZK6JFdV0m",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6954d9f3d212ace4f063dd82"
+  },
+  "email": "Rudra@123",
+  "password": "$2b$10$JaBW4AvAk5FR2a/WwoSTGe4PfEsR.Ij8J.2lpOojTwixZlaMLTdzm",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695e01b653d307f48517c6f3"
+  },
+  "email": "admin@gmail.com",
+  "password": "$2b$10$1W9eSm4ZZbDSGARHt5zsguvK3c2NJaI6uAWAGTc/zGrPucHnESW/K",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "696b8cc21177c3f8ff1871cf"
+  },
+  "email": "rudra@gmail.com",
+  "password": "$2b$10$hYKg0cqmMV8SwQAacX/5sewKPENVDt81R7MbhYcS3dS0AjBQLm9WK",
+  "__v": 0
+}]
