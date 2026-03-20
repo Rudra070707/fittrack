@@ -46,9 +46,13 @@ export default function App() {
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
+  // ✅ FIXED
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-    if (modalOpen) return { pathname: "/home" };
+
+    // 👉 if user directly opens /home/login → DON'T override
+    if (modalOpen && !stateBg) return null;
+
     return null;
   }, [stateBg, modalOpen]);
 
@@ -72,7 +76,7 @@ export default function App() {
 
     <div className="relative text-white min-h-screen overflow-hidden">
 
-      {/* GLOBAL BACKGROUND */}
+      {/* BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
@@ -92,30 +96,26 @@ export default function App() {
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
       </div>
 
-      {/* MAIN UI */}
+      {/* MAIN */}
       <div className="relative z-10">
 
         <Navbar />
-
         <ServicesSubnav show={!modalOpen} />
 
         <AnimatePresence mode="wait">
-
           <motion.main
             key={(backgroundLocation || location).pathname}
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.45 }}
             className="relative pt-10"
           >
 
             <Routes location={backgroundLocation || location}>
 
-              {/* DEFAULT ROUTE */}
               <Route path="/" element={<Navigate to="/home" replace />} />
 
-              {/* HOME */}
               <Route
                 path="/home"
                 element={
@@ -148,49 +148,41 @@ export default function App() {
             </Routes>
 
           </motion.main>
-
         </AnimatePresence>
 
         <Footer />
         <Chatbot />
-
       </div>
 
-      {/* AUTH MODALS */}
+      {/* MODAL */}
       <AnimatePresence>
-
-        {modalOpen && (
-
+        {modalOpen && stateBg && (
           <Routes location={location}>
-
             <Route
               path="/home/login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
-                  <Login
-                    mode="modal"
-                    onSuccess={(redirectTo) => {
-                      navigate(redirectTo || "/home", { replace: true });
-                    }}
-                  />
+                  <Login mode="modal" />
                 </AuthModal>
               }
             />
-
             <Route
               path="/home/signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
-                  <Signup mode="modal" onSuccess={closeModal} />
+                  <Signup mode="modal" />
                 </AuthModal>
               }
             />
-
           </Routes>
-
         )}
-
       </AnimatePresence>
+
+      {/* ✅ DIRECT PAGE LOGIN FIX */}
+      <Routes>
+        <Route path="/home/login" element={<Login />} />
+        <Route path="/home/signup" element={<Signup />} />
+      </Routes>
 
     </div>
   );
