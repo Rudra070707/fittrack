@@ -18,9 +18,15 @@ export default function Services() {
       !!localStorage.getItem("token") ||
       !!localStorage.getItem("adminToken");
 
+    // ✅ prevent re-navigation to same route
+    if (location.pathname === path) return;
+
     if (!isLoggedIn) {
       navigate("/home/login", {
-        state: { backgroundLocation: location },
+        state: {
+          backgroundLocation: location,
+          redirectTo: path, // ✅ IMPORTANT (same as subnav)
+        },
       });
       return;
     }

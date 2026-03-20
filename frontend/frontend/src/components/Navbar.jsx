@@ -212,9 +212,8 @@ export default function Navbar() {
           {/* Login Button */}
           {!isUserLoggedIn && (
 
-            <Link
-              to="/home/login"
-              state={{ backgroundLocation: location }}
+            <button
+              onClick={openLogin}
               className="
               px-5 py-2 text-sm font-semibold
               rounded-xl
@@ -225,7 +224,7 @@ export default function Navbar() {
               "
             >
               Login
-            </Link>
+            </button>
 
           )}
 

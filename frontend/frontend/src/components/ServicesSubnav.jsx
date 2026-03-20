@@ -21,15 +21,20 @@ export default function ServicesSubnav({ show }) {
   const handleProtectedClick = (e, target) => {
     const isUserLoggedIn = !!localStorage.getItem("token");
 
+    // ✅ prevent unnecessary navigation if already on same page
+    if (location.pathname === target) return;
+
     if (!isUserLoggedIn) {
       e.preventDefault();
 
       navigate("/home/login", {
         state: {
           backgroundLocation: location,
-          redirectTo: target
+          redirectTo: target, // ✅ used later after login
         },
       });
+
+      return;
     }
   };
 

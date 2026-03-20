@@ -68,20 +68,13 @@ export default function App() {
     else navigate("/home", { replace: true });
   };
 
-  const closeModalSuccess = () => {
-    navigate("/home", { replace: true });
-  };
-
   return (
 
     <div className="relative text-white min-h-screen overflow-hidden">
 
       {/* GLOBAL BACKGROUND */}
-
       <div className="pointer-events-none absolute inset-0 -z-10">
-
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
-
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
         <motion.div
@@ -97,11 +90,9 @@ export default function App() {
         />
 
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
-
       </div>
 
       {/* MAIN UI */}
-
       <div className="relative z-10">
 
         <Navbar />
@@ -121,8 +112,10 @@ export default function App() {
 
             <Routes location={backgroundLocation || location}>
 
-              {/* HOME LANDING */}
+              {/* DEFAULT ROUTE */}
+              <Route path="/" element={<Navigate to="/home" replace />} />
 
+              {/* HOME */}
               <Route
                 path="/home"
                 element={
@@ -134,12 +127,9 @@ export default function App() {
                 }
               />
 
-              {/* ROLE SELECT PAGE */}
-
               <Route path="/home/select" element={<SelectRole />} />
 
-              {/* PROTECTED ROUTES */}
-
+              {/* PROTECTED */}
               <Route path="/home/about" element={<RequireAuth><About /></RequireAuth>} />
               <Route path="/home/contact" element={<RequireAuth><Contact /></RequireAuth>} />
               <Route path="/home/gym" element={<RequireAuth><Gym /></RequireAuth>} />
@@ -162,13 +152,11 @@ export default function App() {
         </AnimatePresence>
 
         <Footer />
-
         <Chatbot />
 
       </div>
 
       {/* AUTH MODALS */}
-
       <AnimatePresence>
 
         {modalOpen && (
@@ -179,7 +167,12 @@ export default function App() {
               path="/home/login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
-                  <Login mode="modal" onSuccess={closeModalSuccess} />
+                  <Login
+                    mode="modal"
+                    onSuccess={(redirectTo) => {
+                      navigate(redirectTo || "/home", { replace: true });
+                    }}
+                  />
                 </AuthModal>
               }
             />
@@ -188,7 +181,7 @@ export default function App() {
               path="/home/signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
-                  <Signup mode="modal" onSuccess={closeModalSuccess} />
+                  <Signup mode="modal" onSuccess={closeModal} />
                 </AuthModal>
               }
             />
