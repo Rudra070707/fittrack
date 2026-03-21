@@ -38,9 +38,6 @@ export default function Login({ mode = "page", onSuccess }) {
   const sx = useSpring(mx,{stiffness:120,damping:25,mass:0.6});
   const sy = useSpring(my,{stiffness:120,damping:25,mass:0.6});
 
-  const bgX = useTransform(sx,v => (v-window.innerWidth/2)*0.012);
-  const bgY = useTransform(sy,v => (v-window.innerHeight/2)*0.012);
-
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
 
@@ -93,7 +90,6 @@ export default function Login({ mode = "page", onSuccess }) {
   };
 
   const handleSubmit = async(e)=>{
-
     e.preventDefault();
     setError("");
 
@@ -103,7 +99,6 @@ export default function Login({ mode = "page", onSuccess }) {
     }
 
     try{
-
       setLoading(true);
 
       const data = await loginUser(email,password);
@@ -116,7 +111,6 @@ export default function Login({ mode = "page", onSuccess }) {
       if(data.token) localStorage.setItem("token",data.token);
       if(data.user) localStorage.setItem("user",JSON.stringify(data.user));
 
-      // ✅ ONLY FIX (no logic change)
       if(mode==="modal" && onSuccess){
         onSuccess(safeRedirect);
         return;
@@ -125,10 +119,8 @@ export default function Login({ mode = "page", onSuccess }) {
       navigate(safeRedirect,{replace:true,state:redirectState});
 
     }catch(err){
-
       console.error(err);
       setError("Network / server error. Please try again.");
-
     }finally{
       setLoading(false);
     }
@@ -158,9 +150,43 @@ export default function Login({ mode = "page", onSuccess }) {
         className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
       >
 
-        {/* UI remains unchanged */}
+        {/* HEADER */}
+        <div className="relative text-center mb-7">
+          <h2 className="text-3xl font-extrabold">
+            Welcome <span className="text-emerald-400">Back</span>
+          </h2>
+        </div>
 
-        {/* (KEEP EVERYTHING SAME BELOW — no change needed) */}
+        {/* EMAIL */}
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e)=>setEmail(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4"
+        />
+
+        {/* PASSWORD */}
+        <input
+          type={showPass ? "text" : "password"}
+          placeholder="Password"
+          value={password}
+          onChange={(e)=>setPassword(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4"
+        />
+
+        {/* ERROR */}
+        {error && (
+          <p className="text-red-400 text-sm mb-3">{error}</p>
+        )}
+
+        {/* BUTTON */}
+        <button
+          type="submit"
+          className="w-full py-3 bg-emerald-400 text-black rounded-xl font-semibold"
+        >
+          {loading ? "Signing in..." : "Login"}
+        </button>
 
       </motion.form>
 
@@ -171,7 +197,7 @@ export default function Login({ mode = "page", onSuccess }) {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"
+      className="relative min-h-screen flex items-center justify-center bg-slate-950"
       onMouseMove={isFinePointer?onMove:undefined}
       onMouseLeave={isFinePointer?onLeave:undefined}
     >
