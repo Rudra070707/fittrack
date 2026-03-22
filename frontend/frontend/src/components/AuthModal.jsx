@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function AuthModal({ title, children, onClose }) {
 
-  // ESC close + lock scroll
+  // ✅ Lock scroll + ESC close
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -29,20 +29,20 @@ export default function AuthModal({ title, children, onClose }) {
       transition={{ duration: 0.25 }}
     >
 
-      {/* Backdrop */}
+      {/* BACKDROP */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25 }}
-        onClick={onClose}
+        onClick={onClose} // ✅ click outside closes modal
       >
 
         <div className="absolute inset-0 bg-black/70" />
         <div className="absolute inset-0 backdrop-blur-[12px]" />
 
-        {/* aurora glow */}
+        {/* glow */}
         <motion.div
           className="absolute -top-56 -left-56 h-[520px] w-[520px] rounded-full bg-emerald-400/20 blur-[120px]"
           animate={{ x: [0, 70, 0], y: [0, 40, 0] }}
@@ -55,20 +55,19 @@ export default function AuthModal({ title, children, onClose }) {
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* grain texture */}
+        {/* texture */}
         <div className="absolute inset-0 opacity-[0.18] bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.10)_1px,transparent_0)] [background-size:22px_22px]" />
 
       </motion.div>
 
-      {/* Modal Card */}
+      {/* MODAL CARD */}
       <motion.div
-        className="relative w-full max-w-md rounded-[28px] overflow-hidden"
+        className="relative z-10 w-full max-w-md rounded-[28px]"
         initial={{ y: 30, scale: 0.96, opacity: 0 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}
         exit={{ y: 20, scale: 0.98, opacity: 0 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-        onClick={(e) => e.stopPropagation()}
-        style={{ willChange: "transform, opacity" }}
+        onClick={(e) => e.stopPropagation()} // ✅ prevent close on inside click
       >
 
         {/* outer glow */}
@@ -76,14 +75,14 @@ export default function AuthModal({ title, children, onClose }) {
 
         <div className="relative rounded-[28px] border border-white/10 bg-[#08101c]/75 backdrop-blur-2xl shadow-[0_35px_140px_rgba(0,0,0,0.78)] overflow-hidden">
 
-          {/* inner shine */}
+          {/* shine */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 -left-20 h-64 w-64 rotate-12 bg-white/10 blur-2xl" />
             <div className="absolute top-10 right-8 h-24 w-44 rotate-12 bg-white/7 blur-xl" />
             <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/30" />
           </div>
 
-          {/* Header */}
+          {/* HEADER */}
           <div className="relative flex items-center justify-between px-6 py-4 border-b border-white/10">
 
             <p className="text-white/80 text-xs tracking-[0.35em] uppercase">
@@ -96,14 +95,14 @@ export default function AuthModal({ title, children, onClose }) {
               aria-label="Close"
               type="button"
             >
-              <span className="text-white/70 group-hover:text-white text-xl leading-none transition">
+              <span className="text-white/70 group-hover:text-white text-xl">
                 ×
               </span>
             </button>
 
           </div>
 
-          {/* Body */}
+          {/* BODY */}
           <div className="relative p-6">
             {children}
           </div>

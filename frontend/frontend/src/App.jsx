@@ -46,15 +46,11 @@ export default function App() {
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
-  // ✅ FIXED
+  // ✅ IMPORTANT FIX (DO NOT BREAK DIRECT LOGIN PAGE)
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
-
-    // 👉 if user directly opens /home/login → DON'T override
-    if (modalOpen && !stateBg) return null;
-
     return null;
-  }, [stateBg, modalOpen]);
+  }, [stateBg]);
 
   useEffect(() => {
     const id = location.state?.scrollTo;
@@ -76,9 +72,11 @@ export default function App() {
 
     <div className="relative text-white min-h-screen overflow-hidden">
 
-      {/* BACKGROUND */}
+      {/* GLOBAL BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 -z-10">
+
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
+
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
         <motion.div
@@ -94,15 +92,17 @@ export default function App() {
         />
 
         <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
+
       </div>
 
-      {/* MAIN */}
+      {/* MAIN UI */}
       <div className="relative z-10">
 
         <Navbar />
         <ServicesSubnav show={!modalOpen} />
 
         <AnimatePresence mode="wait">
+
           <motion.main
             key={(backgroundLocation || location).pathname}
             initial={{ opacity: 0, y: 25 }}
@@ -114,8 +114,10 @@ export default function App() {
 
             <Routes location={backgroundLocation || location}>
 
+              {/* DEFAULT */}
               <Route path="/" element={<Navigate to="/home" replace />} />
 
+              {/* HOME */}
               <Route
                 path="/home"
                 element={
@@ -127,9 +129,10 @@ export default function App() {
                 }
               />
 
+              {/* SELECT ROLE */}
               <Route path="/home/select" element={<SelectRole />} />
 
-              {/* PROTECTED */}
+              {/* PROTECTED ROUTES */}
               <Route path="/home/about" element={<RequireAuth><About /></RequireAuth>} />
               <Route path="/home/contact" element={<RequireAuth><Contact /></RequireAuth>} />
               <Route path="/home/gym" element={<RequireAuth><Gym /></RequireAuth>} />
@@ -148,16 +151,21 @@ export default function App() {
             </Routes>
 
           </motion.main>
+
         </AnimatePresence>
 
         <Footer />
         <Chatbot />
+
       </div>
 
-      {/* MODAL */}
+      {/* MODAL LOGIN (ONLY WHEN OPENED FROM HOME) */}
       <AnimatePresence>
+
         {modalOpen && stateBg && (
+
           <Routes location={location}>
+
             <Route
               path="/home/login"
               element={
@@ -166,6 +174,7 @@ export default function App() {
                 </AuthModal>
               }
             />
+
             <Route
               path="/home/signup"
               element={
@@ -174,11 +183,14 @@ export default function App() {
                 </AuthModal>
               }
             />
+
           </Routes>
+
         )}
+
       </AnimatePresence>
 
-      {/* ✅ DIRECT PAGE LOGIN FIX */}
+      {/* ✅ DIRECT PAGE ROUTES (CRITICAL FIX) */}
       <Routes>
         <Route path="/home/login" element={<Login />} />
         <Route path="/home/signup" element={<Signup />} />

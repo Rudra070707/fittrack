@@ -14,27 +14,19 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
       <Routes>
 
-        {/* OPEN PROJECT */}
-        {isDev ? (
-          <Route path="/" element={<Navigate to="/admin/login" replace />} />
-        ) : (
-          <Route path="/" element={<Navigate to="/home" replace />} />
-        )}
+        {/* ✅ ALWAYS START FROM HOME */}
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
         {/* CUSTOMER SIDE */}
         <Route path="/home/*" element={<App />} />
 
-        {/* ADMIN PANEL (LOCAL ONLY) */}
+        {/* ADMIN PANEL (ONLY DEV) */}
         {isDev && (
           <Route path="/admin/*" element={<AdminLayout />} />
         )}
 
         {/* FALLBACK */}
-        {isDev ? (
-          <Route path="*" element={<Navigate to="/admin/login" replace />} />
-        ) : (
-          <Route path="*" element={<Navigate to="/home" replace />} />
-        )}
+        <Route path="*" element={<Navigate to="/home" replace />} />
 
       </Routes>
 

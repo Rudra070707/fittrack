@@ -111,6 +111,7 @@ export default function Login({ mode = "page", onSuccess }) {
       if(data.token) localStorage.setItem("token",data.token);
       if(data.user) localStorage.setItem("user",JSON.stringify(data.user));
 
+      // ✅ FIX: handle modal properly
       if(mode==="modal" && onSuccess){
         onSuccess(safeRedirect);
         return;
@@ -151,7 +152,7 @@ export default function Login({ mode = "page", onSuccess }) {
       >
 
         {/* HEADER */}
-        <div className="relative text-center mb-7">
+        <div className="text-center mb-7">
           <h2 className="text-3xl font-extrabold">
             Welcome <span className="text-emerald-400">Back</span>
           </h2>
@@ -163,7 +164,7 @@ export default function Login({ mode = "page", onSuccess }) {
           placeholder="Email"
           value={email}
           onChange={(e)=>setEmail(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4"
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
         />
 
         {/* PASSWORD */}
@@ -172,7 +173,7 @@ export default function Login({ mode = "page", onSuccess }) {
           placeholder="Password"
           value={password}
           onChange={(e)=>setPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4"
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
         />
 
         {/* ERROR */}
@@ -183,6 +184,7 @@ export default function Login({ mode = "page", onSuccess }) {
         {/* BUTTON */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full py-3 bg-emerald-400 text-black rounded-xl font-semibold"
         >
           {loading ? "Signing in..." : "Login"}
