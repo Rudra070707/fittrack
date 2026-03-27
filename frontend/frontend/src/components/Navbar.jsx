@@ -89,17 +89,27 @@ export default function Navbar() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  // ✅ NEW: LOGOUT FUNCTION
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+
+    setIsUserLoggedIn(false);
+
+    navigate("/home", { replace: true });
+  };
+
   if (shouldHide) return null;
 
   return (
-    <header className="sticky top-0 z-[60] h-16"> {/* ✅ FIX: fixed height */}
+    <header className="sticky top-0 z-[60] h-16">
 
       <motion.nav
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.35 }}
         className={`
-        h-full   /* ✅ IMPORTANT */
+        h-full
         relative overflow-hidden
         backdrop-blur-xl border-b border-white/10
         transition-all duration-300
@@ -159,7 +169,8 @@ export default function Navbar() {
 
           </div>
 
-          {!isUserLoggedIn && (
+          {/* ✅ UPDATED BUTTON LOGIC */}
+          {!isUserLoggedIn ? (
             <button
               onClick={openLogin}
               className="
@@ -172,6 +183,20 @@ export default function Navbar() {
               "
             >
               Login
+            </button>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="
+              px-5 py-2 text-sm font-semibold
+              rounded-xl
+              bg-red-500/90
+              text-white
+              shadow-[0_12px_34px_rgba(239,68,68,0.35)]
+              hover:bg-red-600 transition
+              "
+            >
+              Logout
             </button>
           )}
 
