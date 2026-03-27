@@ -111,7 +111,6 @@ export default function Login({ mode = "page", onSuccess }) {
       if(data.token) localStorage.setItem("token",data.token);
       if(data.user) localStorage.setItem("user",JSON.stringify(data.user));
 
-      // ✅ FIX: handle modal properly
       if(mode==="modal" && onSuccess){
         onSuccess(safeRedirect);
         return;
@@ -189,6 +188,24 @@ export default function Login({ mode = "page", onSuccess }) {
         >
           {loading ? "Signing in..." : "Login"}
         </button>
+
+        {/* ✅ NEW: SIGNUP LINK */}
+        <p className="text-center text-white/60 text-sm mt-4">
+          Don’t have an account?{" "}
+          <span
+            onClick={() =>
+              navigate("/home/signup", {
+                state: {
+                  backgroundLocation:
+                    location.state?.backgroundLocation || location,
+                },
+              })
+            }
+            className="text-emerald-400 cursor-pointer hover:underline"
+          >
+            Sign up
+          </span>
+        </p>
 
       </motion.form>
 
