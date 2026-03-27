@@ -46,10 +46,10 @@ export default function App() {
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
+  // ✅ FIX 1: NEVER RETURN NULL
   const backgroundLocation = useMemo(() => {
-    if (stateBg) return stateBg;
-    return null;
-  }, [stateBg]);
+    return stateBg || location;
+  }, [stateBg, location]);
 
   useEffect(() => {
     const id = location.state?.scrollTo;
@@ -103,26 +103,27 @@ export default function App() {
         <AnimatePresence mode="wait">
 
           <motion.main
-            key={(backgroundLocation || location).pathname}
+            key={backgroundLocation.pathname}
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.45 }}
-            className="relative pt-10 min-h-screen"  // ✅ FIXED HERE
+            className="relative pt-10 min-h-screen"
           >
 
-            <Routes location={backgroundLocation || location}>
+            <Routes location={backgroundLocation}>
 
               <Route path="/" element={<Navigate to="/home" replace />} />
 
+              {/* ✅ FIX 2: REMOVE FRAGMENT */}
               <Route
                 path="/home"
                 element={
-                  <>
+                  <div>
                     <Hero />
                     <Services />
                     <Plans />
-                  </>
+                  </div>
                 }
               />
 
