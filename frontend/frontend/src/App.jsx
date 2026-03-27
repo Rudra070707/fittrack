@@ -40,13 +40,12 @@ export default function App() {
 
   const modalOpen = useMemo(() => {
     const p = location.pathname;
-    return p.startsWith("/home/login") || p.startsWith("/home/signup");
+    return p.includes("login") || p.includes("signup");
   }, [location.pathname]);
 
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
-  // ✅ FIX 1: NEVER RETURN NULL
   const backgroundLocation = useMemo(() => {
     return stateBg || location;
   }, [stateBg, location]);
@@ -71,7 +70,7 @@ export default function App() {
 
     <div className="relative text-white min-h-screen overflow-hidden">
 
-      {/* GLOBAL BACKGROUND */}
+      {/* BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 -z-10">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
@@ -82,19 +81,16 @@ export default function App() {
           className="absolute inset-0 opacity-80"
           animate={{
             background: [
-              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(34,197,94,0.20), transparent 55%)",
-              "radial-gradient(circle at 70% 20%, rgba(34,197,94,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(16,185,129,0.18), transparent 55%)",
-              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(34,197,94,0.20), transparent 55%)",
+              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%)",
+              "radial-gradient(circle at 70% 20%, rgba(34,197,94,0.26), transparent 60%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%)",
             ]
           }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 16, repeat: Infinity }}
         />
-
-        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
 
       </div>
 
-      {/* MAIN UI */}
       <div className="relative z-10">
 
         <Navbar />
@@ -111,13 +107,12 @@ export default function App() {
             className="relative pt-10 min-h-screen"
           >
 
+            {/* ✅ FIXED ROUTES */}
             <Routes location={backgroundLocation}>
 
-              <Route path="/" element={<Navigate to="/home" replace />} />
-
-              {/* ✅ FIX 2: REMOVE FRAGMENT */}
+              {/* HOME */}
               <Route
-                path="/home"
+                path="/"
                 element={
                   <div>
                     <Hero />
@@ -127,20 +122,23 @@ export default function App() {
                 }
               />
 
-              <Route path="/home/select" element={<SelectRole />} />
+              <Route path="select" element={<SelectRole />} />
 
-              <Route path="/home/about" element={<RequireAuth><About /></RequireAuth>} />
-              <Route path="/home/contact" element={<RequireAuth><Contact /></RequireAuth>} />
-              <Route path="/home/gym" element={<RequireAuth><Gym /></RequireAuth>} />
-              <Route path="/home/zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
-              <Route path="/home/yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
-              <Route path="/home/diet" element={<RequireAuth><Diet /></RequireAuth>} />
-              <Route path="/home/workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
-              <Route path="/home/progress" element={<RequireAuth><Progress /></RequireAuth>} />
-              <Route path="/home/injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
-              <Route path="/home/gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
-              <Route path="/home/join" element={<RequireAuth><Join /></RequireAuth>} />
-              <Route path="/home/change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+              <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
+              <Route path="contact" element={<RequireAuth><Contact /></RequireAuth>} />
+
+              <Route path="gym" element={<RequireAuth><Gym /></RequireAuth>} />
+              <Route path="zumba" element={<RequireAuth><Zumba /></RequireAuth>} />
+              <Route path="yoga" element={<RequireAuth><Yoga /></RequireAuth>} />
+
+              <Route path="diet" element={<RequireAuth><Diet /></RequireAuth>} />
+              <Route path="workout" element={<RequireAuth><SmartWorkoutPlanner /></RequireAuth>} />
+              <Route path="progress" element={<RequireAuth><Progress /></RequireAuth>} />
+              <Route path="injury" element={<RequireAuth><InjurySafe /></RequireAuth>} />
+
+              <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
+              <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
+              <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
 
               <Route path="*" element={<Navigate to="/home" replace />} />
 
@@ -155,6 +153,7 @@ export default function App() {
 
       </div>
 
+      {/* MODALS */}
       <AnimatePresence>
 
         {modalOpen && stateBg && (
@@ -162,7 +161,7 @@ export default function App() {
           <Routes location={location}>
 
             <Route
-              path="/home/login"
+              path="login"
               element={
                 <AuthModal onClose={closeModal} title="Login">
                   <Login mode="modal" />
@@ -171,7 +170,7 @@ export default function App() {
             />
 
             <Route
-              path="/home/signup"
+              path="signup"
               element={
                 <AuthModal onClose={closeModal} title="Signup">
                   <Signup mode="modal" />
@@ -185,9 +184,10 @@ export default function App() {
 
       </AnimatePresence>
 
+      {/* DIRECT ROUTES */}
       <Routes>
-        <Route path="/home/login" element={<Login />} />
-        <Route path="/home/signup" element={<Signup />} />
+        <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
       </Routes>
 
     </div>

@@ -14,18 +14,18 @@ ReactDOM.createRoot(document.getElementById("root")).render(
 
       <Routes>
 
-        {/* ✅ ALWAYS START FROM HOME */}
+        {/* Redirect root → /home */}
         <Route path="/" element={<Navigate to="/home" replace />} />
 
-        {/* CUSTOMER SIDE */}
+        {/* Customer App */}
         <Route path="/home/*" element={<App />} />
 
-        {/* ADMIN PANEL (ONLY DEV) */}
+        {/* Admin (dev only) */}
         {isDev && (
           <Route path="/admin/*" element={<AdminLayout />} />
         )}
 
-        {/* FALLBACK */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/home" replace />} />
 
       </Routes>
