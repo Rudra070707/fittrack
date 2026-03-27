@@ -21,7 +21,6 @@ export default function ServicesSubnav({ show }) {
   const handleProtectedClick = (e, target) => {
     const isUserLoggedIn = !!localStorage.getItem("token");
 
-    // ✅ prevent unnecessary navigation if already on same page
     if (location.pathname === target) return;
 
     if (!isUserLoggedIn) {
@@ -30,7 +29,7 @@ export default function ServicesSubnav({ show }) {
       navigate("/home/login", {
         state: {
           backgroundLocation: location,
-          redirectTo: target, // ✅ used later after login
+          redirectTo: target,
         },
       });
 
@@ -45,6 +44,7 @@ export default function ServicesSubnav({ show }) {
       transition={{ duration: 0.35 }}
       className="
         sticky top-16 z-[55]
+        h-14   /* ✅ FIX: fixed height */
         backdrop-blur-2xl
         bg-[#070b10]/80
         border-b border-white/10
@@ -77,11 +77,10 @@ export default function ServicesSubnav({ show }) {
 
       </div>
 
-      {/* gradient accent line */}
       <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-emerald-400/40 to-transparent"/>
 
       {/* nav container */}
-      <div className="relative max-w-7xl mx-auto px-6 md:px-8 py-3">
+      <div className="relative max-w-7xl mx-auto px-6 md:px-8 h-full flex items-center">
 
         <div
           className="
@@ -91,6 +90,7 @@ export default function ServicesSubnav({ show }) {
           overflow-x-auto
           whitespace-nowrap
           no-scrollbar
+          w-full
         "
         >
 

@@ -46,7 +46,6 @@ export default function App() {
   const state = location.state;
   const stateBg = state?.backgroundLocation;
 
-  // ✅ IMPORTANT FIX (DO NOT BREAK DIRECT LOGIN PAGE)
   const backgroundLocation = useMemo(() => {
     if (stateBg) return stateBg;
     return null;
@@ -109,15 +108,13 @@ export default function App() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.45 }}
-            className="relative pt-10"
+            className="relative pt-10 min-h-screen"  // ✅ FIXED HERE
           >
 
             <Routes location={backgroundLocation || location}>
 
-              {/* DEFAULT */}
               <Route path="/" element={<Navigate to="/home" replace />} />
 
-              {/* HOME */}
               <Route
                 path="/home"
                 element={
@@ -129,10 +126,8 @@ export default function App() {
                 }
               />
 
-              {/* SELECT ROLE */}
               <Route path="/home/select" element={<SelectRole />} />
 
-              {/* PROTECTED ROUTES */}
               <Route path="/home/about" element={<RequireAuth><About /></RequireAuth>} />
               <Route path="/home/contact" element={<RequireAuth><Contact /></RequireAuth>} />
               <Route path="/home/gym" element={<RequireAuth><Gym /></RequireAuth>} />
@@ -159,7 +154,6 @@ export default function App() {
 
       </div>
 
-      {/* MODAL LOGIN (ONLY WHEN OPENED FROM HOME) */}
       <AnimatePresence>
 
         {modalOpen && stateBg && (
@@ -190,7 +184,6 @@ export default function App() {
 
       </AnimatePresence>
 
-      {/* ✅ DIRECT PAGE ROUTES (CRITICAL FIX) */}
       <Routes>
         <Route path="/home/login" element={<Login />} />
         <Route path="/home/signup" element={<Signup />} />

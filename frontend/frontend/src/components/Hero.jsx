@@ -21,7 +21,7 @@ export default function Hero() {
       id="about"
       className="
       relative
-      min-h-[calc(100vh-128px)]
+      min-h-screen   /* ✅ FIXED (instead of calc) */
       flex flex-col
       justify-center
       items-center
@@ -48,7 +48,7 @@ export default function Hero() {
       {/* subtle grid */}
       <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
 
-      {/* ⭐ Glow beam behind title */}
+      {/* Glow beam */}
       <div className="pointer-events-none absolute inset-0 flex justify-center">
         <div className="w-[520px] h-[360px] bg-green-400/10 blur-[150px] rounded-full" />
       </div>
@@ -137,7 +137,7 @@ export default function Hero() {
         Scroll ↓
       </motion.div>
 
-      {/* Fade into Services */}
+      {/* Fade */}
       <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#05070c]" />
 
     </section>
