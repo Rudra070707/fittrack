@@ -28,32 +28,28 @@ export default function About() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Animated background */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
-
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]"/>
 
         <motion.div
           className="absolute inset-0 opacity-80"
           animate={{
             background:[
-              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 35%, rgba(59,130,246,0.20), transparent 55%)",
-              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.26), transparent 60%), radial-gradient(circle at 35% 80%, rgba(99,102,241,0.18), transparent 55%)",
-              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)"
+              "radial-gradient(circle at 20% 30%, rgba(16,185,129,0.25), transparent 60%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.25), transparent 60%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.25), transparent 60%)"
             ]
           }}
-          transition={{duration:16,repeat:Infinity,ease:"easeInOut"}}
+          transition={{duration:16,repeat:Infinity}}
         />
-
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6 py-24">
 
-        {/* Heading */}
+        {/* 🧠 HEADER */}
         <motion.p
-          className="text-emerald-400 font-semibold tracking-[0.3em] text-xs"
+          className="text-emerald-400 tracking-[0.3em] text-xs font-semibold"
           initial={{opacity:0,y:20}}
           animate={{opacity:1,y:0}}
         >
@@ -61,12 +57,12 @@ export default function About() {
         </motion.p>
 
         <motion.h1
-          className="text-4xl md:text-6xl font-extrabold mt-4 leading-tight"
+          className="text-4xl md:text-6xl font-extrabold mt-4 leading-tight tracking-tight"
           initial={{opacity:0,y:30}}
           animate={{opacity:1,y:0}}
         >
           Smart Fitness.
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(34,197,94,0.6)]">
             {" "}Simple Progress.
           </span>
         </motion.h1>
@@ -82,7 +78,7 @@ export default function About() {
           — while keeping the experience smooth, clean, and intuitive.
         </motion.p>
 
-        {/* Feature chips */}
+        {/* 💎 FEATURE CHIPS */}
         <div className="mt-10 flex flex-wrap gap-3">
 
           {[
@@ -91,47 +87,69 @@ export default function About() {
             "Progress Tracking",
             "Injury-Safe Training",
           ].map((t,i)=>(
+
             <motion.span
               key={i}
-              whileHover={{scale:1.05}}
-              className="px-4 py-2 rounded-full text-sm bg-white/6 border border-white/12 backdrop-blur-xl text-white/80 hover:border-emerald-400/40 hover:shadow-[0_0_25px_rgba(34,197,94,0.35)] transition-all"
+              whileHover={{scale:1.08}}
+              className="
+                px-4 py-2 rounded-full text-sm
+                bg-white/5 border border-white/10
+                backdrop-blur-xl text-white/80
+                transition-all duration-300
+                hover:border-emerald-400/40
+                hover:shadow-[0_0_25px_rgba(34,197,94,0.35)]
+              "
             >
               <span className="text-emerald-400 font-bold mr-2">•</span>
               {t}
             </motion.span>
+
           ))}
 
         </div>
 
-        {/* Info cards */}
+        {/* 🧊 INFO CARDS */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">
 
           {cards.map((card,i)=>(
+
             <motion.div
               key={i}
-              className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] hover:-translate-y-2 transition-all duration-300"
+              className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent"
               initial={{opacity:0,y:40}}
               whileInView={{opacity:1,y:0}}
               viewport={{once:true}}
               transition={{duration:0.6,delay:i*0.15}}
             >
 
-              <h3 className="text-xl font-bold mb-4">
-                {card.title}
-              </h3>
+              <div className="
+                p-8 rounded-3xl
+                bg-white/[0.05] backdrop-blur-2xl
+                border border-white/10
+                transition-all duration-300
+                group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]
+                group-hover:-translate-y-2
+              ">
 
-              <p className="text-white/70 leading-relaxed">
-                {card.desc}
-              </p>
+                <h3 className="text-xl font-bold mb-4">
+                  {card.title}
+                </h3>
+
+                <p className="text-white/70 leading-relaxed">
+                  {card.desc}
+                </p>
+
+              </div>
 
             </motion.div>
+
           ))}
 
         </div>
 
-        {/* Core features */}
+        {/* 🚀 CORE FEATURES */}
         <motion.div
-          className="mt-20 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-10 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
+          className="mt-20 bg-white/[0.05] backdrop-blur-2xl border border-white/10 rounded-3xl p-10"
           initial={{opacity:0,y:40}}
           whileInView={{opacity:1,y:0}}
           viewport={{once:true}}
@@ -144,6 +162,7 @@ export default function About() {
           <ul className="space-y-4">
 
             {features.map((f,idx)=>(
+
               <motion.li
                 key={idx}
                 className="flex gap-3 text-white/80"
@@ -154,6 +173,7 @@ export default function About() {
                 <span className="text-emerald-400 font-bold">✓</span>
                 {f}
               </motion.li>
+
             ))}
 
           </ul>

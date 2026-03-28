@@ -128,20 +128,19 @@ export default function Chatbot() {
   return (
     <>
 
-      {/* Floating Button */}
+      {/* 💬 Floating Button (UPGRADED) */}
       <motion.button
         onClick={() => setOpen(!open)}
-        whileHover={{ scale: 1.12 }}
+        whileHover={{ scale: 1.15 }}
         whileTap={{ scale: 0.9 }}
         animate={{ y: [0, -6, 0] }}
         transition={{ repeat: Infinity, duration: 3 }}
         className="
         fixed bottom-6 right-6 z-50
-        w-14 h-14
-        rounded-full
+        w-14 h-14 rounded-full
         bg-gradient-to-br from-green-400 to-emerald-500
         text-black text-lg font-bold
-        shadow-[0_0_35px_rgba(34,197,94,0.6)]
+        shadow-[0_0_40px_rgba(34,197,94,0.7)]
         "
       >
         💬
@@ -161,12 +160,11 @@ export default function Chatbot() {
             fixed bottom-24 right-6 z-50
             w-[360px] max-h-[520px]
             flex flex-col
-            rounded-3xl
-            overflow-hidden
+            rounded-3xl overflow-hidden
             backdrop-blur-2xl
             bg-[#0b0f14]/95
             border border-white/10
-            shadow-[0_30px_90px_rgba(0,0,0,0.8)]
+            shadow-[0_40px_120px_rgba(0,0,0,0.9)]
             "
           >
 
@@ -202,12 +200,7 @@ export default function Chatbot() {
             {/* Messages */}
             <div
               ref={chatBoxRef}
-              className="
-              flex-1 overflow-y-auto
-              px-4 py-4
-              space-y-3
-              text-sm
-              "
+              className="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm"
             >
 
               {messages.map((msg, i) => (
@@ -218,8 +211,8 @@ export default function Chatbot() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`max-w-[80%] px-4 py-2 rounded-2xl ${
                     msg.sender === "user"
-                      ? "ml-auto bg-green-400 text-black shadow-[0_6px_20px_rgba(34,197,94,0.3)]"
-                      : "mr-auto bg-white/10 text-gray-200 backdrop-blur-md"
+                      ? "ml-auto bg-gradient-to-r from-green-400 to-emerald-400 text-black shadow-[0_6px_25px_rgba(34,197,94,0.5)]"
+                      : "mr-auto bg-white/10 text-gray-200 border border-white/10 backdrop-blur-md"
                   }`}
                 >
                   {msg.content}
@@ -227,43 +220,34 @@ export default function Chatbot() {
 
               ))}
 
-              {/* Typing indicator */}
+              {/* Typing */}
               {loading && (
-
                 <div className="mr-auto bg-white/10 px-4 py-2 rounded-2xl flex gap-1">
-
                   <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                   <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-150" />
                   <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-300" />
-
                 </div>
-
               )}
 
               {/* Suggestions */}
               {!loading && suggestions.length > 0 && (
-
                 <div className="flex flex-wrap gap-2 pt-2">
-
                   {suggestions.map((s) => (
-
                     <button
                       key={s}
                       onClick={() => sendMessage(s)}
                       className="
                       text-xs px-3 py-1 rounded-full
-                      bg-white/10 text-gray-200
+                      bg-white/10 border border-white/10
                       hover:bg-green-400 hover:text-black
+                      hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]
                       transition
                       "
                     >
                       {s}
                     </button>
-
                   ))}
-
                 </div>
-
               )}
 
             </div>
@@ -277,25 +261,21 @@ export default function Chatbot() {
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about plans, diet, workout..."
                 className="
-                flex-1
-                bg-black/40
-                border border-white/10
-                rounded-xl
-                px-3 py-2
-                text-white text-sm
-                outline-none
-                focus:ring-2 focus:ring-green-400
+                flex-1 bg-black/40 border border-white/10
+                rounded-xl px-3 py-2 text-white text-sm
+                outline-none focus:ring-2 focus:ring-green-400
+                hover:border-green-400/40 transition
                 "
               />
 
               <button
                 onClick={() => sendMessage()}
                 className="
-                bg-green-400 text-black
-                px-4 rounded-xl font-semibold
-                hover:bg-green-500
-                transition
-                disabled:opacity-60
+                bg-gradient-to-r from-green-400 to-emerald-400
+                text-black px-4 rounded-xl font-semibold
+                hover:scale-105
+                hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]
+                transition disabled:opacity-60
                 "
                 disabled={loading}
               >

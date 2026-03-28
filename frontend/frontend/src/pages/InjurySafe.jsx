@@ -6,7 +6,7 @@ export default function InjurySafe() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Animated background */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
@@ -34,16 +34,16 @@ export default function InjurySafe() {
         transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
 
-        {/* Header */}
+        {/* 🔥 HEADER */}
         <div className="mb-14">
 
           <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / INJURY SAFE
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
             Injury-Safe{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">
               Training
             </span>
           </h1>
@@ -55,12 +55,30 @@ export default function InjurySafe() {
 
         </div>
 
-        {/* Main component */}
+        {/* 💎 MAIN CARD */}
         <motion.div
           whileHover={{ scale: 1.01 }}
-          className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 md:p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] transition"
+          className="
+            group relative rounded-3xl p-[1px]
+            bg-gradient-to-br from-white/10 to-transparent
+          "
         >
-          <InjurySafeTraining />
+
+          {/* glow */}
+          <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl" />
+
+          <div className="
+            bg-white/6 backdrop-blur-2xl border border-white/12
+            rounded-3xl p-7 md:p-8
+            shadow-[0_26px_90px_rgba(0,0,0,0.65)]
+            transition-all duration-300
+            group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
+          ">
+
+            <InjurySafeTraining />
+
+          </div>
+
         </motion.div>
 
       </motion.div>

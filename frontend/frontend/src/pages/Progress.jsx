@@ -6,7 +6,7 @@ export default function Progress() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Global animated background */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
@@ -34,16 +34,16 @@ export default function Progress() {
         transition={{ duration:0.45, ease:[0.22,1,0.36,1] }}
       >
 
-        {/* Header */}
+        {/* 🔥 HEADER */}
         <div className="mb-14">
 
           <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / PROGRESS
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
             Progress{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">
               Tracker
             </span>
           </h1>
@@ -56,72 +56,106 @@ export default function Progress() {
 
         </div>
 
-        {/* Main grid */}
+        {/* 💎 MAIN GRID */}
         <div className="grid lg:grid-cols-3 gap-8">
 
-          {/* Tracker */}
+          {/* 📊 TRACKER */}
           <motion.div
             whileHover={{ scale:1.01 }}
-            className="lg:col-span-2 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 md:p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] transition"
+            className="
+              group relative rounded-3xl p-[1px]
+              bg-gradient-to-br from-white/10 to-transparent
+              lg:col-span-2
+            "
           >
 
-            <h2 className="text-2xl font-bold mb-2">
-              Your Progress Data
-            </h2>
+            {/* glow */}
+            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
 
-            <p className="text-white/70 mb-6 text-sm">
-              Log entries regularly to see trends and improvements clearly.
-            </p>
+            <div className="
+              bg-white/6 backdrop-blur-2xl border border-white/12
+              rounded-3xl p-7 md:p-8
+              shadow-[0_26px_90px_rgba(0,0,0,0.65)]
+              transition-all duration-300
+              group-hover:shadow-[0_0_45px_rgba(34,197,94,0.25)]
+            ">
 
-            {/* Existing component */}
-            <ProgressTracker/>
+              <h2 className="text-2xl font-bold mb-2">
+                Your Progress Data
+              </h2>
+
+              <p className="text-white/70 mb-6 text-sm">
+                Log entries regularly to see trends and improvements clearly.
+              </p>
+
+              {/* MAIN COMPONENT */}
+              <ProgressTracker/>
+
+            </div>
 
           </motion.div>
 
-          {/* Side info */}
+          {/* 📌 SIDE PANEL */}
           <motion.div
             whileHover={{ scale:1.02 }}
-            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
+            className="
+              group relative rounded-3xl p-[1px]
+              bg-gradient-to-br from-white/10 to-transparent
+            "
           >
 
-            <h3 className="text-xl font-bold mb-4">
-              Why Track Progress?
-            </h3>
+            {/* glow */}
+            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
 
-            <ul className="space-y-4 text-white/70 text-sm">
+            <div className="
+              bg-white/6 backdrop-blur-2xl border border-white/12
+              rounded-3xl p-7
+              shadow-[0_26px_90px_rgba(0,0,0,0.65)]
+              transition-all duration-300
+              group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
+            ">
 
-              <li className="flex gap-2">
-                <span className="text-emerald-400">•</span>
-                Helps identify what’s working and what’s not
-              </li>
+              <h3 className="text-xl font-bold mb-4">
+                Why Track Progress?
+              </h3>
 
-              <li className="flex gap-2">
-                <span className="text-emerald-400">•</span>
-                Keeps motivation high with visible improvements
-              </li>
+              <ul className="space-y-4 text-white/70 text-sm">
 
-              <li className="flex gap-2">
-                <span className="text-emerald-400">•</span>
-                Prevents overtraining and plateaus
-              </li>
+                <li className="flex gap-2">
+                  <span className="text-emerald-400">•</span>
+                  Helps identify what’s working and what’s not
+                </li>
 
-              <li className="flex gap-2">
-                <span className="text-emerald-400">•</span>
-                Builds long-term fitness discipline
-              </li>
+                <li className="flex gap-2">
+                  <span className="text-emerald-400">•</span>
+                  Keeps motivation high with visible improvements
+                </li>
 
-            </ul>
+                <li className="flex gap-2">
+                  <span className="text-emerald-400">•</span>
+                  Prevents overtraining and plateaus
+                </li>
 
-            <div className="mt-6 p-5 rounded-2xl bg-emerald-400/10 border border-emerald-400/20">
+                <li className="flex gap-2">
+                  <span className="text-emerald-400">•</span>
+                  Builds long-term fitness discipline
+                </li>
 
-              <p className="text-emerald-300 text-xs tracking-[0.22em]">
-                CONSISTENCY TIP
-              </p>
+              </ul>
 
-              <p className="text-white/80 mt-2 text-sm">
-                Update your progress once per week at the same time of day for
-                accurate comparison.
-              </p>
+              {/* 💡 TIP BOX */}
+              <div className="mt-6 p-5 rounded-2xl bg-emerald-400/10 border border-emerald-400/20">
+
+                <p className="text-emerald-300 text-xs tracking-[0.22em]">
+                  CONSISTENCY TIP
+                </p>
+
+                <p className="text-white/80 mt-2 text-sm">
+                  Update your progress once per week at the same time of day for
+                  accurate comparison.
+                </p>
+
+              </div>
 
             </div>
 

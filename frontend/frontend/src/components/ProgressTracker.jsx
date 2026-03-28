@@ -35,20 +35,10 @@ export default function ProgressTracker() {
   }, [token]);
 
   const [entries, setEntries] = useState([]);
-  const [days, setDays] = useState(30);
-
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [bodyFat, setBodyFat] = useState("");
   const [didWorkout, setDidWorkout] = useState(false);
-  const [workoutMinutes, setWorkoutMinutes] = useState("");
-  const [workoutType, setWorkoutType] = useState("");
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
-
-  const now = new Date();
-  const [year, setYear] = useState(now.getFullYear());
-  const [month, setMonth] = useState(now.getMonth() + 1);
-  const [summary, setSummary] = useState(null);
 
   const calculateBMI = (w, h) => {
     const heightMeters = Number(h) / 100;
@@ -64,104 +54,43 @@ export default function ProgressTracker() {
     return "Obese";
   };
 
-  const loadRange = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/progress/range?days=${days}`, {
-        headers,
-      });
-      setEntries(res.data.entries || []);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const loadSummary = async () => {
-    try {
-      const res = await axios.get(
-        `${API_BASE}/progress/monthly-summary?year=${year}&month=${month}`,
-        { headers }
-      );
-      setSummary(res.data.stats);
-    } catch {
-      setSummary(null);
-    }
-  };
-
   useEffect(() => {
-    if (!token) return;
-    loadRange();
-  }, [days, token]);
+    const load = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/progress/range?days=30`, {
+          headers,
+        });
+        setEntries(res.data.entries || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  useEffect(() => {
-    if (!token) return;
-    loadSummary();
-  }, [year, month, token]);
+    if (token) load();
+  }, [token]);
 
   const addEntry = async () => {
-
     if (!weight && !bodyFat && !didWorkout) {
-      return alert("Enter weight/body fat or mark workout.");
+      return alert("Enter data first");
     }
 
     try {
+      await axios.post(
+        `${API_BASE}/progress/upsert`,
+        {
+          weightKg: weight,
+          bodyFat,
+          didWorkout,
+        },
+        { headers }
+      );
 
-      const payload = {
-        date,
-        weightKg: weight === "" ? null : Number(weight),
-        bodyFat: bodyFat === "" ? null : Number(bodyFat),
-        didWorkout,
-        workoutMinutes: Number(workoutMinutes || 0),
-        workoutType: workoutType || "",
-      };
+      alert("Saved ✅");
 
-      const res = await axios.post(`${API_BASE}/progress/upsert`, payload, {
-        headers,
-      });
-
-      if (!res.data.success) return alert("Save failed");
-
-      await loadRange();
-      await loadSummary();
-
-      setWeight("");
-      setBodyFat("");
-      setDidWorkout(false);
-      setWorkoutMinutes("");
-      setWorkoutType("");
-
-      alert("Progress saved ✅");
-
-    } catch (err) {
-      console.error(err);
-      alert("Save failed");
+    } catch {
+      alert("Error ❌");
     }
   };
-
-  const currentStreak = useMemo(() => {
-
-    if (!entries.length) return 0;
-
-    const workoutSet = new Set(
-      entries
-        .filter((e) => e.didWorkout)
-        .map((e) => new Date(e.date).toISOString().slice(0, 10))
-    );
-
-    let streak = 0;
-    const iter = new Date();
-
-    while (true) {
-      const key = iter.toISOString().slice(0, 10);
-      if (workoutSet.has(key)) streak++;
-      else break;
-      iter.setDate(iter.getDate() - 1);
-    }
-
-    return streak;
-
-  }, [entries]);
-
-  const latest = entries.length ? entries[entries.length - 1] : null;
 
   const labels = entries.map((e) =>
     new Date(e.date).toLocaleDateString("en-IN", {
@@ -170,130 +99,114 @@ export default function ProgressTracker() {
     })
   );
 
-  const datasets = [
-    {
-      label: "Weight (kg)",
-      data: entries.map((e) => e.weightKg ?? null),
-      borderColor: "#22c55e",
-      tension: 0.4,
-    },
-  ];
-
-  const data = { labels, datasets };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: "#ffffff" } },
-    },
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Weight (kg)",
+        data: entries.map((e) => e.weightKg),
+        borderColor: "#22c55e",
+        tension: 0.4,
+      },
+    ],
   };
 
-  const bmiValue = useMemo(() => {
-    const w = weight !== "" ? weight : latest?.weightKg ?? "";
-    if (!w || !height) return null;
-    return calculateBMI(w, height);
-  }, [weight, latest, height]);
+  const bmiValue = calculateBMI(weight, height);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
 
-      {/* Streak */}
+      {/* 🔥 STREAK CARD */}
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 text-center shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+        whileHover={{ scale: 1.04 }}
+        className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent"
       >
-        <p className="text-white/60 text-sm">Current Streak</p>
-        <p className="text-4xl font-extrabold text-emerald-400">
-          {currentStreak}
-        </p>
-        <p className="text-white/50 text-sm">days</p>
+        <div className="p-6 rounded-3xl bg-white/[0.05] backdrop-blur-xl border border-white/10 text-center transition group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]">
+          <p className="text-white/60 text-sm">Current Streak</p>
+          <p className="text-5xl font-extrabold text-emerald-400">🔥</p>
+          <p className="text-white/50 text-sm">Keep going</p>
+        </div>
       </motion.div>
 
-      {/* Inputs */}
+      {/* 🧾 INPUTS */}
       <div className="grid md:grid-cols-3 gap-6">
 
-        <input
-          type="number"
-          placeholder="Height (cm)"
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
-        />
-
-        <input
-          type="number"
-          placeholder="Weight (kg)"
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
-        />
-
-        <input
-          type="number"
-          placeholder="Body Fat %"
-          value={bodyFat}
-          onChange={(e) => setBodyFat(e.target.value)}
-          className="px-4 py-3 rounded-2xl bg-black/30 border border-white/12 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
-        />
+        {[{
+          val: height,
+          set: setHeight,
+          ph: "Height (cm)"
+        },{
+          val: weight,
+          set: setWeight,
+          ph: "Weight (kg)"
+        },{
+          val: bodyFat,
+          set: setBodyFat,
+          ph: "Body Fat %"
+        }].map((f, i) => (
+          <input
+            key={i}
+            type="number"
+            placeholder={f.ph}
+            value={f.val}
+            onChange={(e) => f.set(e.target.value)}
+            className="
+              px-4 py-3 rounded-2xl
+              bg-black/30 border border-white/10
+              text-white
+              focus:ring-2 focus:ring-emerald-400
+              outline-none transition
+              hover:border-green-400/40
+            "
+          />
+        ))}
 
       </div>
 
-      {/* Save Button */}
+      {/* 🚀 SAVE BUTTON */}
       <motion.button
-        whileHover={{ scale: 1.03 }}
+        whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={addEntry}
-        className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)]"
+        className="
+          w-full py-3 rounded-2xl font-semibold
+          bg-gradient-to-r from-emerald-500 to-green-400
+          text-black
+          transition
+          hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
+        "
       >
         Save Entry
       </motion.button>
 
-      {/* BMI Cards */}
+      {/* 📊 BMI */}
       {bmiValue && (
-
         <div className="grid md:grid-cols-3 gap-6">
 
-          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
-            <p className="text-white/60 text-sm">BMI</p>
+          <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-5 text-center backdrop-blur-xl">
+            <p className="text-white/60">BMI</p>
             <p className="text-2xl font-bold text-emerald-400">{bmiValue}</p>
           </div>
 
-          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
-            <p className="text-white/60 text-sm">Status</p>
-            <p className="text-lg">{bmiStatus(bmiValue)}</p>
-          </div>
-
-          <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-5 text-center">
-            <p className="text-white/60 text-sm">Last Saved</p>
-            <p>
-              {latest
-                ? new Date(latest.date).toLocaleDateString("en-IN")
-                : "—"}
-            </p>
+          <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-5 text-center backdrop-blur-xl">
+            <p className="text-white/60">Status</p>
+            <p>{bmiStatus(bmiValue)}</p>
           </div>
 
         </div>
-
       )}
 
-      {/* Chart */}
+      {/* 📈 CHART */}
       {entries.length > 0 ? (
-
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 h-[380px]"
+          className="bg-white/[0.05] border border-white/10 rounded-3xl p-6 h-[400px] backdrop-blur-xl"
         >
-          <Line data={data} options={options} />
+          <Line data={data} />
         </motion.div>
-
       ) : (
-
-        <div className="bg-white/6 backdrop-blur-xl border border-white/12 rounded-2xl p-6 text-center text-white/60">
-          No progress saved yet.
+        <div className="text-center text-white/60">
+          No progress yet
         </div>
-
       )}
 
     </div>

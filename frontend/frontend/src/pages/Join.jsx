@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getPlans, subscribeMembership } from "../api";
 import DemoCheckout from "../components/DemoCheckout";
+// import toast from "react-hot-toast";
 
 export default function Join() {
   const location = useLocation();
@@ -96,7 +97,7 @@ export default function Join() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Animated background */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
@@ -129,101 +130,123 @@ export default function Join() {
           {/* LEFT FORM */}
           <motion.div
             whileHover={{scale:1.01}}
-            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
+            className="
+              group relative rounded-3xl p-[1px]
+              bg-gradient-to-br from-white/10 to-transparent
+            "
           >
 
-            <div className="px-8 pt-8 pb-6 border-b border-white/10">
+            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
 
-              <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
-                MEMBERSHIP CHECKOUT
-              </p>
+            <div className="
+              bg-white/6 backdrop-blur-2xl border border-white/12
+              rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)]
+              overflow-hidden
+            ">
 
-              <h2 className="text-3xl md:text-4xl font-extrabold mt-3">
-                Confirm your{" "}
-                <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                  membership
-                </span>
-              </h2>
+              <div className="px-8 pt-8 pb-6 border-b border-white/10">
 
-              <p className="text-white/60 mt-3">
-                Enter your details to activate your plan instantly.
-              </p>
+                <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
+                  MEMBERSHIP CHECKOUT
+                </p>
 
-            </div>
-
-            <form onSubmit={(e)=>e.preventDefault()} className="px-8 py-8 space-y-5">
-
-              {["name","email","phone","age"].map((field,i)=>(
-                <div key={field}>
-                  <label className="text-sm text-white/70 font-medium capitalize">
-                    {field}
-                  </label>
-
-                  <div className="mt-2 flex items-center gap-3 rounded-2xl bg-black/30 border border-white/12 px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-400">
-
-                    <input
-                      type={field==="age"?"number":field==="email"?"email":"text"}
-                      className="w-full bg-transparent outline-none text-white placeholder-white/40"
-                      placeholder={`Enter ${field}`}
-                      value={form[field]}
-                      onChange={(e)=>setForm({...form,[field]:e.target.value})}
-                    />
-
-                  </div>
-                </div>
-              ))}
-
-              {/* Plan display */}
-              <div>
-                <label className="text-sm text-white/70 font-medium">
-                  Selected Plan
-                </label>
-
-                <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/6 border border-white/12 px-4 py-3">
-
-                  <div>
-                    <p className="text-emerald-300 font-bold">
-                      {form.planName}
-                    </p>
-
-                    <p className="text-xs text-white/50">
-                      Plan selected from previous page
-                    </p>
-                  </div>
-
-                  <span className="text-xs px-3 py-1 rounded-full bg-emerald-400/15 border border-emerald-400/25 text-emerald-300">
-                    Locked
+                <h2 className="text-3xl md:text-4xl font-extrabold mt-3">
+                  Confirm your{" "}
+                  <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+                    membership
                   </span>
+                </h2>
 
-                </div>
+                <p className="text-white/60 mt-3">
+                  Enter your details to activate your plan instantly.
+                </p>
+
               </div>
 
-              <DemoCheckout
-                planName={form.planName}
-                amount={selectedPlan?.price || 0}
-                disabled={!canPay}
-                userId={form.email}
-                onSuccess={async () => {
+              <form onSubmit={(e)=>e.preventDefault()} className="px-8 py-8 space-y-5">
 
-                  if (!selectedPlan?.code) {
-                    return alert("Plan not found.");
-                  }
+                {["name","email","phone","age"].map((field)=>(
+                  <div key={field}>
+                    <label className="text-sm text-white/70 font-medium capitalize">
+                      {field}
+                    </label>
 
-                  const res = await subscribeMembership({
-                    name: form.name,
-                    email: form.email,
-                    phone: form.phone,
-                    planCode: selectedPlan.code,
-                  });
+                    <div className="
+                      mt-2 flex items-center gap-3 rounded-2xl
+                      bg-black/30 border border-white/12 px-4 py-3
+                      focus-within:ring-2 focus-within:ring-emerald-400
+                      hover:border-emerald-400/40 transition
+                    ">
 
-                  if (!res.success) return alert(res.message);
+                      <input
+                        type={field==="age"?"number":field==="email"?"email":"text"}
+                        className="w-full bg-transparent outline-none text-white placeholder-white/40"
+                        placeholder={`Enter ${field}`}
+                        value={form[field]}
+                        onChange={(e)=>setForm({...form,[field]:e.target.value})}
+                      />
 
-                  alert("Membership Activated Successfully 🎉");
+                    </div>
+                  </div>
+                ))}
 
-                }}
-              />
+                {/* PLAN */}
+                <div>
+                  <label className="text-sm text-white/70 font-medium">
+                    Selected Plan
+                  </label>
 
-            </form>
+                  <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/6 border border-white/12 px-4 py-3">
+
+                    <div>
+                      <p className="text-emerald-300 font-bold">
+                        {form.planName}
+                      </p>
+
+                      <p className="text-xs text-white/50">
+                        Plan selected from previous page
+                      </p>
+                    </div>
+
+                    <span className="text-xs px-3 py-1 rounded-full bg-emerald-400/15 border border-emerald-400/25 text-emerald-300">
+                      Locked
+                    </span>
+
+                  </div>
+                </div>
+
+                <DemoCheckout
+                  planName={form.planName}
+                  amount={selectedPlan?.price || 0}
+                  disabled={!canPay}
+                  userId={form.email}
+                  onSuccess={async () => {
+
+                    if (!selectedPlan?.code) {
+                      // toast.error("Plan not found");
+                      return;
+                    }
+
+                    const res = await subscribeMembership({
+                      name: form.name,
+                      email: form.email,
+                      phone: form.phone,
+                      planCode: selectedPlan.code,
+                    });
+
+                    if (!res.success) {
+                      // toast.error(res.message);
+                      return;
+                    }
+
+                    // toast.success("Membership Activated 🎉");
+
+                  }}
+                />
+
+              </form>
+
+            </div>
 
           </motion.div>
 
@@ -231,7 +254,11 @@ export default function Join() {
           <motion.div
             initial={{opacity:0,x:20}}
             animate={{opacity:1,x:0}}
-            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] h-fit overflow-hidden"
+            className="
+              bg-white/6 backdrop-blur-2xl border border-white/12
+              rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)]
+              h-fit overflow-hidden
+            "
           >
 
             <div className="px-8 pt-8 pb-6 border-b border-white/10">

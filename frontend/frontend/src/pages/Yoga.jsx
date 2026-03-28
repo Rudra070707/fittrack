@@ -91,11 +91,9 @@ export default function Yoga() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Global animated background */}
+      {/* BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
-
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]"/>
 
         <motion.div
@@ -107,220 +105,118 @@ export default function Yoga() {
               "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.20), transparent 55%)"
             ]
           }}
-          transition={{duration:16,repeat:Infinity,ease:"easeInOut"}}
+          transition={{duration:16,repeat:Infinity}}
         />
-
       </div>
 
-      <motion.div
-        className="relative max-w-6xl mx-auto px-6 py-20"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div className="relative max-w-6xl mx-auto px-6 py-20">
 
-        {/* Header */}
+        {/* HEADER */}
         <div className="mb-14">
-
-          <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
+          <p className="text-emerald-400 text-xs tracking-[0.28em]">
             SERVICES / YOGA
           </p>
 
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
             Strong body. Calm{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <span className="text-emerald-400 drop-shadow-[0_0_12px_rgba(34,197,94,0.6)]">
               mind
             </span>.
           </h1>
 
-          <p className="text-white/70 mt-4 max-w-3xl leading-relaxed">
-            Improve flexibility, reduce stress, and build strength safely with
-            guided yoga routines and recovery support.
+          <p className="text-white/70 mt-4 max-w-3xl">
+            Improve flexibility, reduce stress, and build strength safely.
           </p>
-
         </div>
 
-        {/* Info Cards */}
+        {/* INFO CARDS */}
         <div className="grid lg:grid-cols-2 gap-8">
 
-          <div className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]">
+          {/* WHY */}
+          <motion.div whileHover={{scale:1.02}} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent">
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-emerald-400/10 blur-xl"/>
+            <div className="bg-white/6 border border-white/12 rounded-3xl p-8">
 
-            <h2 className="text-2xl font-bold mb-6">Why Yoga on FitTrack</h2>
+              <h2 className="text-2xl font-bold mb-6">Why Yoga on FitTrack</h2>
 
-            <ul className="space-y-4 text-white/80">
+              <ul className="space-y-4">
+                {[
+                  "Improve flexibility and mobility",
+                  "Injury-safe routines",
+                  "Better posture & reduced stiffness",
+                  "Helps stress and sleep quality",
+                ].map((t,i)=>(
+                  <li key={i} className="flex gap-3">
+                    <span className="text-emerald-400">✓</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
 
-              {[
-                "Improve flexibility and mobility",
-                "Injury-safe routines",
-                "Better posture & reduced stiffness",
-                "Helps stress and sleep quality",
-              ].map((t,i)=>(
-                <li key={i} className="flex gap-3">
-                  <span className="text-emerald-400 font-bold">✓</span>
-                  {t}
-                </li>
-              ))}
-
-            </ul>
-
-            <div className="mt-8 flex gap-4 flex-wrap">
-
-              <Link
-                to="/home/join"
-                className="bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold px-6 py-3 rounded-xl shadow-[0_12px_34px_rgba(34,197,94,0.25)]"
-              >
-                Start Yoga
-              </Link>
-
-              <Link
-                to="/home/injury"
-                className="border border-white/15 px-6 py-3 rounded-xl hover:bg-white hover:text-black transition"
-              >
-                Injury-Safe Training
-              </Link>
+              <div className="mt-6 flex gap-4">
+                <Link to="/home/join" className="btn-primary">Start Yoga</Link>
+                <Link to="/home/injury" className="btn-secondary">Injury-Safe</Link>
+              </div>
 
             </div>
+          </motion.div>
 
-          </div>
+          {/* PERFECT */}
+          <motion.div whileHover={{scale:1.02}} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent">
+            <div className="bg-white/6 border border-white/12 rounded-3xl p-8">
+              <h2 className="text-2xl font-bold mb-6">Perfect for</h2>
 
-          <div className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]">
-
-            <h2 className="text-2xl font-bold mb-6">Perfect for</h2>
-
-            <div className="space-y-4 text-white/80">
-
-              <p>
-                <span className="text-emerald-400 font-semibold">Beginners</span> starting a healthy routine.
-              </p>
-
-              <p>
-                <span className="text-emerald-400 font-semibold">Office workers</span> dealing with stiffness.
-              </p>
-
-              <p>
-                <span className="text-emerald-400 font-semibold">Fitness users</span> who need mobility and recovery.
-              </p>
-
+              <p><span className="text-emerald-400">Beginners</span></p>
+              <p><span className="text-emerald-400">Office workers</span></p>
+              <p><span className="text-emerald-400">Fitness users</span></p>
             </div>
-
-          </div>
+          </motion.div>
 
         </div>
 
-        {/* Programs */}
-        <div className="mt-20">
+        {/* PROGRAMS */}
+        <div className="mt-20 grid md:grid-cols-3 gap-8">
+          {programs.map((p,i)=>(
+            <motion.div key={i} whileHover={{y:-10}} className="group p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent">
+              <div className="bg-white/6 border border-white/12 rounded-3xl p-7">
 
-          <h2 className="text-3xl font-extrabold mb-10">
-            Guided Yoga <span className="text-emerald-400">Programs</span>
-          </h2>
+                <h3 className="text-xl font-bold">{p.title}</h3>
+                <p className="text-white/60 text-sm">{p.desc}</p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-
-            {programs.map((p,i)=>(
-              <div
-                key={i}
-                className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
-              >
-
-                <div className="flex justify-between mb-3">
-
-                  <h3 className="text-xl font-bold">{p.title}</h3>
-
-                  <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10">
-                    {p.level}
-                  </span>
-
-                </div>
-
-                <p className="text-white/70 text-sm mb-4">{p.desc}</p>
-
-                <p className="text-white/60 text-sm mb-4">
-                  ⏱ {p.duration} • 🎯 {p.goal}
-                </p>
-
-                <ul className="space-y-2 text-sm">
-
-                  {p.list.map((x,idx)=>(
-                    <li key={idx} className="flex gap-2">
-                      <span className="text-emerald-400">•</span>
-                      {x}
-                    </li>
+                <ul className="mt-4">
+                  {p.list.map((x,i)=>(
+                    <li key={i}>• {x}</li>
                   ))}
-
                 </ul>
 
               </div>
-            ))}
-
-          </div>
-
+            </motion.div>
+          ))}
         </div>
 
-        {/* Focus Areas */}
-        <div className="mt-20">
-
-          <h2 className="text-3xl font-extrabold mb-8">
-            Focus <span className="text-emerald-400">Areas</span>
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-6">
-
-            {focusAreas.map((f,i)=>(
-              <div
-                key={i}
-                className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-2xl p-6 shadow-lg"
-              >
-                <p className="font-bold text-lg">{f.title}</p>
-                <p className="text-white/60 text-sm mt-2">{f.sub}</p>
-              </div>
-            ))}
-
-          </div>
-
+        {/* FOCUS */}
+        <div className="mt-20 grid md:grid-cols-4 gap-6">
+          {focusAreas.map((f,i)=>(
+            <motion.div key={i} whileHover={{scale:1.05}} className="bg-white/6 p-6 rounded-2xl">
+              <p className="font-bold">{f.title}</p>
+              <p className="text-white/60">{f.sub}</p>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Quick Routines */}
-        <div className="mt-20">
-
-          <h2 className="text-3xl font-extrabold mb-8">
-            Quick <span className="text-emerald-400">Routines</span>
-          </h2>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-
-            {quickRoutines.map((r,i)=>(
-              <div
-                key={i}
-                className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-7 shadow-lg"
-              >
-
-                <div className="flex justify-between">
-                  <h3 className="text-xl font-bold">{r.title}</h3>
-
-                  <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10">
-                    {r.time}
-                  </span>
-                </div>
-
-                <ul className="mt-4 space-y-2 text-sm">
-
-                  {r.points.map((p,idx)=>(
-                    <li key={idx} className="flex gap-2">
-                      <span className="text-emerald-400">✓</span>
-                      {p}
-                    </li>
-                  ))}
-
-                </ul>
-
-              </div>
-            ))}
-
-          </div>
-
+        {/* QUICK */}
+        <div className="mt-20 grid lg:grid-cols-3 gap-8">
+          {quickRoutines.map((r,i)=>(
+            <motion.div key={i} whileHover={{scale:1.03}} className="bg-white/6 p-7 rounded-3xl">
+              <h3>{r.title}</h3>
+              <ul>
+                {r.points.map((p,i)=>(<li key={i}>{p}</li>))}
+              </ul>
+            </motion.div>
+          ))}
         </div>
 
       </motion.div>
-
     </section>
   );
 }

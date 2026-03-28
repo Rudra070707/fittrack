@@ -57,7 +57,7 @@ export default function Gym() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* Animated background like Hero */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
@@ -84,14 +84,14 @@ export default function Gym() {
         animate={{ opacity: 1, y: 0 }}
       >
 
-        {/* Header */}
+        {/* 🔥 HEADER */}
         <div className="mb-14">
 
           <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / GYM ACCESS
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
             Gym access made{" "}
             <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
               simple
@@ -104,25 +104,34 @@ export default function Gym() {
 
         </div>
 
-        {/* Feature cards */}
+        {/* 💎 FEATURES */}
         <div className="grid md:grid-cols-4 gap-6">
 
           {features.map((f, i) => (
 
             <motion.div
               key={i}
-              whileHover={{ y: -10 }}
-              className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-2xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.55)]"
+              whileHover={{ y: -10, scale: 1.03 }}
+              className="
+                group relative rounded-2xl p-[1px]
+                bg-gradient-to-br from-white/10 to-transparent
+              "
             >
-              <p className="font-bold text-lg">{f.title}</p>
-              <p className="text-white/60 text-sm mt-2">{f.sub}</p>
+              <div className="
+                bg-white/6 backdrop-blur-2xl border border-white/12
+                rounded-2xl p-6 transition-all duration-300
+                group-hover:shadow-[0_0_35px_rgba(34,197,94,0.2)]
+              ">
+                <p className="font-bold text-lg">{f.title}</p>
+                <p className="text-white/60 text-sm mt-2">{f.sub}</p>
+              </div>
             </motion.div>
 
           ))}
 
         </div>
 
-        {/* Programs */}
+        {/* 🏋️ PROGRAMS */}
         <div className="mt-20">
 
           <h2 className="text-3xl font-extrabold mb-10">
@@ -135,44 +144,62 @@ export default function Gym() {
 
               <motion.div
                 key={i}
-                whileHover={{ y: -10 }}
-                className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)]"
+                whileHover={{ y: -12, scale: 1.03 }}
+                className="
+                  group relative rounded-3xl p-[1px]
+                  bg-gradient-to-br from-white/10 to-transparent
+                "
               >
 
-                <div className="flex justify-between mb-4">
+                <div className="
+                  bg-white/6 backdrop-blur-2xl border border-white/12
+                  rounded-3xl p-8 transition-all duration-300
+                  group-hover:shadow-[0_0_45px_rgba(34,197,94,0.25)]
+                ">
 
-                  <h3 className="text-xl font-bold">{p.title}</h3>
+                  <div className="flex justify-between mb-4">
 
-                  <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10">
-                    {p.level}
-                  </span>
+                    <h3 className="text-xl font-bold">{p.title}</h3>
+
+                    <span className="text-xs px-3 py-1 rounded-full bg-black/30 border border-white/10">
+                      {p.level}
+                    </span>
+
+                  </div>
+
+                  <p className="text-white/70 text-sm mb-5">{p.desc}</p>
+
+                  <div className="text-sm text-white/60 mb-5 space-y-1">
+                    <p>📅 {p.duration}</p>
+                    <p>🎯 {p.goal}</p>
+                  </div>
+
+                  <ul className="space-y-2 text-sm text-white/85">
+
+                    {p.list.map((x, idx) => (
+                      <li key={idx} className="flex gap-2">
+                        <span className="text-emerald-400">•</span>
+                        {x}
+                      </li>
+                    ))}
+
+                  </ul>
+
+                  <Link
+                    to="/home/workout"
+                    className="
+                      mt-7 block text-center
+                      bg-gradient-to-r from-emerald-500 to-emerald-400
+                      text-slate-950 font-semibold py-3 rounded-xl
+                      transition-all duration-300
+                      hover:scale-[1.03]
+                      hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                    "
+                  >
+                    Open Workout Planner
+                  </Link>
 
                 </div>
-
-                <p className="text-white/70 text-sm mb-5">{p.desc}</p>
-
-                <div className="text-sm text-white/60 mb-5 space-y-1">
-                  <p>📅 {p.duration}</p>
-                  <p>🎯 {p.goal}</p>
-                </div>
-
-                <ul className="space-y-2 text-sm text-white/85">
-
-                  {p.list.map((x, idx) => (
-                    <li key={idx} className="flex gap-2">
-                      <span className="text-emerald-400">•</span>
-                      {x}
-                    </li>
-                  ))}
-
-                </ul>
-
-                <Link
-                  to="/home/workout"
-                  className="mt-7 block text-center bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold py-3 rounded-xl shadow-[0_12px_34px_rgba(34,197,94,0.25)] hover:scale-[1.02] transition"
-                >
-                  Open Workout Planner
-                </Link>
 
               </motion.div>
 
@@ -182,7 +209,7 @@ export default function Gym() {
 
         </div>
 
-        {/* CTA */}
+        {/* 🚀 CTA */}
         <div className="mt-20 text-center">
 
           <p className="text-emerald-300 text-xs tracking-[0.22em]">
@@ -195,20 +222,27 @@ export default function Gym() {
 
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
 
-            <motion.div whileHover={{ scale: 1.05 }}>
+            <motion.div whileHover={{ scale: 1.06 }}>
               <Link
                 to="/home/join"
                 state={joinState}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold px-8 py-3 rounded-xl shadow-[0_12px_34px_rgba(34,197,94,0.25)]"
+                className="
+                  bg-gradient-to-r from-emerald-500 to-emerald-400
+                  text-slate-950 font-semibold px-8 py-3 rounded-xl
+                  hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                "
               >
                 Join Membership
               </Link>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.05 }}>
+            <motion.div whileHover={{ scale: 1.06 }}>
               <Link
                 to="/home/progress"
-                className="border border-white/15 px-8 py-3 rounded-xl hover:bg-white hover:text-black transition"
+                className="
+                  border border-white/15 px-8 py-3 rounded-xl
+                  hover:bg-white hover:text-black transition
+                "
               >
                 Track Progress
               </Link>

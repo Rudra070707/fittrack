@@ -21,7 +21,7 @@ export default function Hero() {
       id="about"
       className="
       relative
-      min-h-screen   /* ✅ FIXED (instead of calc) */
+      min-h-screen
       flex flex-col
       justify-center
       items-center
@@ -32,25 +32,25 @@ export default function Hero() {
       "
     >
 
-      {/* Background glow */}
+      {/* 🔥 Dynamic Glow Background */}
       <motion.div
-        className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-green-400/20 blur-[200px] rounded-full"
-        animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
-        transition={{ duration: 16, repeat: Infinity }}
-      />
-
-      <motion.div
-        className="absolute bottom-0 -right-40 w-[650px] h-[650px] bg-emerald-500/15 blur-[220px] rounded-full"
-        animate={{ x: [0, -80, 0], y: [0, -60, 0] }}
+        className="absolute -top-40 -left-40 w-[650px] h-[650px] bg-green-400/20 blur-[220px] rounded-full"
+        animate={{ x: [0, 100, 0], y: [0, 60, 0] }}
         transition={{ duration: 18, repeat: Infinity }}
       />
 
-      {/* subtle grid */}
-      <div className="pointer-events-none absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
+      <motion.div
+        className="absolute bottom-0 -right-40 w-[700px] h-[700px] bg-emerald-500/20 blur-[250px] rounded-full"
+        animate={{ x: [0, -100, 0], y: [0, -80, 0] }}
+        transition={{ duration: 20, repeat: Infinity }}
+      />
 
-      {/* Glow beam */}
+      {/* Subtle grid */}
+      <div className="pointer-events-none absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.06)_1px,transparent_0)] [background-size:28px_28px]" />
+
+      {/* Center Glow */}
       <div className="pointer-events-none absolute inset-0 flex justify-center">
-        <div className="w-[520px] h-[360px] bg-green-400/10 blur-[150px] rounded-full" />
+        <div className="w-[550px] h-[400px] bg-green-400/10 blur-[160px] rounded-full" />
       </div>
 
       {/* Floating Icons */}
@@ -78,21 +78,23 @@ export default function Hero() {
         ❤️
       </motion.div>
 
-      {/* Hero Content */}
+      {/* 💎 HERO CONTENT */}
       <div className="relative z-10 max-w-4xl">
 
+        {/* 🔥 HEADING */}
         <motion.h1
-          className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
+          className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight"
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1 }}
         >
           Fitness That Fits{" "}
-          <span className="text-green-400">
+          <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-green-500 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,197,94,0.6)]">
             Your Life
           </span>
         </motion.h1>
 
+        {/* ✨ SUBTEXT */}
         <motion.p
           className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg md:text-xl leading-relaxed"
           initial={{ opacity: 0 }}
@@ -102,24 +104,43 @@ export default function Hero() {
           Access gyms, yoga, zumba & personal training with one smart membership.
         </motion.p>
 
+        {/* 🚀 CTA BUTTONS */}
         <motion.div
           className="flex gap-4 justify-center flex-wrap"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.6 }}
         >
 
+          {/* PRIMARY BUTTON */}
           <button
             onClick={handleGetStarted}
-            className="px-7 py-3 rounded-2xl font-bold bg-green-400 text-black hover:bg-green-500 shadow-[0_0_35px_rgba(34,197,94,0.45)] transition"
+            className="
+              px-7 py-3 rounded-2xl font-bold
+              bg-green-400 text-black
+              transition-all duration-300
+              hover:bg-green-500
+              hover:scale-105
+              hover:shadow-[0_0_40px_rgba(34,197,94,0.6)]
+              active:scale-95
+            "
           >
             Get Started
           </button>
 
+          {/* SECONDARY BUTTON */}
           <a
             href="/home/about"
             onClick={handleLearnMore}
-            className="px-7 py-3 rounded-2xl border border-white/20 bg-white/5 backdrop-blur-xl hover:border-green-400/40 hover:bg-white/10 transition"
+            className="
+              px-7 py-3 rounded-2xl
+              border border-white/20
+              bg-white/5 backdrop-blur-xl
+              transition-all duration-300
+              hover:border-green-400/50
+              hover:bg-white/10
+              hover:scale-105
+            "
           >
             Learn More
           </a>
@@ -128,7 +149,7 @@ export default function Hero() {
 
       </div>
 
-      {/* Scroll indicator */}
+      {/* 👇 SCROLL INDICATOR */}
       <motion.div
         className="absolute bottom-10 text-gray-400 text-sm"
         animate={{ y: [0, 10, 0] }}
@@ -137,7 +158,7 @@ export default function Hero() {
         Scroll ↓
       </motion.div>
 
-      {/* Fade */}
+      {/* Fade bottom */}
       <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-[#05070c]" />
 
     </section>
