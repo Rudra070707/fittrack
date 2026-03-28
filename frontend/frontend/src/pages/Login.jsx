@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { loginUser } from "../api";
+import { loginUser, isAdminUser } from "../api";
 
 export default function Login({ mode = "page", onSuccess }) {
 
@@ -11,7 +11,6 @@ export default function Login({ mode = "page", onSuccess }) {
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
 
-  const [showPass,setShowPass] = useState(false);
   const [loading,setLoading] = useState(false);
   const [error,setError] = useState("");
 
@@ -31,12 +30,6 @@ export default function Login({ mode = "page", onSuccess }) {
     : `/home${redirectTo.startsWith("/") ? "" : "/"}${redirectTo.replace(/^\//,"")}`;
 
   const wrapRef = useRef(null);
-
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-
-  const sx = useSpring(mx,{stiffness:120,damping:25,mass:0.6});
-  const sy = useSpring(my,{stiffness:120,damping:25,mass:0.6});
 
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
@@ -61,9 +54,6 @@ export default function Login({ mode = "page", onSuccess }) {
   },[]);
 
   const onMove = (e)=>{
-    mx.set(e.clientX);
-    my.set(e.clientY);
-
     if(!wrapRef.current) return;
 
     const rect = wrapRef.current.getBoundingClientRect();
@@ -89,6 +79,7 @@ export default function Login({ mode = "page", onSuccess }) {
     tiltY.set(0);
   };
 
+  // 🔥 FINAL HANDLE SUBMIT (ADMIN + USER)
   const handleSubmit = async(e)=>{
     e.preventDefault();
     setError("");
@@ -108,9 +99,26 @@ export default function Login({ mode = "page", onSuccess }) {
         return;
       }
 
+      // ✅ store user
       if(data.token) localStorage.setItem("token",data.token);
       if(data.user) localStorage.setItem("user",JSON.stringify(data.user));
 
+      // 🔥 ADMIN CHECK (from api.js)
+      const isAdmin = isAdminUser(data.user, email);
+
+      if(isAdmin){
+        localStorage.setItem("adminToken", data.token);
+
+        if(mode==="modal" && onSuccess){
+          onSuccess("/admin/dashboard");
+          return;
+        }
+
+        navigate("/admin/dashboard",{replace:true});
+        return;
+      }
+
+      // ✅ USER FLOW
       if(mode==="modal" && onSuccess){
         onSuccess(safeRedirect);
         return;
@@ -150,14 +158,12 @@ export default function Login({ mode = "page", onSuccess }) {
         className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
       >
 
-        {/* HEADER */}
         <div className="text-center mb-7">
           <h2 className="text-3xl font-extrabold">
             Welcome <span className="text-emerald-400">Back</span>
           </h2>
         </div>
 
-        {/* EMAIL */}
         <input
           type="email"
           placeholder="Email"
@@ -166,21 +172,18 @@ export default function Login({ mode = "page", onSuccess }) {
           className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
         />
 
-        {/* PASSWORD */}
         <input
-          type={showPass ? "text" : "password"}
+          type="password"
           placeholder="Password"
           value={password}
           onChange={(e)=>setPassword(e.target.value)}
           className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
         />
 
-        {/* ERROR */}
         {error && (
           <p className="text-red-400 text-sm mb-3">{error}</p>
         )}
 
-        {/* BUTTON */}
         <button
           type="submit"
           disabled={loading}
@@ -189,7 +192,7 @@ export default function Login({ mode = "page", onSuccess }) {
           {loading ? "Signing in..." : "Login"}
         </button>
 
-        {/* ✅ NEW: SIGNUP LINK */}
+        {/* SIGNUP LINK */}
         <p className="text-center text-white/60 text-sm mt-4">
           Don’t have an account?{" "}
           <span

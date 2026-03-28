@@ -32,6 +32,14 @@ export const adminAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// 🔥 NEW: CHECK IF USER IS ADMIN
+export const isAdminUser = (user, email) => {
+  return (
+    user?.role === "admin" ||   // backend role (preferred)
+    email === "admin@fittrack.com" // fallback
+  );
+};
+
 // Safely parse JSON
 export const safeJson = async (res) => {
   try {
@@ -187,10 +195,9 @@ export async function recordPayment(payload) {
 export const authHeader = () => userAuthHeader();
 
 /* =========================
-   🎮 GAMIFICATION (NEW)
+   🎮 GAMIFICATION
    ========================= */
 
-// ✅ GET current streak/xp/level/badges
 export async function getGamification() {
   try {
     const res = await fetch(`${API_BASE}/gamification`, {
@@ -207,7 +214,6 @@ export async function getGamification() {
   }
 }
 
-// ✅ Mark today done (updates streak + awards XP)
 export async function markTodayDone() {
   try {
     const res = await fetch(`${API_BASE}/gamification/mark-today`, {
@@ -216,7 +222,7 @@ export async function markTodayDone() {
         "Content-Type": "application/json",
         ...userAuthHeader(),
       },
-      body: JSON.stringify({}), // keep body (some hosts block empty POST)
+      body: JSON.stringify({}),
     });
 
     return await handleResponse(res, "Failed to update streak");
