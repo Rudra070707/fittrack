@@ -1,9 +1,13 @@
 // backend/controllers/userAuthController.js
+
 const User = require("../models/User");
+const Admin = require("../models/Admin"); // 🔥 ADD THIS
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// ✅ REGISTER
+// =======================
+// ✅ REGISTER (USER ONLY)
+// =======================
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -48,7 +52,9 @@ exports.register = async (req, res) => {
   }
 };
 
-// ✅ LOGIN
+// =======================
+// ✅ LOGIN (ADMIN + USER)
+// =======================
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -60,7 +66,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    // ✅ IMPORTANT: prevent 500 and give clear message if env missing
     if (!process.env.JWT_SECRET) {
       console.error("LOGIN ERROR: JWT_SECRET missing in environment");
       return res.status(500).json({
@@ -69,19 +74,58 @@ exports.login = async (req, res) => {
       });
     }
 
-    // password is select:false so include it
+    // ====================================
+    // 🔥 1. CHECK ADMIN COLLECTION FIRST
+    // ====================================
+    const admin = await Admin.findOne({ email }).select("+password");
+
+    if (admin) {
+      const ok = await bcrypt.compare(password, admin.password);
+
+      if (!ok) {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid credentials",
+        });
+      }
+
+      const token = jwt.sign(
+        { id: admin._id, role: "admin" },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+
+      return res.json({
+        success: true,
+        message: "Admin login successful ✅",
+        token,
+        user: {
+          id: admin._id,
+          email: admin.email,
+          role: "admin",
+        },
+      });
+    }
+
+    // ====================================
+    // 🔥 2. CHECK NORMAL USER COLLECTION
+    // ====================================
     const user = await User.findOne({ email }).select("+password");
+
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const ok = await bcrypt.compare(password, user.password);
+
     if (!ok) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const token = jwt.sign(
@@ -102,16 +146,19 @@ exports.login = async (req, res) => {
         mustChangePassword: user.mustChangePassword,
       },
     });
+
   } catch (err) {
     console.error("LOGIN ERROR:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
+// =======================
 // ✅ CHANGE PASSWORD
+// =======================
 exports.changePassword = async (req, res) => {
   try {
-    const userId = req.user?.id; // from requireAuth middleware
+    const userId = req.user?.id;
     const { currentPassword, newPassword } = req.body;
 
     if (!userId) {
@@ -135,6 +182,7 @@ exports.changePassword = async (req, res) => {
     }
 
     const user = await User.findById(userId).select("+password");
+
     if (!user) {
       return res
         .status(404)
@@ -142,6 +190,7 @@ exports.changePassword = async (req, res) => {
     }
 
     const ok = await bcrypt.compare(currentPassword, user.password);
+
     if (!ok) {
       return res.status(401).json({
         success: false,
@@ -154,6 +203,7 @@ exports.changePassword = async (req, res) => {
     await user.save();
 
     return res.json({ success: true, message: "Password updated ✅" });
+
   } catch (err) {
     console.error("CHANGE PASSWORD ERROR:", err);
     return res.status(500).json({ success: false, message: "Server error" });
