@@ -7,9 +7,19 @@ export default function RequireAuth({ children, adminOnly = false }) {
   const adminToken = localStorage.getItem("adminToken");
   const storedUser = localStorage.getItem("user");
 
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (err) {
+    console.error("Auth parse error:", err);
+    localStorage.clear();
+    return <Navigate to="/home/login" replace />;
+  }
+
   // 🔒 ADMIN ROUTES
   if (adminOnly) {
-    if (!adminToken) {
+    if (!adminToken || user?.role !== "admin") {
       return (
         <Navigate
           to="/admin/login"
@@ -18,6 +28,7 @@ export default function RequireAuth({ children, adminOnly = false }) {
         />
       );
     }
+
     return children;
   }
 
@@ -35,28 +46,12 @@ export default function RequireAuth({ children, adminOnly = false }) {
   }
 
   // 🔁 FORCE PASSWORD CHANGE
-  try {
-    const user = storedUser ? JSON.parse(storedUser) : null;
+  const isOnChangePassword =
+    location.pathname === "/home/change-password" ||
+    location.pathname === "/change-password";
 
-    const isOnChangePassword =
-      location.pathname === "/home/change-password" ||
-      location.pathname === "/change-password";
-
-    if (user?.mustChangePassword === true && !isOnChangePassword) {
-      return <Navigate to="/home/change-password" replace />;
-    }
-  } catch (err) {
-    console.error("Auth parse error:", err);
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    return (
-      <Navigate
-        to="/home/login"
-        state={{ backgroundLocation: location }}
-      />
-    );
+  if (user?.mustChangePassword === true && !isOnChangePassword) {
+    return <Navigate to="/home/change-password" replace />;
   }
 
   return children;
