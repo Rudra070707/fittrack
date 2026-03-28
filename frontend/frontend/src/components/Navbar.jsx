@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { API_BASE } from "../api";
 
 export default function Navbar() {
@@ -12,94 +12,56 @@ export default function Navbar() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(
     !!localStorage.getItem("token")
   );
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const dropdownRef = useRef();
 
   const hideOnRoutes = useMemo(() => ["/home/login", "/home/signup"], []);
   const shouldHide = hideOnRoutes.includes(location.pathname);
 
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
 
-  // ✅ Scroll effect
+  // Scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ✅ Sync login state
+  // Sync login
   useEffect(() => {
-    const syncAuth = () => {
-      setIsUserLoggedIn(!!localStorage.getItem("token"));
-    };
-
-    syncAuth();
-
-    window.addEventListener("storage", syncAuth);
-    window.addEventListener("focus", syncAuth);
-
-    return () => {
-      window.removeEventListener("storage", syncAuth);
-      window.removeEventListener("focus", syncAuth);
-    };
+    const sync = () => setIsUserLoggedIn(!!localStorage.getItem("token"));
+    sync();
+    window.addEventListener("focus", sync);
+    return () => window.removeEventListener("focus", sync);
   }, []);
 
-  // ✅ Load logo
+  // Close dropdown on outside click
   useEffect(() => {
-    let mounted = true;
-
-    if (shouldHide) return;
-
-    axios
-      .get(`${API_BASE}/settings`)
-      .then((res) => {
-        if (!mounted) return;
-        setLogo(res?.data?.logo || null);
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setLogo(null);
-      });
-
-    return () => {
-      mounted = false;
+    const handleClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
     };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Load logo
+  useEffect(() => {
+    if (shouldHide) return;
+    axios.get(`${API_BASE}/settings`)
+      .then(res => setLogo(res?.data?.logo || null))
+      .catch(() => setLogo(null));
   }, [shouldHide]);
 
   const openLogin = () => {
     navigate("/home/login", { state: { backgroundLocation: location } });
   };
 
-  const goProtectedOrLogin = (path) => {
-    if (!localStorage.getItem("token")) {
-      openLogin();
-      return;
-    }
-    navigate(path);
-  };
-
-  const scrollToServices = () => {
-    if (!location.pathname.startsWith("/home") || location.pathname !== "/home") {
-      navigate("/home", { state: { scrollTo: "services" } });
-      return;
-    }
-
-    const el = document.getElementById("services");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // ✅ LOGOUT FIXED
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("user");
-
-    setIsUserLoggedIn(false);
-
-    // ✅ redirect to homepage
+    localStorage.clear();
     navigate("/home", { replace: true });
   };
 
@@ -107,118 +69,110 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[60] h-16">
+
       <motion.nav
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.35 }}
         className={`
-        h-full
-        relative overflow-hidden
-        backdrop-blur-xl border-b border-white/10
-        transition-all duration-300
-        ${
-          scrolled
-            ? "bg-[#05070c]/95 shadow-[0_15px_50px_rgba(0,0,0,0.85)]"
-            : "bg-[#05070c]/70"
-        }
+        h-full backdrop-blur-xl border-b border-white/10
+        ${scrolled ? "bg-[#05070c]/95" : "bg-[#05070c]/70"}
         `}
       >
-        {/* Glow */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-emerald-400/10 blur-[90px] rounded-full" />
-          <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-green-400/10 blur-[90px] rounded-full" />
-        </div>
 
-        <div className="relative max-w-7xl mx-auto h-full px-6 md:px-8 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
 
           {/* LOGO */}
-          <Link to="/home" className="flex items-center gap-3 group">
-            {logo ? (
-              <img
-                src={`${BASE_URL}${logo}`}
-                alt="FitTrack Logo"
-                className="h-9 w-auto drop-shadow-[0_0_20px_rgba(34,197,94,0.45)] group-hover:scale-105 transition duration-300"
-                onError={() => setLogo(null)}
-              />
-            ) : (
-              <div className="flex flex-col leading-none select-none">
-                <span className="text-xl font-extrabold tracking-tight text-white">
-                  Fit<span className="text-emerald-400">Track</span>
-                </span>
-                <span className="text-[11px] text-white/40 tracking-[0.25em] uppercase mt-1">
-                  Smart Fitness
-                </span>
-              </div>
-            )}
+          <Link to="/home" className="flex items-center gap-2">
+            <span className="text-xl font-bold text-white">
+              Fit<span className="text-green-400">Track</span>
+            </span>
           </Link>
 
           {/* NAV LINKS */}
-          <div className="hidden md:flex items-center gap-10 text-sm font-medium text-white/70">
-
-            <button onClick={() => goProtectedOrLogin("/home/about")} className="hover:text-white transition">
-              About
-            </button>
-
-            <button onClick={scrollToServices} className="hover:text-white transition">
-              Services
-            </button>
-
-            <button onClick={() => goProtectedOrLogin("/home/contact")} className="hover:text-white transition">
-              Contact
-            </button>
-
-            {/* ✅ NEW DASHBOARD BUTTON */}
-            {isUserLoggedIn && (
-              <button
-                onClick={() => navigate("/home/dashboard")}
-                className="hover:text-green-400 transition font-semibold"
-              >
-                Dashboard
-              </button>
-            )}
-
+          <div className="hidden md:flex gap-8 text-white/70">
+            <button onClick={() => navigate("/home/about")} className="hover:text-white">About</button>
+            <button onClick={() => navigate("/home/services")} className="hover:text-white">Services</button>
+            <button onClick={() => navigate("/home/contact")} className="hover:text-white">Contact</button>
           </div>
 
-          {/* RIGHT SIDE BUTTONS */}
+          {/* RIGHT SIDE */}
           {!isUserLoggedIn ? (
             <button
               onClick={openLogin}
-              className="
-              px-5 py-2 text-sm font-semibold
-              rounded-xl
-              bg-gradient-to-r from-emerald-500 to-emerald-400
-              text-slate-950
-              shadow-[0_12px_34px_rgba(34,197,94,0.25)]
-              hover:scale-105 transition
-              "
+              className="px-5 py-2 rounded-xl bg-green-400 text-black font-semibold hover:scale-105 transition"
             >
               Login
             </button>
           ) : (
-            <div className="flex items-center gap-3">
+            <div className="relative" ref={dropdownRef}>
 
-              {/* Dashboard Button (Mobile Visible) */}
+              {/* PROFILE BUTTON */}
               <button
-                onClick={() => navigate("/home/dashboard")}
-                className="px-4 py-2 rounded-xl bg-green-400/20 border border-green-400/40 text-green-300 hover:bg-green-400/30 transition"
-              >
-                Dashboard
-              </button>
-
-              {/* Logout */}
-              <button
-                onClick={handleLogout}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="
-                px-5 py-2 text-sm font-semibold
-                rounded-xl
-                bg-red-500/90
-                text-white
-                shadow-[0_12px_34px_rgba(239,68,68,0.35)]
-                hover:bg-red-600 transition
+                w-11 h-11 rounded-2xl
+                bg-gradient-to-br from-green-400/30 to-emerald-500/20
+                border border-green-400/30
+                flex items-center justify-center
+                shadow-[0_0_25px_rgba(34,197,94,0.35)]
+                hover:scale-110 transition
                 "
               >
-                Logout
+                👤
               </button>
+
+              {/* DROPDOWN */}
+              <AnimatePresence>
+                {dropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="
+                    absolute right-0 mt-3 w-56
+                    rounded-2xl overflow-hidden
+                    bg-[#0b0f14]/90 backdrop-blur-xl
+                    border border-white/10
+                    shadow-[0_20px_60px_rgba(0,0,0,0.6)]
+                    "
+                  >
+
+                    <div className="p-3 border-b border-white/10 text-sm text-white/60">
+                      Logged in
+                    </div>
+
+                    <button
+                      onClick={() => navigate("/home/dashboard")}
+                      className="w-full px-4 py-3 text-left hover:bg-white/10"
+                    >
+                      📊 Dashboard
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/home/plans")}
+                      className="w-full px-4 py-3 text-left hover:bg-white/10"
+                    >
+                      💳 My Plan
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/home/settings")}
+                      className="w-full px-4 py-3 text-left hover:bg-white/10"
+                    >
+                      ⚙️ Settings
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full px-4 py-3 text-left text-red-400 hover:bg-white/10"
+                    >
+                      🚪 Logout
+                    </button>
+
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
             </div>
           )}
