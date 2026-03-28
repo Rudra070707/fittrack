@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { API_BASE } from "../api";
 
 export default function Navbar() {
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -21,6 +20,7 @@ export default function Navbar() {
 
   const BASE_URL = useMemo(() => API_BASE.replace(/\/api\/?$/, ""), []);
 
+  // ✅ Scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -30,6 +30,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ✅ Sync login state
   useEffect(() => {
     const syncAuth = () => {
       setIsUserLoggedIn(!!localStorage.getItem("token"));
@@ -46,6 +47,7 @@ export default function Navbar() {
     };
   }, []);
 
+  // ✅ Load logo
   useEffect(() => {
     let mounted = true;
 
@@ -89,13 +91,15 @@ export default function Navbar() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  // ✅ NEW: LOGOUT FUNCTION
+  // ✅ LOGOUT FIXED
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
 
     setIsUserLoggedIn(false);
 
+    // ✅ redirect to homepage
     navigate("/home", { replace: true });
   };
 
@@ -103,7 +107,6 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[60] h-16">
-
       <motion.nav
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -120,7 +123,7 @@ export default function Navbar() {
         }
         `}
       >
-
+        {/* Glow */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -top-10 left-1/4 w-[420px] h-[120px] bg-emerald-400/10 blur-[90px] rounded-full" />
           <div className="absolute -top-10 right-1/4 w-[420px] h-[120px] bg-green-400/10 blur-[90px] rounded-full" />
@@ -128,8 +131,8 @@ export default function Navbar() {
 
         <div className="relative max-w-7xl mx-auto h-full px-6 md:px-8 flex items-center justify-between">
 
+          {/* LOGO */}
           <Link to="/home" className="flex items-center gap-3 group">
-
             {logo ? (
               <img
                 src={`${BASE_URL}${logo}`}
@@ -147,29 +150,36 @@ export default function Navbar() {
                 </span>
               </div>
             )}
-
           </Link>
 
+          {/* NAV LINKS */}
           <div className="hidden md:flex items-center gap-10 text-sm font-medium text-white/70">
 
-            <button onClick={() => goProtectedOrLogin("/home/about")} className="relative hover:text-white transition group">
+            <button onClick={() => goProtectedOrLogin("/home/about")} className="hover:text-white transition">
               About
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-emerald-400 transition-all group-hover:w-full" />
             </button>
 
-            <button onClick={scrollToServices} className="relative hover:text-white transition group">
+            <button onClick={scrollToServices} className="hover:text-white transition">
               Services
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-emerald-400 transition-all group-hover:w-full" />
             </button>
 
-            <button onClick={() => goProtectedOrLogin("/home/contact")} className="relative hover:text-white transition group">
+            <button onClick={() => goProtectedOrLogin("/home/contact")} className="hover:text-white transition">
               Contact
-              <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-emerald-400 transition-all group-hover:w-full" />
             </button>
+
+            {/* ✅ NEW DASHBOARD BUTTON */}
+            {isUserLoggedIn && (
+              <button
+                onClick={() => navigate("/home/dashboard")}
+                className="hover:text-green-400 transition font-semibold"
+              >
+                Dashboard
+              </button>
+            )}
 
           </div>
 
-          {/* ✅ UPDATED BUTTON LOGIC */}
+          {/* RIGHT SIDE BUTTONS */}
           {!isUserLoggedIn ? (
             <button
               onClick={openLogin}
@@ -185,25 +195,36 @@ export default function Navbar() {
               Login
             </button>
           ) : (
-            <button
-              onClick={handleLogout}
-              className="
-              px-5 py-2 text-sm font-semibold
-              rounded-xl
-              bg-red-500/90
-              text-white
-              shadow-[0_12px_34px_rgba(239,68,68,0.35)]
-              hover:bg-red-600 transition
-              "
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-3">
+
+              {/* Dashboard Button (Mobile Visible) */}
+              <button
+                onClick={() => navigate("/home/dashboard")}
+                className="px-4 py-2 rounded-xl bg-green-400/20 border border-green-400/40 text-green-300 hover:bg-green-400/30 transition"
+              >
+                Dashboard
+              </button>
+
+              {/* Logout */}
+              <button
+                onClick={handleLogout}
+                className="
+                px-5 py-2 text-sm font-semibold
+                rounded-xl
+                bg-red-500/90
+                text-white
+                shadow-[0_12px_34px_rgba(239,68,68,0.35)]
+                hover:bg-red-600 transition
+                "
+              >
+                Logout
+              </button>
+
+            </div>
           )}
 
         </div>
-
       </motion.nav>
-
     </header>
   );
 }
