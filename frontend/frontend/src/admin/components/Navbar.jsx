@@ -1,4 +1,18 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // 🔥 Clear all auth data
+    localStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
+
+    // ✅ Force redirect to homepage (full reset)
+    window.location.href = "/home";
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full">
       {/* Top bar */}
@@ -20,6 +34,7 @@ export default function Navbar() {
         </div>
 
         <div className="relative max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+          
           {/* Left: Page context */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col leading-tight">
@@ -39,8 +54,10 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right: badge + avatar */}
+          {/* Right: badge + avatar + logout */}
           <div className="flex items-center gap-4">
+
+            {/* Admin badge */}
             <span
               className="
                 text-[11px] uppercase tracking-[0.22em]
@@ -54,6 +71,21 @@ export default function Navbar() {
               Admin Panel
             </span>
 
+            {/* Logout Button 🔴 */}
+            <button
+              onClick={handleLogout}
+              className="
+                px-4 py-2 rounded-xl
+                bg-red-500/90 hover:bg-red-600
+                text-white text-sm font-medium
+                shadow-[0_10px_30px_rgba(239,68,68,0.35)]
+                transition-all duration-300
+              "
+            >
+              Logout
+            </button>
+
+            {/* Avatar */}
             <div
               className="
                 w-11 h-11 rounded-2xl
@@ -67,6 +99,7 @@ export default function Navbar() {
             >
               <span className="text-white/90 text-lg">👤</span>
             </div>
+
           </div>
         </div>
       </div>
