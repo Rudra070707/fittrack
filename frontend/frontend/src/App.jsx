@@ -32,6 +32,8 @@ import AuthModal from "./components/AuthModal";
 import Gamification from "./pages/Gamification";
 
 import SelectRole from "./pages/SelectRole";
+import UserDashboard from "./pages/UserDashboard";
+
 
 export default function App() {
 
@@ -139,6 +141,7 @@ export default function App() {
               <Route path="gamification" element={<RequireAuth><Gamification /></RequireAuth>} />
               <Route path="join" element={<RequireAuth><Join /></RequireAuth>} />
               <Route path="change-password" element={<RequireAuth><ChangePassword /></RequireAuth>} />
+              <Route path="dashboard" element={<RequireAuth><UserDashboard /></RequireAuth>} />
 
               <Route path="*" element={<Navigate to="/home" replace />} />
 

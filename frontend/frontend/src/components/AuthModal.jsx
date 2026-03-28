@@ -22,6 +22,8 @@ export default function AuthModal({ title, children, onClose }) {
 
   return (
     <motion.div
+      role="dialog"
+      aria-modal="true"
       className="fixed inset-0 z-[9999] flex items-center justify-center px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -36,7 +38,7 @@ export default function AuthModal({ title, children, onClose }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.25 }}
-        onClick={onClose} // ✅ click outside closes modal
+        onClick={onClose}
       >
 
         <div className="absolute inset-0 bg-black/70" />
@@ -67,7 +69,7 @@ export default function AuthModal({ title, children, onClose }) {
         animate={{ y: 0, scale: 1, opacity: 1 }}
         exit={{ y: 20, scale: 0.98, opacity: 0 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-        onClick={(e) => e.stopPropagation()} // ✅ prevent close on inside click
+        onClick={(e) => e.stopPropagation()}
       >
 
         {/* outer glow */}
@@ -92,7 +94,7 @@ export default function AuthModal({ title, children, onClose }) {
             <button
               onClick={onClose}
               className="group h-10 w-10 rounded-2xl border border-white/10 bg-white/[0.05] hover:bg-white/[0.12] transition flex items-center justify-center"
-              aria-label="Close"
+              aria-label="Close modal"
               type="button"
             >
               <span className="text-white/70 group-hover:text-white text-xl">
@@ -104,7 +106,11 @@ export default function AuthModal({ title, children, onClose }) {
 
           {/* BODY */}
           <div className="relative p-6">
+
+            {/* 🔥 IMPORTANT: children will contain login/signup form */}
+            {/* So error + loading UI will be handled INSIDE children */}
             {children}
+
           </div>
 
         </div>

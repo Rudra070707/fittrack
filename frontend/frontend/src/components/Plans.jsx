@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getPlans } from "../api";
+import axios from "axios";
 
 const Plans = () => {
 
@@ -10,9 +11,11 @@ const Plans = () => {
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState(null);
+  const [error, setError] = useState("");
 
   const isLoggedIn = useMemo(() => {
-    return !!localStorage.getItem("token") || !!localStorage.getItem("adminToken");
+    return !!localStorage.getItem("token");
   }, []);
 
   useEffect(() => {
@@ -46,7 +49,9 @@ const Plans = () => {
 
   const formatINR = (num) => Number(num || 0).toLocaleString("en-IN");
 
-  const choosePlan = (plan) => {
+  const choosePlan = async (plan) => {
+
+    setError("");
 
     if (!isLoggedIn) {
 
@@ -63,12 +68,38 @@ const Plans = () => {
       return;
     }
 
-    navigate("/home/join", {
-      state: {
-        plan: plan.name,
-        planCode: plan.code,
-      },
-    });
+    try {
+
+      setProcessingId(plan._id);
+
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "https://fittrack-weld.vercel.app/api/users/select-plan",
+        { planId: plan._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("✅ Plan activated successfully");
+
+      navigate("/home/dashboard");
+
+    } catch (err) {
+
+      console.error(err);
+      setError(
+        err.response?.data?.message || "Failed to select plan"
+      );
+
+    } finally {
+
+      setProcessingId(null);
+
+    }
 
   };
 
@@ -91,6 +122,14 @@ const Plans = () => {
 
       </div>
 
+      {/* ERROR MESSAGE */}
+      {error && (
+        <div className="text-center mt-6 text-red-400">
+          {error}
+        </div>
+      )}
+
+      {/* LOADING */}
       {loading && (
         <div className="text-center mt-16 text-white/60">
           Loading plans...
@@ -104,6 +143,7 @@ const Plans = () => {
           {plans.map((plan) => {
 
             const isPopular = !!plan.highlight;
+            const isProcessing = processingId === plan._id;
 
             return (
 
@@ -149,13 +189,16 @@ const Plans = () => {
 
                   <button
                     onClick={() => choosePlan(plan)}
-                    className={`mt-8 w-full rounded-2xl py-3 font-semibold
+                    disabled={isProcessing}
+                    className={`mt-8 w-full rounded-2xl py-3 font-semibold transition
                     ${isPopular
-                      ? "bg-green-400 text-black"
+                      ? "bg-green-400 text-black hover:bg-green-500"
                       : "bg-white/10 hover:bg-white/20"
-                    }`}
+                    }
+                    ${isProcessing ? "opacity-60 cursor-not-allowed" : ""}
+                    `}
                   >
-                    Choose Plan
+                    {isProcessing ? "Processing..." : "Choose Plan"}
                   </button>
 
                 </div>

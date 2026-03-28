@@ -28,6 +28,70 @@ const addMonths = (date, months) => {
 };
 
 /* ======================================================
+   🧠 NEW: GET CURRENT USER (DASHBOARD)
+====================================================== */
+router.get("/me", requireAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
+    const plan = user.plan
+      ? await Plan.findOne({ name: user.plan })
+      : null;
+
+    res.json({
+      success: true,
+      user,
+      plan,
+    });
+  } catch (err) {
+    console.error("GET ME ERROR:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/* ======================================================
+   🧠 NEW: USER SELECT PLAN (FROM FRONTEND)
+====================================================== */
+router.post("/select-plan", requireAuth, async (req, res) => {
+  try {
+    const { planId } = req.body;
+
+    const plan = await Plan.findById(planId);
+
+    if (!plan) {
+      return res.json({ success: false, message: "Invalid plan" });
+    }
+
+    const start = new Date();
+    const end = addMonths(start, plan.durationMonths || 1);
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        plan: plan.name,
+        planStart: start,
+        planEnd: end,
+      },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Plan activated successfully ✅",
+      user,
+      plan,
+    });
+  } catch (err) {
+    console.error("SELECT PLAN ERROR:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/* ======================================================
    ➕ ADD MEMBER (ADMIN PANEL)
 ====================================================== */
 router.post("/add", requireAuth, requireAdmin, async (req, res) => {
@@ -212,7 +276,7 @@ router.post("/subscribe", async (req, res) => {
 });
 
 /* ======================================================
-   🔔 USER: TOGGLE ZUMBA EMAIL (NEW ⭐)
+   🔔 USER: TOGGLE ZUMBA EMAIL
 ====================================================== */
 router.patch("/me/zumba-notify", requireAuth, async (req, res) => {
   try {
