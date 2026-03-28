@@ -1,5 +1,9 @@
 // src/api.js
 
+// =========================================================
+// 🌐 BASE URL CONFIG
+// =========================================================
+
 // ✅ BASE_URL = backend root (NO /api at end)
 export const BASE_URL =
   (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(
@@ -10,9 +14,10 @@ export const BASE_URL =
 // ✅ API_BASE = backend api root
 export const API_BASE = `${BASE_URL}/api`;
 
-/**
- * 🔐 Token handling
- */
+// =========================================================
+// 🔐 TOKEN HANDLING
+// =========================================================
+
 const normalizeToken = (token) => {
   if (!token) return null;
   return token.startsWith("Bearer ") ? token.split(" ")[1] : token;
@@ -32,15 +37,21 @@ export const adminAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// 🔥 NEW: CHECK IF USER IS ADMIN
+// =========================================================
+// 🔥 ADMIN CHECK
+// =========================================================
+
 export const isAdminUser = (user, email) => {
   return (
-    user?.role === "admin" ||   // backend role (preferred)
-    email === "admin@fittrack.com" // fallback
+    user?.role === "admin" ||
+    email === "admin@fittrack.com"
   );
 };
 
-// Safely parse JSON
+// =========================================================
+// 🧠 SAFE JSON PARSE
+// =========================================================
+
 export const safeJson = async (res) => {
   try {
     return await res.json();
@@ -49,8 +60,27 @@ export const safeJson = async (res) => {
   }
 };
 
+// =========================================================
+// 🚨 GLOBAL RESPONSE HANDLER (IMPORTANT UPGRADE)
+// =========================================================
+
 const handleResponse = async (res, fallbackMsg) => {
   const data = await safeJson(res);
+
+  // 🔥 AUTO LOGOUT IF TOKEN INVALID
+  if (res.status === 401) {
+    console.warn("⚠️ Unauthorized → auto logout");
+
+    localStorage.clear();
+
+    // redirect user safely
+    window.location.href = "/home/login";
+
+    return {
+      success: false,
+      message: "Session expired. Please login again.",
+    };
+  }
 
   if (!res.ok) {
     return {
@@ -63,9 +93,9 @@ const handleResponse = async (res, fallbackMsg) => {
   return data ?? { success: true };
 };
 
-/* =========================
-   AUTH (USER)
-   ========================= */
+// =========================================================
+// 👤 AUTH (USER)
+// =========================================================
 
 export async function loginUser(email, password) {
   try {
@@ -74,6 +104,7 @@ export async function loginUser(email, password) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+
     return await handleResponse(res, "Login failed");
   } catch (err) {
     console.error("LOGIN API ERROR:", err);
@@ -88,6 +119,7 @@ export async function signupUser(payload) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+
     return await handleResponse(res, "Signup failed");
   } catch (err) {
     console.error("SIGNUP API ERROR:", err);
@@ -105,6 +137,7 @@ export async function changePassword(currentPassword, newPassword) {
       },
       body: JSON.stringify({ currentPassword, newPassword }),
     });
+
     return await handleResponse(res, "Change password failed");
   } catch (err) {
     console.error("CHANGE PASSWORD API ERROR:", err);
@@ -112,9 +145,9 @@ export async function changePassword(currentPassword, newPassword) {
   }
 }
 
-/* =========================
-   ADMIN
-   ========================= */
+// =========================================================
+// 🛠 ADMIN
+// =========================================================
 
 export async function adminResetUserPassword(userId) {
   try {
@@ -125,6 +158,7 @@ export async function adminResetUserPassword(userId) {
         ...adminAuthHeader(),
       },
     });
+
     return await handleResponse(res, "Reset failed");
   } catch (err) {
     console.error("RESET PASSWORD API ERROR:", err);
@@ -132,41 +166,35 @@ export async function adminResetUserPassword(userId) {
   }
 }
 
-/* =========================
-   PLANS
-   ========================= */
+// =========================================================
+// 💳 PLANS
+// =========================================================
 
 export async function getPlans() {
   try {
     const res = await fetch(`${API_BASE}/plans/all`);
-    const data = await safeJson(res);
-
-    if (!res.ok) {
-      return {
-        success: false,
-        message: data?.message || "Failed to fetch plans",
-        plans: [],
-      };
-    }
-
-    return { success: true, plans: data?.plans || [] };
+    return await handleResponse(res, "Failed to fetch plans");
   } catch (err) {
     console.error("GET PLANS API ERROR:", err);
     return { success: false, message: "Network / server error", plans: [] };
   }
 }
 
-/* =========================
-   MEMBERSHIP
-   ========================= */
+// =========================================================
+// 🧾 MEMBERSHIP
+// =========================================================
 
 export async function subscribeMembership(payload) {
   try {
     const res = await fetch(`${API_BASE}/users/subscribe`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...userAuthHeader(),
+      },
       body: JSON.stringify(payload),
     });
+
     return await handleResponse(res, "Subscribe failed");
   } catch (err) {
     console.error("SUBSCRIBE API ERROR:", err);
@@ -174,17 +202,21 @@ export async function subscribeMembership(payload) {
   }
 }
 
-/* =========================
-   PAYMENTS
-   ========================= */
+// =========================================================
+// 💰 PAYMENTS
+// =========================================================
 
 export async function recordPayment(payload) {
   try {
     const res = await fetch(`${API_BASE}/payments/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...userAuthHeader(),
+      },
       body: JSON.stringify(payload),
     });
+
     return await handleResponse(res, "Failed to record payment");
   } catch (err) {
     console.error("RECORD PAYMENT API ERROR:", err);
@@ -194,9 +226,9 @@ export async function recordPayment(payload) {
 
 export const authHeader = () => userAuthHeader();
 
-/* =========================
-   🎮 GAMIFICATION
-   ========================= */
+// =========================================================
+// 🎮 GAMIFICATION
+// =========================================================
 
 export async function getGamification() {
   try {

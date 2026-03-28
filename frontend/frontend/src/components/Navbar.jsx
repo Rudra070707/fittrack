@@ -1,8 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState, useRef } from "react";
-import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { API_BASE } from "../api";
 
 export default function Navbar() {
   const location = useLocation();
@@ -26,12 +24,19 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Sync login
+  // Sync login (IMPORTANT FIX)
   useEffect(() => {
-    const sync = () => setIsUserLoggedIn(!!localStorage.getItem("token"));
-    sync();
+    const sync = () => {
+      setIsUserLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", sync);
     window.addEventListener("focus", sync);
-    return () => window.removeEventListener("focus", sync);
+
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("focus", sync);
+    };
   }, []);
 
   // Close dropdown outside click
@@ -49,8 +54,14 @@ export default function Navbar() {
     navigate("/home/login", { state: { backgroundLocation: location } });
   };
 
+  // ✅ FIXED LOGOUT
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    setIsUserLoggedIn(false); // 🔥 FIX
+    setDropdownOpen(false);
+
     navigate("/home", { replace: true });
   };
 
@@ -58,7 +69,6 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[60] h-16">
-
       <motion.nav
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -67,7 +77,6 @@ export default function Navbar() {
           ${scrolled ? "bg-[#05070c]/95" : "bg-[#05070c]/70"}
         `}
       >
-
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
 
           {/* LOGO */}
@@ -75,7 +84,7 @@ export default function Navbar() {
             Fit<span className="text-green-400">Track</span>
           </Link>
 
-          {/* NAV LINKS */}
+          {/* NAV */}
           <div className="hidden md:flex gap-8 text-white/70">
             <button onClick={() => navigate("/home/about")} className="hover:text-white">About</button>
             <button onClick={() => navigate("/home/services")} className="hover:text-white">Services</button>
@@ -93,7 +102,6 @@ export default function Navbar() {
           ) : (
             <div className="relative" ref={dropdownRef}>
 
-              {/* PROFILE BUTTON */}
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="w-11 h-11 rounded-2xl bg-green-400/20 border border-green-400/30 flex items-center justify-center"
@@ -101,16 +109,14 @@ export default function Navbar() {
                 👤
               </button>
 
-              {/* DROPDOWN */}
               <AnimatePresence>
                 {dropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
                     className="absolute right-0 mt-3 w-52 rounded-2xl bg-[#0b0f14]/90 border border-white/10 shadow-xl overflow-hidden"
                   >
-
                     <button
                       onClick={() => {
                         navigate("/home/dashboard");
@@ -127,7 +133,6 @@ export default function Navbar() {
                     >
                       🚪 Logout
                     </button>
-
                   </motion.div>
                 )}
               </AnimatePresence>

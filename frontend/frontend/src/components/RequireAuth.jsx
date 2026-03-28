@@ -9,15 +9,27 @@ export default function RequireAuth({ children, adminOnly = false }) {
 
   let user = null;
 
+  // ✅ SAFE PARSE USER
   try {
     user = storedUser ? JSON.parse(storedUser) : null;
   } catch (err) {
-    console.error("Auth parse error:", err);
+    console.error("❌ Auth parse error:", err);
+
+    // corrupted storage → clear everything
     localStorage.clear();
-    return <Navigate to="/home/login" replace />;
+
+    return (
+      <Navigate
+        to="/home/login"
+        replace
+        state={{ from: location.pathname }}
+      />
+    );
   }
 
-  // 🔒 ADMIN ROUTES
+  // =========================================================
+  // 🔒 ADMIN ROUTE PROTECTION
+  // =========================================================
   if (adminOnly) {
     if (!adminToken || user?.role !== "admin") {
       return (
@@ -32,11 +44,14 @@ export default function RequireAuth({ children, adminOnly = false }) {
     return children;
   }
 
-  // 🔐 USER ROUTES
+  // =========================================================
+  // 🔐 USER ROUTE PROTECTION
+  // =========================================================
   if (!token) {
     return (
       <Navigate
         to="/home/login"
+        replace
         state={{
           from: location.pathname,
           backgroundLocation: location,
@@ -45,14 +60,41 @@ export default function RequireAuth({ children, adminOnly = false }) {
     );
   }
 
+  // =========================================================
+  // ⚠️ EDGE CASE: TOKEN EXISTS BUT USER MISSING
+  // =========================================================
+  if (token && !user) {
+    console.warn("⚠️ Token exists but user missing → clearing storage");
+
+    localStorage.clear();
+
+    return (
+      <Navigate
+        to="/home/login"
+        replace
+        state={{ from: location.pathname }}
+      />
+    );
+  }
+
+  // =========================================================
   // 🔁 FORCE PASSWORD CHANGE
+  // =========================================================
   const isOnChangePassword =
     location.pathname === "/home/change-password" ||
     location.pathname === "/change-password";
 
   if (user?.mustChangePassword === true && !isOnChangePassword) {
-    return <Navigate to="/home/change-password" replace />;
+    return (
+      <Navigate
+        to="/home/change-password"
+        replace
+      />
+    );
   }
 
+  // =========================================================
+  // ✅ ALL GOOD → ALLOW ACCESS
+  // =========================================================
   return children;
 }

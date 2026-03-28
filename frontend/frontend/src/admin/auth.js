@@ -1,48 +1,81 @@
 // frontend/src/admin/auth.js
 
-// ==============================
-// ADMIN AUTH UTILS (Production Ready)
-// Works with Vercel + Render
-// ==============================
+// ==========================================================
+// 🔐 ADMIN AUTH UTILS (Production Ready - Improved)
+// ==========================================================
 
-// 🔐 Get token
+// ==============================
+// 🔍 GET TOKEN
+// ==============================
 export function getAdminToken() {
   return localStorage.getItem("adminToken");
 }
 
-// ✅ Check login state
+// ==============================
+// ✅ CHECK LOGIN
+// ==============================
 export function isAdminLoggedIn() {
   return !!getAdminToken();
 }
 
-// ✅ Login (store token correctly)
-export function loginAdmin(token) {
+// ==============================
+// 🔑 LOGIN ADMIN
+// ==============================
+export function loginAdmin(token, user = null) {
   if (!token) {
     console.error("❌ loginAdmin called without token");
     return;
   }
 
-  // Clear any conflicting keys (avoid user/admin mix)
-  localStorage.removeItem("token");
+  // 🧹 Clear conflicting keys (VERY IMPORTANT)
+  localStorage.removeItem("token");       // user token
   localStorage.removeItem("userToken");
+  localStorage.removeItem("user");
 
-  // Save admin token
+  // 💾 Save admin session
   localStorage.setItem("adminToken", token);
   localStorage.setItem("isAdmin", "true");
 
-  // Notify other tabs/components
+  // Optional: store user info
+  if (user) {
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+
+  // 🔄 Notify UI (Navbar update etc.)
   window.dispatchEvent(new Event("storage"));
 
-  console.log("✅ Admin token saved");
+  console.log("✅ Admin logged in");
 }
 
-// 🚪 Logout
+// ==============================
+// 🚪 LOGOUT ADMIN (FIXED)
+// ==============================
 export function logoutAdmin() {
+  console.log("👋 Admin logout");
+
+  // 🧹 Clear ALL admin-related data
   localStorage.removeItem("adminToken");
   localStorage.removeItem("adminRole");
   localStorage.removeItem("isAdmin");
+  localStorage.removeItem("user");
 
+  // 🔄 Update UI everywhere
   window.dispatchEvent(new Event("storage"));
 
-  console.log("👋 Admin logged out");
+  // 🔥 IMPORTANT FIX → FORCE REDIRECT
+  window.location.href = "/admin/login";
+}
+
+// ==============================
+// ⚠️ CLEAR ALL AUTH (GLOBAL RESET)
+// ==============================
+export function clearAdminAuth() {
+  console.warn("⚠️ Clearing all admin auth");
+
+  localStorage.removeItem("adminToken");
+  localStorage.removeItem("adminRole");
+  localStorage.removeItem("isAdmin");
+  localStorage.removeItem("user");
+
+  window.location.href = "/admin/login";
 }
