@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getPlans, subscribeMembership } from "../api";
 import DemoCheckout from "../components/DemoCheckout";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast"; // 🔥 NEW
 
 export default function Join() {
   const location = useLocation();
@@ -13,6 +13,8 @@ export default function Join() {
 
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(true);
+
+  const [processing, setProcessing] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -97,11 +99,10 @@ export default function Join() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* 🌌 BACKGROUND */}
+      {/* 🌌 BACKGROUND SAME */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
-
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]"/>
 
         <motion.div
@@ -130,119 +131,87 @@ export default function Join() {
           {/* LEFT FORM */}
           <motion.div
             whileHover={{scale:1.01}}
-            className="
-              group relative rounded-3xl p-[1px]
-              bg-gradient-to-br from-white/10 to-transparent
-            "
+            className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-transparent"
           >
 
             <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
 
-            <div className="
-              bg-white/6 backdrop-blur-2xl border border-white/12
-              rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)]
-              overflow-hidden
-            ">
+            <div className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden">
 
               <div className="px-8 pt-8 pb-6 border-b border-white/10">
 
-                <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
-                  MEMBERSHIP CHECKOUT
-                </p>
+                <p className="text-emerald-400 text-xs">MEMBERSHIP CHECKOUT</p>
 
-                <h2 className="text-3xl md:text-4xl font-extrabold mt-3">
-                  Confirm your{" "}
-                  <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
-                    membership
-                  </span>
+                <h2 className="text-3xl font-extrabold mt-3">
+                  Confirm your membership
                 </h2>
-
-                <p className="text-white/60 mt-3">
-                  Enter your details to activate your plan instantly.
-                </p>
 
               </div>
 
               <form onSubmit={(e)=>e.preventDefault()} className="px-8 py-8 space-y-5">
 
                 {["name","email","phone","age"].map((field)=>(
-                  <div key={field}>
-                    <label className="text-sm text-white/70 font-medium capitalize">
-                      {field}
-                    </label>
-
-                    <div className="
-                      mt-2 flex items-center gap-3 rounded-2xl
-                      bg-black/30 border border-white/12 px-4 py-3
-                      focus-within:ring-2 focus-within:ring-emerald-400
-                      hover:border-emerald-400/40 transition
-                    ">
-
-                      <input
-                        type={field==="age"?"number":field==="email"?"email":"text"}
-                        className="w-full bg-transparent outline-none text-white placeholder-white/40"
-                        placeholder={`Enter ${field}`}
-                        value={form[field]}
-                        onChange={(e)=>setForm({...form,[field]:e.target.value})}
-                      />
-
-                    </div>
-                  </div>
+                  <input
+                    key={field}
+                    value={form[field]}
+                    disabled={processing} // 🔥 NEW
+                    onChange={(e)=>setForm({...form,[field]:e.target.value})}
+                    placeholder={field}
+                    className="
+                      w-full p-3 rounded-xl
+                      bg-black/30 border border-white/10
+                      focus:ring-2 focus:ring-emerald-400
+                      transition
+                      disabled:opacity-60
+                    "
+                  />
                 ))}
-
-                {/* PLAN */}
-                <div>
-                  <label className="text-sm text-white/70 font-medium">
-                    Selected Plan
-                  </label>
-
-                  <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/6 border border-white/12 px-4 py-3">
-
-                    <div>
-                      <p className="text-emerald-300 font-bold">
-                        {form.planName}
-                      </p>
-
-                      <p className="text-xs text-white/50">
-                        Plan selected from previous page
-                      </p>
-                    </div>
-
-                    <span className="text-xs px-3 py-1 rounded-full bg-emerald-400/15 border border-emerald-400/25 text-emerald-300">
-                      Locked
-                    </span>
-
-                  </div>
-                </div>
 
                 <DemoCheckout
                   planName={form.planName}
                   amount={selectedPlan?.price || 0}
-                  disabled={!canPay}
+                  disabled={!canPay || processing}
                   userId={form.email}
                   onSuccess={async () => {
 
-                    if (!selectedPlan?.code) {
-                      // toast.error("Plan not found");
-                      return;
+                    if (processing) return;
+                    setProcessing(true);
+
+                    try {
+
+                      if (!selectedPlan?.code) {
+                        toast.error("Invalid plan ❌");
+                        return;
+                      }
+
+                      const res = await subscribeMembership({
+                        name: form.name,
+                        email: form.email,
+                        phone: form.phone,
+                        planCode: selectedPlan.code,
+                      });
+
+                      if (!res.success) {
+                        toast.error("Payment failed ❌"); // 🔥 NEW
+                        return;
+                      }
+
+                      toast.success("Membership activated 🎉"); // 🔥 NEW
+
+                    } catch {
+                      toast.error("Something went wrong ⚠️"); // 🔥 NEW
+                    } finally {
+                      setProcessing(false);
                     }
-
-                    const res = await subscribeMembership({
-                      name: form.name,
-                      email: form.email,
-                      phone: form.phone,
-                      planCode: selectedPlan.code,
-                    });
-
-                    if (!res.success) {
-                      // toast.error(res.message);
-                      return;
-                    }
-
-                    // toast.success("Membership Activated 🎉");
 
                   }}
                 />
+
+                {processing && (
+                  <p className="text-emerald-400 text-sm animate-pulse">
+                    Processing payment...
+                  </p>
+                )}
 
               </form>
 
@@ -250,61 +219,26 @@ export default function Join() {
 
           </motion.div>
 
-          {/* RIGHT SUMMARY */}
-          <motion.div
-            initial={{opacity:0,x:20}}
-            animate={{opacity:1,x:0}}
-            className="
-              bg-white/6 backdrop-blur-2xl border border-white/12
-              rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)]
-              h-fit overflow-hidden
-            "
-          >
+          {/* RIGHT SUMMARY SAME */}
+          <motion.div className="bg-white/6 border border-white/12 rounded-3xl p-6">
 
-            <div className="px-8 pt-8 pb-6 border-b border-white/10">
+            <h3 className="text-xl font-bold">Summary</h3>
 
-              <p className="text-emerald-400 font-semibold tracking-[0.25em] text-xs">
-                ORDER SUMMARY
-              </p>
-
-              <h3 className="text-2xl font-extrabold mt-3">
-                Your plan details
-              </h3>
-
-            </div>
-
-            <div className="px-8 py-8 space-y-6">
-
-              <div className="rounded-2xl border border-white/12 bg-black/30 p-6">
-
-                <p className="text-emerald-300 text-xs font-semibold tracking-wider">
-                  {meta.tag}
-                </p>
-
-                <h4 className="text-2xl font-extrabold mt-2">
-                  {form.planName}
-                </h4>
-
-                <p className="text-white/70 mt-2">{meta.priceText}</p>
-
-                <ul className="mt-6 space-y-2 text-white/80">
-
-                  {meta.perks.map((p,idx)=>(
-                    <li key={idx} className="flex gap-2">
-                      <span className="text-emerald-400 font-bold">✓</span>
-                      {p}
-                    </li>
-                  ))}
-
-                </ul>
-
+            {loadingPlans ? (
+              <div className="animate-pulse space-y-2 mt-4">
+                <div className="h-4 bg-white/10 rounded"></div>
+                <div className="h-4 bg-white/10 rounded"></div>
               </div>
-
-              <p className="text-xs text-white/40">
-                By confirming, you agree to FitTrack membership terms.
-              </p>
-
-            </div>
+            ) : (
+              <>
+                <p className="mt-4">{meta.priceText}</p>
+                <ul>
+                  {meta.perks.map((p,i)=>(
+                    <li key={i}>✓ {p}</li>
+                  ))}
+                </ul>
+              </>
+            )}
 
           </motion.div>
 

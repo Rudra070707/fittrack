@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// 🔥 NEW IMPORT (VERY IMPORTANT)
+import { API_BASE, getUserToken } from "../api";
+
 export default function UserDashboard() {
   const navigate = useNavigate();
 
@@ -11,10 +14,23 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // 🔥 NEW: dummy stats (replace later with API)
+  const [stats] = useState({
+    workouts: 18,
+    calories: 5400,
+    activeDays: 12,
+  });
+
+  // 🔥 NEW: dummy progress data
+  const progressData = [60, 70, 65, 80, 75, 90];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = getUserToken();
+
+        console.log("TOKEN:", token);
+        console.log("API BASE:", API_BASE);
 
         if (!token) {
           navigate("/home/login");
@@ -22,7 +38,7 @@ export default function UserDashboard() {
         }
 
         const res = await axios.get(
-          "https://fittrack-weld.vercel.app/api/users/me",
+          `${API_BASE}/users/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -32,11 +48,22 @@ export default function UserDashboard() {
 
         setUser(res.data.user || null);
         setPlan(res.data.plan || null);
+
       } catch (err) {
         console.error("Dashboard fetch error:", err);
-        setError("Failed to load dashboard. Please login again.");
-        localStorage.clear();
-        setTimeout(() => navigate("/home/login"), 1500);
+
+        if (err.response?.status === 401) {
+          setError("Session expired. Please login again.");
+
+          setTimeout(() => {
+            localStorage.removeItem("token");
+            navigate("/home/login");
+          }, 1500);
+
+        } else {
+          setError("Failed to load dashboard. Please try again.");
+        }
+
       } finally {
         setLoading(false);
       }
@@ -45,18 +72,19 @@ export default function UserDashboard() {
     fetchData();
   }, [navigate]);
 
-  // 🔄 LOADING
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#05080f] text-white/60">
-        <div className="animate-pulse text-lg tracking-wide">
-          Loading dashboard...
+      <div className="min-h-screen bg-[#05080f] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6">
+          <div className="w-10 h-10 border-4 border-green-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-white/60 tracking-wide">
+            Loading your dashboard...
+          </p>
         </div>
       </div>
     );
   }
 
-  // ❌ ERROR
   if (error) {
     return (
       <div className="h-screen flex items-center justify-center bg-[#05080f] text-red-400">
@@ -95,74 +123,108 @@ export default function UserDashboard() {
           </p>
         </div>
 
+        {/* 🔥 STATS CARDS */}
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
+          {[
+            { label: "Workouts", value: stats.workouts },
+            { label: "Calories Burned", value: stats.calories },
+            { label: "Active Days", value: stats.activeDays },
+          ].map((s, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.05 }}
+              className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:shadow-[0_0_25px_rgba(34,197,94,0.2)] transition"
+            >
+              <p className="text-white/60 text-sm">{s.label}</p>
+              <h2 className="text-2xl font-bold mt-2">{s.value}</h2>
+            </motion.div>
+          ))}
+        </div>
+
         {/* 📊 CARDS */}
         <div className="grid md:grid-cols-2 gap-8">
 
-          {/* 🟢 ACTIVE PLAN */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent"
-          >
-            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]">
-
-              <div className="absolute -top-10 -right-10 w-44 h-44 bg-green-400/20 blur-[140px] rounded-full" />
-
+          <motion.div whileHover={{ scale: 1.04 }} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent">
+            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl">
               <p className="text-white/60 text-sm">Active Plan</p>
-
-              <h2 className="text-3xl font-bold mt-4">
-                {plan?.name || "No Plan Selected"}
-              </h2>
-
-              <p className="text-green-400 text-lg mt-2">
-                ₹{plan?.price || 0} / month
-              </p>
-
-              {!plan && (
-                <button
-                  onClick={() => navigate("/home")}
-                  className="
-                    mt-6 px-5 py-2 rounded-xl font-semibold
-                    bg-green-400 text-black
-                    transition-all duration-300
-                    hover:bg-green-500 hover:scale-105
-                    hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]
-                  "
-                >
-                  Choose Plan
-                </button>
-              )}
-
+              <h2 className="text-3xl font-bold mt-4">{plan?.name || "No Plan Selected"}</h2>
+              <p className="text-green-400 text-lg mt-2">₹{plan?.price || 0} / month</p>
             </div>
           </motion.div>
 
-          {/* 🔵 USER INFO */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent"
-          >
-            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(59,130,246,0.2)]">
-
-              <div className="absolute -top-10 -right-10 w-44 h-44 bg-blue-400/20 blur-[140px] rounded-full" />
-
+          <motion.div whileHover={{ scale: 1.04 }} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent">
+            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl">
               <p className="text-white/60 text-sm">Account Info</p>
-
-              <h2 className="text-2xl font-semibold mt-4 break-all">
-                {user?.email || "No email"}
-              </h2>
-
+              <h2 className="text-2xl font-semibold mt-4 break-all">{user?.email || "No email"}</h2>
               <p className="text-white/50 mt-2 text-sm">
                 Member since{" "}
                 {user?.createdAt
                   ? new Date(user.createdAt).toDateString()
                   : "N/A"}
               </p>
-
             </div>
           </motion.div>
 
         </div>
 
-        {/* 🚀 FUTURE SECTION */}
+        {/* 🔥 WEEKLY PROGRESS (ULTIMATE VERSION) */}
+        <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+          <h3 className="text-xl font-bold mb-6">Weekly Progress</h3>
+
+          <div className="flex items-end gap-4 h-52">
+
+            {progressData.map((val, i) => (
+
+              <div
+                key={i}
+                className="flex-1 h-full relative flex items-end justify-center group hover:-translate-y-1 transition"
+              >
+
+                {/* track */}
+                <div className="absolute bottom-0 w-full h-full bg-white/5 rounded-xl" />
+
+                {/* bar */}
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${val}%` }}
+                  transition={{ duration: 0.8, delay: i * 0.1 }}
+                  className="
+                    absolute bottom-0 w-full
+                    bg-gradient-to-t from-emerald-500 via-green-400 to-emerald-300
+                    rounded-t-2xl rounded-b-xl
+                    shadow-[0_10px_30px_rgba(34,197,94,0.35)]
+                  "
+                />
+
+                {/* tooltip */}
+                <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition text-xs bg-black/70 px-2 py-1 rounded text-emerald-300">
+                  {val}%
+                </div>
+
+                {/* day */}
+                <div className="absolute -bottom-6 text-xs text-white/40">
+                  Day {i + 1}
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+        </div>
+
+        {/* 🔥 RECENT ACTIVITY */}
+        <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+          <h3 className="text-xl font-bold mb-4">Recent Activity</h3>
+
+          <ul className="space-y-3 text-white/70 text-sm">
+            <li>✅ Completed workout session</li>
+            <li>🔥 Burned 500 calories</li>
+            <li>📅 Active for 7 days streak</li>
+          </ul>
+        </div>
+
+        {/* 🚀 FUTURE */}
         <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-white/50 backdrop-blur-xl">
           🚀 More features coming soon (progress tracking, workouts, payments)
         </div>

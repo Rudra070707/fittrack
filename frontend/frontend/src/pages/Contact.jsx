@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { API_BASE } from "../api";
-// import toast from "react-hot-toast"; // 🔥 enable later
+
+// 🔥 NEW
+import toast from "react-hot-toast";
+import LoadingButton from "../components/ui/LoadingButton";
 
 export default function Contact() {
 
@@ -23,18 +26,18 @@ export default function Contact() {
     if (loading) return;
 
     if (!fullName || !email || !subject || !message) {
-      // toast.error("Please fill all fields");
+      toast.error("Please fill all fields ❌"); // 🔥 NEW
       return;
     }
 
     if (!WHATSAPP_NUMBER) {
-      // toast.error("WhatsApp number not configured");
+      toast.error("WhatsApp not configured ⚠️"); // 🔥 NEW
       return;
     }
 
     try {
       setLoading(true);
-      // const loadingToast = toast.loading("Sending message...");
+      toast.loading("Sending message...", { id: "contact" }); // 🔥 NEW
 
       const res = await fetch(`${API_BASE}/contact`, {
         method: "POST",
@@ -45,7 +48,7 @@ export default function Contact() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.success) {
-        // toast.error(data.message || "Failed to send message");
+        toast.error(data.message || "Failed to send ❌", { id: "contact" }); // 🔥 NEW
         return;
       }
 
@@ -66,14 +69,15 @@ ${message}`;
       setSubject("");
       setMessage("");
 
+      toast.success("Message sent successfully 🎉", { id: "contact" }); // 🔥 NEW
+
       setTimeout(() => {
         window.open(url, "_blank", "noopener,noreferrer");
-        // toast.success("Redirecting to WhatsApp 📲");
       }, 250);
 
     } catch (err) {
       console.error(err);
-      // toast.error("Server error");
+      toast.error("Server error ⚠️", { id: "contact" }); // 🔥 NEW
     } finally {
       setLoading(false);
     }
@@ -82,14 +86,13 @@ ${message}`;
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* 🌌 BACKGROUND */}
+      {/* BACKGROUND SAME */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6 py-24">
 
-        {/* HEADER */}
         <motion.p
           className="text-emerald-400 tracking-[0.3em] text-xs mb-4"
           initial={{opacity:0}}
@@ -109,9 +112,7 @@ ${message}`;
           </span>
         </motion.h1>
 
-        <motion.p
-          className="text-white/60 text-lg max-w-3xl mb-14"
-        >
+        <motion.p className="text-white/60 text-lg max-w-3xl mb-14">
           Have questions about memberships, workouts, or support?
         </motion.p>
 
@@ -150,58 +151,51 @@ ${message}`;
                 set: setSubject,
                 type: "text",
                 ph: "Subject"
-              }].map((f,i) => (   // ✅ FIXED HERE
+              }].map((f,i)=>(
                 <input
                   key={i}
                   type={f.type}
-                  placeholder={f.ph}
                   value={f.val}
+                  disabled={loading} // 🔥 NEW
                   onChange={(e)=>f.set(e.target.value)}
+                  placeholder={f.ph}
                   className="
                     w-full p-3 rounded-xl
                     bg-black/30 border border-white/10
                     focus:ring-2 focus:ring-emerald-400
                     outline-none transition
                     hover:border-emerald-400/40
+                    disabled:opacity-60
                   "
                 />
               ))}
 
               <textarea
                 rows="5"
-                placeholder="Your Message"
                 value={message}
+                disabled={loading} // 🔥 NEW
                 onChange={(e)=>setMessage(e.target.value)}
+                placeholder="Your Message"
                 className="
                   w-full p-3 rounded-xl
                   bg-black/30 border border-white/10
                   focus:ring-2 focus:ring-emerald-400
                   outline-none transition
                   hover:border-emerald-400/40
+                  disabled:opacity-60
                 "
               />
 
-              <motion.button
-                whileHover={{scale:1.04}}
-                whileTap={{scale:0.96}}
-                disabled={loading}
-                className="
-                  w-full py-3 rounded-2xl font-bold
-                  bg-gradient-to-r from-emerald-500 to-emerald-400
-                  text-black
-                  transition-all duration-300
-                  hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
-                  disabled:opacity-60
-                "
-              >
-                {loading ? "Sending..." : "Send Message"}
-              </motion.button>
+              {/* 🔥 USING LoadingButton */}
+              <LoadingButton loading={loading}>
+                Send Message
+              </LoadingButton>
 
             </div>
 
           </motion.form>
 
-          {/* INFO */}
+          {/* RIGHT SIDE SAME */}
           <motion.div className="space-y-8">
 
             {[{

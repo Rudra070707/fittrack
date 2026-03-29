@@ -61,23 +61,19 @@ export const safeJson = async (res) => {
 };
 
 // =========================================================
-// 🚨 GLOBAL RESPONSE HANDLER (IMPORTANT UPGRADE)
+// 🚨 GLOBAL RESPONSE HANDLER (FIXED VERSION)
 // =========================================================
 
 const handleResponse = async (res, fallbackMsg) => {
   const data = await safeJson(res);
 
-  // 🔥 AUTO LOGOUT IF TOKEN INVALID
+  // 🔥 FIXED: DO NOT AUTO CLEAR STORAGE
   if (res.status === 401) {
-    console.warn("⚠️ Unauthorized → auto logout");
-
-    localStorage.clear();
-
-    // redirect user safely
-    window.location.href = "/home/login";
+    console.warn("⚠️ Unauthorized (401) → token issue");
 
     return {
       success: false,
+      unauthorized: true, // 🔥 NEW FLAG
       message: "Session expired. Please login again.",
     };
   }

@@ -15,8 +15,9 @@ export default function RequireAuth({ children, adminOnly = false }) {
   } catch (err) {
     console.error("❌ Auth parse error:", err);
 
-    // corrupted storage → clear everything
-    localStorage.clear();
+    // 🔥 FIXED: only remove corrupted user (NOT full clear)
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
 
     return (
       <Navigate
@@ -64,9 +65,10 @@ export default function RequireAuth({ children, adminOnly = false }) {
   // ⚠️ EDGE CASE: TOKEN EXISTS BUT USER MISSING
   // =========================================================
   if (token && !user) {
-    console.warn("⚠️ Token exists but user missing → clearing storage");
+    console.warn("⚠️ Token exists but user missing → fixing safely");
 
-    localStorage.clear();
+    // 🔥 FIXED: DO NOT CLEAR EVERYTHING
+    localStorage.removeItem("token");
 
     return (
       <Navigate

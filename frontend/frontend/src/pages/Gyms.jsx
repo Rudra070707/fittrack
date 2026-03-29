@@ -1,12 +1,31 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Gyms() {
 
-  const gyms = [
-    { name: "Gold Gym", distance: "1.2 km", status: "Open" },
-    { name: "Anytime Fitness", distance: "2.5 km", status: "Open" },
-    { name: "Cult Fit", distance: "3.1 km", status: "Open" },
-  ];
+  // 🔥 NEW: loading state
+  const [loading, setLoading] = useState(true);
+
+  const [gyms, setGyms] = useState([]);
+
+  // 🔥 simulate API (replace later with real API)
+  useEffect(() => {
+    const fetchGyms = async () => {
+      setLoading(true);
+
+      await new Promise((r) => setTimeout(r, 1200)); // simulate delay
+
+      setGyms([
+        { name: "Gold Gym", distance: "1.2 km", status: "Open" },
+        { name: "Anytime Fitness", distance: "2.5 km", status: "Open" },
+        { name: "Cult Fit", distance: "3.1 km", status: "Open" },
+      ]);
+
+      setLoading(false);
+    };
+
+    fetchGyms();
+  }, []);
 
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
@@ -56,6 +75,7 @@ export default function Gyms() {
           <input
             type="text"
             placeholder="Enter city or location"
+            disabled={loading} // 🔥 disable while loading
             className="
               w-full px-5 py-3 rounded-2xl
               bg-black/30 border border-white/12
@@ -64,10 +84,10 @@ export default function Gyms() {
               outline-none text-white placeholder-white/40
               transition-all duration-300
               hover:border-emerald-400/40
+              disabled:opacity-60
             "
           />
 
-          {/* subtle glow */}
           <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 hover:opacity-100 transition bg-emerald-400/5 blur-xl" />
 
         </div>
@@ -75,55 +95,68 @@ export default function Gyms() {
         {/* 💎 GYM CARDS */}
         <div className="grid md:grid-cols-3 gap-8">
 
-          {gyms.map((gym, i) => (
-
-            <motion.div
-              key={i}
-              whileHover={{ y: -12, scale: 1.03 }}
-              className="
-                group relative rounded-3xl p-[1px]
-                bg-gradient-to-br from-white/10 to-transparent
-              "
-            >
-
-              {/* glow */}
-              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl" />
-
-              <div className="
-                bg-white/6 backdrop-blur-2xl
-                border border-white/12
-                rounded-3xl p-6
-                transition-all duration-300
-                group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
-              ">
-
-                <h2 className="font-bold text-xl">{gym.name}</h2>
-
-                <p className="text-white/60 mt-2">
-                  <span className="text-emerald-400 font-semibold">
-                    {gym.status}
-                  </span>{" "}
-                  • {gym.distance} away
-                </p>
-
-                <button
+          {loading
+            ? // 🔥 SKELETON LOADING
+              [...Array(3)].map((_, i) => (
+                <div
+                  key={i}
                   className="
-                    mt-5 w-full py-2 rounded-xl
-                    bg-gradient-to-r from-emerald-500 to-emerald-400
-                    text-slate-950 font-semibold
-                    transition-all duration-300
-                    hover:scale-[1.03]
-                    hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                    animate-pulse rounded-3xl p-6
+                    bg-white/6 border border-white/12
                   "
                 >
-                  View Gym
-                </button>
+                  <div className="h-5 bg-white/10 rounded w-2/3 mb-4"></div>
+                  <div className="h-4 bg-white/10 rounded w-1/2 mb-6"></div>
+                  <div className="h-10 bg-white/10 rounded"></div>
+                </div>
+              ))
+            : gyms.map((gym, i) => (
 
-              </div>
+                <motion.div
+                  key={i}
+                  whileHover={{ y: -12, scale: 1.03 }}
+                  className="
+                    group relative rounded-3xl p-[1px]
+                    bg-gradient-to-br from-white/10 to-transparent
+                  "
+                >
 
-            </motion.div>
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl" />
 
-          ))}
+                  <div className="
+                    bg-white/6 backdrop-blur-2xl
+                    border border-white/12
+                    rounded-3xl p-6
+                    transition-all duration-300
+                    group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
+                  ">
+
+                    <h2 className="font-bold text-xl">{gym.name}</h2>
+
+                    <p className="text-white/60 mt-2">
+                      <span className="text-emerald-400 font-semibold">
+                        {gym.status}
+                      </span>{" "}
+                      • {gym.distance} away
+                    </p>
+
+                    <button
+                      className="
+                        mt-5 w-full py-2 rounded-xl
+                        bg-gradient-to-r from-emerald-500 to-emerald-400
+                        text-slate-950 font-semibold
+                        transition-all duration-300
+                        hover:scale-[1.03]
+                        hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                      "
+                    >
+                      View Gym
+                    </button>
+
+                  </div>
+
+                </motion.div>
+              ))}
 
         </div>
 

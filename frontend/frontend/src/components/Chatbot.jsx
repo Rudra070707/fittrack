@@ -4,6 +4,9 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { API_BASE } from "../api";
 
+// 🔥 NEW: import reusable button
+import LoadingButton from "./ui/LoadingButton";
+
 export default function Chatbot() {
 
   const location = useLocation();
@@ -128,7 +131,7 @@ export default function Chatbot() {
   return (
     <>
 
-      {/* 💬 Floating Button (UPGRADED) */}
+      {/* 💬 Floating Button */}
       <motion.button
         onClick={() => setOpen(!open)}
         whileHover={{ scale: 1.15 }}
@@ -146,7 +149,6 @@ export default function Chatbot() {
         💬
       </motion.button>
 
-      {/* Chat Window */}
       <AnimatePresence>
 
         {open && (
@@ -257,6 +259,7 @@ export default function Chatbot() {
 
               <input
                 value={input}
+                disabled={loading} // 🔥 NEW
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about plans, diet, workout..."
@@ -265,22 +268,17 @@ export default function Chatbot() {
                 rounded-xl px-3 py-2 text-white text-sm
                 outline-none focus:ring-2 focus:ring-green-400
                 hover:border-green-400/40 transition
+                disabled:opacity-60
                 "
               />
 
-              <button
+              {/* 🔥 USING LoadingButton */}
+              <LoadingButton
                 onClick={() => sendMessage()}
-                className="
-                bg-gradient-to-r from-green-400 to-emerald-400
-                text-black px-4 rounded-xl font-semibold
-                hover:scale-105
-                hover:shadow-[0_0_20px_rgba(34,197,94,0.6)]
-                transition disabled:opacity-60
-                "
-                disabled={loading}
+                loading={loading}
               >
                 Send
-              </button>
+              </LoadingButton>
 
             </div>
 

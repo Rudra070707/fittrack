@@ -3,6 +3,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { loginUser, isAdminUser } from "../api";
 
+// 🔥 NEW (IMPORTANT)
+const normalizeToken = (token) => {
+  if (!token) return null;
+  return token.startsWith("Bearer ") ? token.split(" ")[1] : token;
+};
+
 export default function Login({ mode = "page", onSuccess }) {
 
   const navigate = useNavigate();
@@ -79,7 +85,7 @@ export default function Login({ mode = "page", onSuccess }) {
     tiltY.set(0);
   };
 
-  // 🔥 FINAL HANDLE SUBMIT (ADMIN + USER)
+  // 🔥 FINAL HANDLE SUBMIT (FIXED)
   const handleSubmit = async(e)=>{
     e.preventDefault();
     setError("");
@@ -99,15 +105,20 @@ export default function Login({ mode = "page", onSuccess }) {
         return;
       }
 
-      // ✅ store user
-      if(data.token) localStorage.setItem("token",data.token);
-      if(data.user) localStorage.setItem("user",JSON.stringify(data.user));
+      // 🔥 FIXED TOKEN STORAGE
+      const cleanToken = normalizeToken(data.token);
+
+      if(cleanToken) localStorage.setItem("token", cleanToken);
+      if(data.user) localStorage.setItem("user", JSON.stringify(data.user));
+
+      // 🔥 DEBUG
+      console.log("LOGIN TOKEN:", cleanToken);
 
       // 🔥 ADMIN CHECK (from api.js)
       const isAdmin = isAdminUser(data.user, email);
 
       if(isAdmin){
-        localStorage.setItem("adminToken", data.token);
+        localStorage.setItem("adminToken", cleanToken);
 
         if(mode==="modal" && onSuccess){
           onSuccess("/admin/dashboard");
@@ -168,16 +179,18 @@ export default function Login({ mode = "page", onSuccess }) {
           type="email"
           placeholder="Email"
           value={email}
+          disabled={loading} // 🔥 NEW
           onChange={(e)=>setEmail(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none disabled:opacity-60"
         />
 
         <input
           type="password"
           placeholder="Password"
           value={password}
+          disabled={loading} // 🔥 NEW
           onChange={(e)=>setPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none"
+          className="w-full px-4 py-3 rounded-xl bg-black/25 text-white mb-4 outline-none disabled:opacity-60"
         />
 
         {error && (
@@ -187,7 +200,7 @@ export default function Login({ mode = "page", onSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-emerald-400 text-black rounded-xl font-semibold"
+          className="w-full py-3 bg-emerald-400 text-black rounded-xl font-semibold transition disabled:opacity-70"
         >
           {loading ? "Signing in..." : "Login"}
         </button>
