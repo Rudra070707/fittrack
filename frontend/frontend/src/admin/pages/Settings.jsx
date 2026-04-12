@@ -46,47 +46,64 @@ export default function Settings() {
   };
 
   const inputClass =
-    "w-full p-3.5 rounded-2xl bg-black/30 border border-white/10 text-white placeholder-gray-500 outline-none transition focus:ring-2 focus:ring-green-400/40 focus:border-green-400/30";
+    "w-full p-3.5 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-gray-500 outline-none transition-all focus:ring-2 focus:ring-green-400 focus:border-green-400 hover:border-white/20";
 
   return (
     <div className="space-y-12">
+
       {/* HEADER */}
       <div>
         <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
           ADMIN / SETTINGS
         </p>
-        <h2 className="text-4xl font-extrabold mt-3">Gym Configuration</h2>
+
+        <h2 className="text-4xl font-extrabold mt-3 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          Gym Configuration
+        </h2>
+
         <p className="text-gray-400 mt-3 max-w-2xl">
           Update gym details, contact information and branding used across FitTrack.
         </p>
       </div>
 
       {/* MAIN WRAP */}
-      <div className="relative bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.7)] overflow-hidden">
+      <div className="relative bg-white/[0.04] backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_35px_100px_rgba(0,0,0,0.85)] overflow-hidden">
+
         {/* visuals */}
-        <div className="pointer-events-none absolute inset-0 opacity-50">
-          <div className="absolute -top-20 -left-24 w-[380px] h-[380px] bg-green-400/10 blur-[140px] rounded-full" />
-          <div className="absolute -bottom-24 -right-24 w-[380px] h-[380px] bg-emerald-300/10 blur-[150px] rounded-full" />
+        <div className="pointer-events-none absolute inset-0 opacity-60">
+          <div className="absolute -top-20 -left-24 w-[420px] h-[420px] bg-green-400/15 blur-[160px] rounded-full animate-pulse" />
+          <div className="absolute -bottom-24 -right-24 w-[420px] h-[420px] bg-emerald-300/15 blur-[160px] rounded-full animate-pulse" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
         </div>
 
+        {/* subtle overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/[0.02] to-transparent" />
+
         {/* CONTENT */}
         <div className="relative p-8 space-y-8">
+
           {/* PREVIEW STRIP */}
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_18px_55px_rgba(0,0,0,0.45)]">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-[0_25px_70px_rgba(0,0,0,0.6)] hover:shadow-[0_0_40px_rgba(34,197,94,0.25)] transition-all duration-300">
             <p className="text-xs uppercase tracking-[0.22em] text-gray-400">
               Current Branding Preview
             </p>
-            <h4 className="text-2xl font-extrabold mt-2">{gymName}</h4>
+
+            <h4 className="text-2xl font-extrabold mt-2 bg-gradient-to-r from-green-300 to-green-500 bg-clip-text text-transparent">
+              {gymName}
+            </h4>
+
             <p className="text-gray-400 mt-1">{branch}</p>
+
             <p className="text-gray-400 mt-2 text-sm">
-              Support: <span className="text-gray-200 font-semibold">{supportEmail}</span>{" "}
+              Support:{" "}
+              <span className="text-gray-200 font-semibold">{supportEmail}</span>{" "}
               | <span className="text-gray-200 font-semibold">{phone}</span>
             </p>
           </div>
 
           {/* FORM GRID */}
           <div className="grid lg:grid-cols-2 gap-8">
+
             {/* LEFT */}
             <div className="space-y-6">
               <Field label="Gym Name">
@@ -108,6 +125,7 @@ export default function Settings() {
 
             {/* RIGHT */}
             <div className="space-y-6">
+
               <Field label="Support Email">
                 <input
                   value={supportEmail}
@@ -121,17 +139,18 @@ export default function Settings() {
               </Field>
 
               {/* LOGO */}
-              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <div className="rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
                 <p className="text-sm font-semibold text-white">Gym Logo (optional)</p>
                 <p className="text-gray-400 text-sm mt-1">
                   Recommended: transparent PNG, square ratio (512×512).
                 </p>
 
-                <label className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 cursor-pointer hover:bg-black/35 transition">
+                <label className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 cursor-pointer hover:bg-black/40 hover:shadow-[0_0_25px_rgba(34,197,94,0.25)] transition-all duration-300">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-2xl bg-green-400/10 border border-green-400/20 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-green-400/10 border border-green-400/20 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
                       <span className="text-green-300 font-bold">⬆</span>
                     </div>
+
                     <div className="min-w-0">
                       <p className="text-gray-200 font-medium truncate">
                         {logo ? logo.name : "Choose a file to upload"}
@@ -140,7 +159,7 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  <span className="text-xs text-gray-300 px-3 py-1.5 rounded-2xl bg-white/[0.04] border border-white/10">
+                  <span className="text-xs text-gray-300 px-3 py-1.5 rounded-2xl bg-white/[0.05] border border-white/10">
                     Browse
                   </span>
 
@@ -151,7 +170,7 @@ export default function Settings() {
               {/* SAVE */}
               <button
                 onClick={handleSave}
-                className="w-full px-8 py-3.5 rounded-2xl bg-green-400 text-black font-semibold shadow-[0_0_25px_rgba(34,197,94,0.55)] hover:scale-[1.02] transition-all duration-300"
+                className="w-full px-8 py-3.5 rounded-2xl bg-green-400 text-black font-semibold shadow-[0_0_30px_rgba(34,197,94,0.7)] hover:scale-[1.03] hover:shadow-[0_0_50px_rgba(34,197,94,0.9)] active:scale-[0.97] transition-all duration-300"
               >
                 Save Settings
               </button>
@@ -159,6 +178,7 @@ export default function Settings() {
               <p className="text-xs text-gray-500">
                 Tip: Save settings after logo upload so it reflects in admin branding.
               </p>
+
             </div>
           </div>
         </div>

@@ -90,49 +90,83 @@ const Plans = () => {
   };
 
   return (
-    <section className="relative py-32 px-6 text-white overflow-hidden">
+    <section className="relative py-36 px-6 text-white overflow-hidden bg-transparent">
+
+      {/* 🌌 GLOBAL BACKGROUND */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute w-[700px] h-[700px] bg-indigo-500/10 blur-[160px] top-[-150px] left-[-150px]" />
+        <div className="absolute w-[700px] h-[700px] bg-green-500/10 blur-[160px] bottom-[-150px] right-[-150px]" />
+
+        {/* 🔥 EXTRA DEPTH */}
+        <div className="absolute w-[600px] h-[600px] bg-cyan-400/10 blur-[180px] top-[30%] left-[40%]" />
+      </div>
+
+      {/* 🔥 TOP + BOTTOM FADE */}
+      <div className="pointer-events-none absolute -top-32 left-0 w-full h-32 bg-gradient-to-b from-[#05070c] to-transparent opacity-60" />
+      <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05070c] to-transparent opacity-60" />
 
       {/* 🔥 BACKGROUND GLOW */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-green-400/10 blur-[160px] rounded-full" />
+      <motion.div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-green-400/10 blur-[160px] rounded-full pointer-events-none"
+        animate={{ x: [0, 80, 0] }}
+        transition={{ duration: 20, repeat: Infinity }}
+      />
 
+      <motion.div
+        className="absolute bottom-0 right-1/4 w-[700px] h-[300px] bg-emerald-400/10 blur-[160px] rounded-full pointer-events-none"
+        animate={{ x: [0, -80, 0] }}
+        transition={{ duration: 22, repeat: Infinity }}
+      />
+
+      {/* 🧠 HEADER */}
       <div className="relative z-10 max-w-6xl mx-auto text-center">
 
-        <p className="text-green-400 tracking-[0.3em] text-xs font-semibold">
+        <motion.p
+          className="text-green-400 tracking-[0.4em] text-xs font-semibold"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+        >
           PRICING
-        </p>
+        </motion.p>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold mt-4">
+        <motion.h1
+          className="text-4xl md:text-6xl font-extrabold mt-4 tracking-tight leading-tight"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+        >
           Membership{" "}
-          <span className="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent drop-shadow-[0_0_60px_rgba(34,197,94,1)]">
             Plans
           </span>
-        </h1>
+        </motion.h1>
 
-        <p className="text-white/60 mt-6 text-lg max-w-2xl mx-auto">
+        <motion.p
+          className="text-white/60 mt-6 text-lg max-w-2xl mx-auto leading-relaxed"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+        >
           Choose a plan that matches your fitness journey.
-        </p>
+        </motion.p>
 
       </div>
 
-      {/* ERROR */}
       {error && (
-        <div className="text-center mt-6 text-red-400">
+        <div className="text-center mt-6 text-red-400 font-medium">
           {error}
         </div>
       )}
 
-      {/* LOADING */}
       {loading && (
-        <div className="text-center mt-16 text-white/60 animate-pulse">
+        <div className="text-center mt-16 text-white/60 animate-pulse tracking-wide">
           Loading plans...
         </div>
       )}
 
       {!loading && plans.length > 0 && (
 
-        <div className="max-w-6xl mx-auto mt-20 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+        <div className="max-w-6xl mx-auto mt-24 grid gap-12 md:grid-cols-2 lg:grid-cols-3 items-stretch">
 
-          {plans.map((plan) => {
+          {plans.map((plan, i) => {
 
             const isPopular = !!plan.highlight;
             const isProcessing = processingId === plan._id;
@@ -141,63 +175,83 @@ const Plans = () => {
 
               <motion.div
                 key={plan._id}
-                whileHover={{ y: -12, scale: 1.03 }}
-                className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent"
+
+                initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: i * 0.2, duration: 0.7 }}
+                viewport={{ once: true }}
+
+                whileHover={{ y: -22, scale: 1.07 }}
+                className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent h-full"
               >
 
-                {/* 🔥 OUTER GLOW ON HOVER */}
-                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-green-400/10 blur-xl" />
+                {/* 🔥 OUTER GLOW */}
+                <div className="absolute -inset-3 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-green-400/25 blur-3xl pointer-events-none" />
 
-                <div className={`relative rounded-3xl p-8 backdrop-blur-xl border transition-all duration-300
+                {/* 🔥 DEPTH SHADOW */}
+                <div className="absolute -inset-1 translate-y-6 bg-black/30 blur-2xl rounded-3xl opacity-60 group-hover:translate-y-12 transition-all duration-500 pointer-events-none" />
+
+                <div className={`relative rounded-3xl p-10 h-full flex flex-col justify-between backdrop-blur-2xl border transition-all duration-300
                   ${isPopular
-                    ? "border-green-400/40 bg-white/10 shadow-[0_0_40px_rgba(34,197,94,0.15)]"
+                    ? "border-green-400/60 bg-white/10 shadow-[0_0_100px_rgba(34,197,94,0.4)] scale-[1.06]"
                     : "border-white/10 bg-white/[0.05]"
                   }
                 `}>
 
-                  {/* 🔥 POPULAR TAG */}
                   {isPopular && (
-                    <div className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-400/20 border border-green-400/40 text-green-300 backdrop-blur-md">
+                    <div className="absolute top-4 right-4 text-xs px-3 py-1 rounded-full bg-green-400/20 border border-green-400/50 text-green-300 backdrop-blur-md shadow-[0_0_25px_rgba(34,197,94,0.5)]">
                       Most Popular
                     </div>
                   )}
 
-                  <h2 className="text-2xl font-bold text-center">
-                    {plan.name}
-                  </h2>
+                  <div>
 
-                  {/* 💰 PRICE */}
-                  <p className="text-center text-5xl font-extrabold mt-6 tracking-tight">
-                    ₹{formatINR(plan.price)}
-                  </p>
+                    {/* 🔥 PLAN NAME */}
+                    <h2 className="text-2xl font-bold text-center tracking-wide group-hover:text-green-300 transition">
+                      {plan.name}
+                    </h2>
 
-                  <p className="text-center text-white/50 text-sm mt-1">
-                    per month
-                  </p>
+                    {/* 🔥 PRICE */}
+                    <p className="text-center text-5xl font-extrabold mt-6 tracking-tight">
+                      ₹{formatINR(plan.price)}
+                    </p>
 
-                  {/* FEATURES */}
-                  <ul className="mt-8 space-y-3 text-white/70">
-                    {(plan.features || []).map((f, j) => (
-                      <li key={j} className="flex gap-3 items-start">
-                        <span className="text-green-400">✓</span>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
+                    <p className="text-center text-white/50 text-sm mt-1">
+                      per month
+                    </p>
 
-                  {/* 🚀 BUTTON */}
+                    {/* 🔥 FEATURES */}
+                    <ul className="mt-8 space-y-3 text-white/70">
+                      {(plan.features || []).map((f, j) => (
+                        <li key={j} className="flex gap-3 items-start">
+                          <span className="text-green-400">✓</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                  </div>
+
+                  {/* 🔥 CTA */}
                   <button
                     onClick={() => choosePlan(plan)}
                     disabled={isProcessing}
-                    className={`mt-8 w-full rounded-2xl py-3 font-semibold transition-all duration-300
+                    className={`mt-10 w-full rounded-2xl py-3.5 font-semibold transition-all duration-300 tracking-wide relative overflow-hidden
                     ${isPopular
-                      ? "bg-green-400 text-black hover:bg-green-500 hover:shadow-[0_0_25px_rgba(34,197,94,0.6)]"
+                      ? "bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-black shadow-[0_0_60px_rgba(34,197,94,0.9)] hover:shadow-[0_0_120px_rgba(34,197,94,1)] hover:scale-105"
                       : "bg-white/10 hover:bg-white/20 hover:scale-105"
                     }
                     ${isProcessing ? "opacity-60 cursor-not-allowed" : ""}
                     `}
                   >
-                    {isProcessing ? "Processing..." : "Choose Plan"}
+                    {/* 🔥 SHINE */}
+                    <span className="absolute inset-0 overflow-hidden">
+                      <span className="absolute w-1/2 h-full bg-white/20 blur-lg -left-1/2 animate-[shine_2s_infinite]" />
+                    </span>
+
+                    <span className="relative z-10">
+                      {isProcessing ? "Processing..." : "Choose Plan"}
+                    </span>
                   </button>
 
                 </div>

@@ -50,27 +50,53 @@ export default function DemoCheckout({
         onClick={openPayment}
         disabled={disabled || saving}
 
-        whileHover={!disabled && !saving ? { scale: 1.03 } : {}}
-        whileTap={!disabled && !saving ? { scale: 0.97 } : {}}
+        whileHover={!disabled && !saving ? { scale: 1.04 } : {}}
+        whileTap={!disabled && !saving ? { scale: 0.96 } : {}}
 
         className="
-          w-full mt-2 py-3.5 rounded-2xl
-          bg-green-400 text-black font-bold
-          shadow-[0_0_30px_rgba(34,197,94,0.55)]
-          hover:bg-green-500
-          transition
+          w-full mt-3 py-3.5 rounded-2xl
+          bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400
+          text-black font-bold tracking-wide
+          shadow-[0_0_40px_rgba(34,197,94,0.7)]
+          hover:shadow-[0_0_55px_rgba(34,197,94,0.9)]
+          transition-all duration-300
           disabled:opacity-60 disabled:cursor-not-allowed
           relative overflow-hidden
         "
       >
-        {/* subtle glow animation */}
+
+        {/* 🔥 Moving Shine Effect */}
         {!saving && (
-          <span className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.35),transparent_60%)]" />
+          <span className="
+            absolute inset-0
+            opacity-30
+            bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent)]
+            animate-[shine_2.5s_linear_infinite]
+          " />
         )}
 
-        <span className="relative">
-          {saving ? "Finalizing..." : `Pay Securely • ₹${amount}`}
+        {/* 🔥 Top Glow */}
+        {!saving && (
+          <span className="
+            absolute inset-0
+            bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.35),transparent_60%)]
+            opacity-40
+          " />
+        )}
+
+        <span className="relative flex items-center justify-center gap-2">
+          {saving ? (
+            <>
+              <span className="animate-spin">⏳</span>
+              Finalizing...
+            </>
+          ) : (
+            <>
+              🔒 Pay Securely • ₹{amount}
+            </>
+          )}
         </span>
+
       </motion.button>
 
       <PaymentModal

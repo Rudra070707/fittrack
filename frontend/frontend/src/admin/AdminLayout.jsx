@@ -53,18 +53,79 @@ export default function AdminLayout() {
   // ✅ AUTHENTICATED ADMIN AREA
   return (
     <RequireAuth adminOnly>
-      <div className="min-h-screen bg-[#070a0f] text-white">
-        <div className="flex min-h-screen">
+      <div className="relative min-h-screen text-white overflow-hidden">
+
+        {/* 🔥 GLOBAL BACKGROUND (MATCH USER UI) */}
+        <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+
+          {/* base gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#030712] to-[#020617]" />
+
+          {/* glow layers */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-green-400/10 blur-[200px] rounded-full" />
+
+          <div className="absolute bottom-0 right-1/3 w-[800px] h-[400px] bg-emerald-400/10 blur-[180px] rounded-full" />
+
+          <div className="absolute top-1/3 left-1/4 w-[600px] h-[300px] bg-cyan-400/10 blur-[160px] rounded-full" />
+
+          {/* animated glow */}
+          <motion.div
+            className="absolute top-0 left-0 w-[600px] h-[600px] bg-green-400/10 blur-[160px] rounded-full"
+            animate={{ x: [0, 120, 0], y: [0, 80, 0] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          <motion.div
+            className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-400/10 blur-[140px] rounded-full"
+            animate={{ x: [0, -100, 0], y: [0, -60, 0] }}
+            transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+          />
+
+          {/* grain */}
+          <div
+            className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+            style={{
+              backgroundImage:
+                "url('https://grainy-gradients.vercel.app/noise.svg')"
+            }}
+          />
+
+        </div>
+
+        <div className="flex min-h-screen relative z-10">
+
+          {/* SIDEBAR */}
           <Sidebar />
 
           <div className="flex-1 flex flex-col min-w-0">
-            <Navbar />
+
+            {/* NAVBAR */}
+            <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/[0.03] border-b border-white/10">
+              <Navbar />
+            </div>
 
             <main className="flex-1 p-6 sm:p-8">
-              <div className="max-w-7xl mx-auto rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-[0_20px_80px_rgba(0,0,0,0.55)] overflow-hidden">
-                <div className="h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+              {/* 🔥 MAIN GLASS CONTAINER (UPGRADED) */}
+              <div className="
+                max-w-7xl mx-auto
+                rounded-3xl
+                border border-white/10
+                bg-white/[0.04]
+                backdrop-blur-2xl
+                shadow-[0_30px_120px_rgba(0,0,0,0.8)]
+                overflow-hidden
+                relative
+              ">
+
+                {/* glow border effect */}
+                <div className="absolute inset-0 rounded-3xl pointer-events-none border border-white/5" />
+
+                {/* top gradient line */}
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-green-400/40 to-transparent" />
 
                 <div className="p-6 sm:p-8">
+
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={location.pathname}
@@ -75,6 +136,7 @@ export default function AdminLayout() {
                       transition={pageTransition}
                       className="min-h-[55vh]"
                     >
+
                       <Routes>
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="users" element={<Users />} />
@@ -91,10 +153,13 @@ export default function AdminLayout() {
                           element={<Navigate to="/admin/dashboard" replace />}
                         />
                       </Routes>
+
                     </motion.div>
                   </AnimatePresence>
+
                 </div>
               </div>
+
             </main>
           </div>
         </div>

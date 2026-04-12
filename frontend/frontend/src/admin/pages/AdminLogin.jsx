@@ -138,10 +138,14 @@ export default function AdminLogin() {
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"
-      onMouseMove={isFinePointer ? onMove : undefined}
-      onMouseLeave={isFinePointer ? onLeave : undefined}
-    >
+  className="relative min-h-screen overflow-hidden text-white flex items-center justify-center px-6 bg-slate-950"
+  onMouseMove={isFinePointer ? onMove : undefined}
+  onMouseLeave={isFinePointer ? onLeave : undefined}
+>
+  <div className="pointer-events-none absolute inset-0">
+  <div className="absolute top-[-200px] left-[-200px] w-[500px] h-[500px] bg-green-400/10 blur-[180px]" />
+  <div className="absolute bottom-[-200px] right-[-200px] w-[500px] h-[500px] bg-emerald-400/10 blur-[180px]" />
+</div>
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
@@ -210,7 +214,7 @@ export default function AdminLogin() {
           />
         )}
 
-        <div className="pointer-events-none absolute -inset-[1px] rounded-[26px] bg-gradient-to-r from-emerald-500/35 via-sky-500/25 to-indigo-500/30 blur-[14px] opacity-70 animate-pulse" />
+        <div className="pointer-events-none absolute -inset-[1px] rounded-[26px] bg-gradient-to-rfrom-emerald-500/50 via-sky-500/40 to-indigo-500/45 blur-[14px] opacity-70 animate-pulse" />
 
         <motion.form
           onSubmit={handleSubmit}
@@ -222,7 +226,7 @@ export default function AdminLogin() {
           initial={{ opacity: 0, scale: 0.985, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-9 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
+          className="relative w-full bg-white/[0.07] backdrop-blur-2xl border border-white/15 rounded-3xl p-9 shadow-[0_30px_100px_rgba(0,0,0,0.75)] hover:shadow-[0_0_50px_rgba(34,197,94,0.25)] transition-all duration-300 overflow-hidden"
         >
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -top-24 -left-24 h-64 w-64 rotate-12 bg-white/10 blur-2xl" />
@@ -239,7 +243,7 @@ export default function AdminLogin() {
               </p>
             </div>
 
-            <h2 className="text-4xl font-extrabold mt-5">
+            <h2 className="text-4xl font-extrabold mt-5 bg-gradient-to-r from-white via-gray-300 to-white bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               Admin{" "}
               <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
                 Login
@@ -258,7 +262,7 @@ export default function AdminLogin() {
               placeholder="admin@fittrack.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 placeholder-white/35 outline-none transition focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+              className="w-full px-4 py-3 rounded-2xlbg-black/30 border border-white/15 hover:border-white/25 focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20 transition-all duration-300 text-white/90 placeholder-white/35 outline-none transition focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
             />
           </div>
 
@@ -269,13 +273,14 @@ export default function AdminLogin() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 placeholder-white/35 outline-none transition focus:border-sky-400/40 focus:ring-2 focus:ring-sky-400/20"
+              className="w-full px-4 py-3 rounded-2xlbg-black/30 border border-white/15 hover:border-white/25 focus:border-sky-400/40 focus:ring-2 focus:ring-sky-400/20 transition-all duration-300 text-white/90 placeholder-white/35 outline-none transition focus:border-sky-400/40 focus:ring-2 focus:ring-sky-400/20"
             />
           </div>
 
           {error ? (
             <div
-              className="relative mt-5 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+              className="relative mt-5 rounded-2xl border border-red-500/20bg-red-500/10 shadow-[0_0_20px_rgba(239,68,68,0.3)]px-4 py-3 text-sm text-red-200
+              hover:scale-[1.01]"
               style={{ transform: "translateZ(14px)" }}
             >
               {error}
@@ -287,8 +292,9 @@ export default function AdminLogin() {
             disabled={loading}
             whileHover={{ scale: loading ? 1 : 1.02 }}
             whileTap={{ scale: loading ? 1 : 0.99 }}
-            className="relative mt-7 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group"
+            className="relative mt-7 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 shadow-[0_15px_40px_rgba(34,197,94,0.4)] text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group hover:scale-[1.03] active:scale-[0.97]"
             style={{ transform: "translateZ(18px)" }}
+            
           >
             <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition">
               <span className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-white/35 blur-md translate-x-0 group-hover:translate-x-[260%] transition duration-700" />

@@ -13,12 +13,10 @@ export default function Users() {
     planCode: "",
   });
 
-  // ✅ Show temp password after adding member
-  const [createdCreds, setCreatedCreds] = useState(null); // { email, tempPassword, planName }
+  const [createdCreds, setCreatedCreds] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // ✅ NEW: Reset password creds (inside edit modal)
-  const [resetCreds, setResetCreds] = useState(null); // { tempPassword }
+  const [resetCreds, setResetCreds] = useState(null);
   const [resetCopied, setResetCopied] = useState(false);
 
   const planNameByCode = useMemo(() => {
@@ -50,12 +48,10 @@ export default function Users() {
     fetchPlans();
   }, []);
 
-  // ✅ if plans load and planCode is empty, auto-select first plan code (optional)
   useEffect(() => {
     if (!newUser.planCode && plans.length > 0 && plans[0]?.code) {
       setNewUser((prev) => ({ ...prev, planCode: plans[0].code }));
     }
-    // eslint-disable-next-line
   }, [plans]);
 
   const deleteUser = async (id) => {
@@ -70,11 +66,9 @@ export default function Users() {
   };
 
   const openEdit = (user) => {
-    // reset reset-password UI each time modal opens
     setResetCreds(null);
     setResetCopied(false);
 
-    // user.plan stored as plan NAME in DB (ex: "Premium Plan")
     const matched = plans.find((p) => p.name === user.plan);
     setEditUser({
       ...user,
@@ -100,7 +94,6 @@ export default function Users() {
     }
   };
 
-  // ✅ Copy temp password (after add)
   const copyTempPassword = async () => {
     if (!createdCreds?.tempPassword) return;
 
@@ -140,6 +133,7 @@ export default function Users() {
           res.data.user?.plan ||
           (payload.planCode ? planNameByCode[payload.planCode] : "No Plan"),
       });
+
       setCopied(false);
 
       setNewUser({ name: "", email: "", planCode: plans[0]?.code || "" });
@@ -150,7 +144,6 @@ export default function Users() {
     }
   };
 
-  // ✅ NEW: Reset Password (Admin) + Copy
   const resetPassword = async () => {
     if (!editUser?._id) return;
 
@@ -181,13 +174,14 @@ export default function Users() {
 
   return (
     <div className="space-y-10">
+
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         <div>
           <p className="text-green-400 font-semibold tracking-[0.25em] text-xs">
             ADMIN / USERS
           </p>
-          <h2 className="text-4xl font-extrabold mt-3 leading-tight">
+          <h2 className="text-4xl font-extrabold mt-3 leading-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             Members Management
           </h2>
           <p className="text-gray-400 mt-3 max-w-2xl">
@@ -197,9 +191,9 @@ export default function Users() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="px-4 py-2 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+          <div className="px-4 py-2 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-xl shadow-[0_15px_40px_rgba(0,0,0,0.7)]">
             <span className="text-xs text-gray-400">Total Members</span>
-            <div className="text-xl font-extrabold text-white leading-tight mt-1">
+            <div className="text-xl font-extrabold text-green-300 leading-tight mt-1">
               {users.length}
             </div>
           </div>
@@ -207,9 +201,13 @@ export default function Users() {
       </div>
 
       {/* ADD USER FORM */}
-      <div className="relative bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-7 shadow-[0_25px_60px_rgba(0,0,0,0.65)] overflow-hidden">
-        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-green-400/10 blur-[120px] rounded-full" />
-        <div className="pointer-events-none absolute -bottom-20 -left-16 w-56 h-56 bg-emerald-400/10 blur-[140px] rounded-full" />
+      <div className="relative bg-white/[0.04] backdrop-blur-2xl border border-white/10 rounded-3xl p-6 sm:p-7 shadow-[0_30px_80px_rgba(0,0,0,0.75)] overflow-hidden">
+
+        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-green-400/20 blur-[140px] rounded-full animate-pulse" />
+        <div className="pointer-events-none absolute -bottom-20 -left-16 w-56 h-56 bg-emerald-400/20 blur-[140px] rounded-full animate-pulse" />
+
+        {/* REST OF YOUR FILE CONTINUES EXACTLY SAME... */}
+
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
           <div>

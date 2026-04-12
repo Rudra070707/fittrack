@@ -55,8 +55,6 @@ export default function Gamification() {
       setSuccess(res?.message || "Updated successfully");
       setData(res.gamification || null);
 
-      // toast.success("Streak updated 🔥");
-
     } catch (e) {
       console.error(e);
       setErr("Network / server error");
@@ -78,8 +76,29 @@ export default function Gamification() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* 🌌 BACKGROUND */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
+      {/* 🌌 BACKGROUND UPGRADE */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
+
+        {/* glow layers */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
+
+        {/* 🔥 CENTER GLOW */}
+        <div className="absolute left-1/2 top-1/2 w-[500px] h-[250px] -translate-x-1/2 -translate-y-1/2 bg-emerald-400/10 blur-[140px]" />
+
+        <motion.div
+          className="absolute inset-0 opacity-70"
+          animate={{
+            background:[
+              "radial-gradient(circle at 20% 30%, rgba(16,185,129,0.25), transparent 60%)",
+              "radial-gradient(circle at 70% 20%, rgba(59,130,246,0.25), transparent 60%)",
+              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.25), transparent 60%)"
+            ]
+          }}
+          transition={{duration:16,repeat:Infinity}}
+        />
+      </div>
 
       <div className="relative max-w-5xl mx-auto px-6 py-20">
 
@@ -90,7 +109,7 @@ export default function Gamification() {
           animate={{opacity:1,y:0}}
         >
           Rewards &{" "}
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
             Streaks
           </span>
         </motion.h1>
@@ -118,9 +137,13 @@ export default function Gamification() {
 
             {/* SUCCESS */}
             {success && (
-              <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200">
+              <motion.div
+                initial={{scale:0.95,opacity:0}}
+                animate={{scale:1,opacity:1}}
+                className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-400/20 text-emerald-200"
+              >
                 {success}
-              </div>
+              </motion.div>
             )}
 
             {/* 💎 STATS */}
@@ -128,9 +151,10 @@ export default function Gamification() {
 
               {/* STREAK */}
               <motion.div
-                whileHover={{scale:1.04}}
-                className="group bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]"
+                whileHover={{scale:1.06,y:-6}}
+                className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(34,197,94,0.4)]"
               >
+                <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/20 blur-3xl rounded-3xl transition"/>
                 <p className="text-white/60 text-sm">🔥 Current Streak</p>
                 <p className="text-4xl font-extrabold mt-2">{current} days</p>
                 <p className="text-white/50 mt-2">Best: {best} days</p>
@@ -138,9 +162,10 @@ export default function Gamification() {
 
               {/* LEVEL */}
               <motion.div
-                whileHover={{scale:1.04}}
-                className="group bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(59,130,246,0.2)]"
+                whileHover={{scale:1.06,y:-6}}
+                className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(59,130,246,0.4)]"
               >
+                <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-blue-400/20 blur-3xl rounded-3xl transition"/>
                 <p className="text-white/60 text-sm">⭐ Level</p>
                 <p className="text-4xl font-extrabold mt-2">Lv {level}</p>
                 <p className="text-white/50 mt-2">{xp} XP total</p>
@@ -148,9 +173,10 @@ export default function Gamification() {
 
               {/* PROGRESS */}
               <motion.div
-                whileHover={{scale:1.04}}
-                className="group bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]"
+                whileHover={{scale:1.06,y:-6}}
+                className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(34,197,94,0.4)]"
               >
+                <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/20 blur-3xl rounded-3xl transition"/>
                 <p className="text-white/60 text-sm mb-3">⚡ Progress</p>
 
                 <div className="w-full h-3 rounded-full bg-black/40 border border-white/10 overflow-hidden">
@@ -169,7 +195,7 @@ export default function Gamification() {
             </div>
 
             {/* 🚀 DAILY CHECK-IN */}
-            <div className="mt-8 bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
+            <div className="mt-8 bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl hover:shadow-[0_0_50px_rgba(34,197,94,0.3)] transition">
 
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
 
@@ -181,16 +207,16 @@ export default function Gamification() {
                 </div>
 
                 <motion.button
-                  whileHover={{scale:1.06}}
-                  whileTap={{scale:0.95}}
+                  whileHover={{scale:1.08}}
+                  whileTap={{scale:0.92}}
                   onClick={onMarkToday}
                   disabled={marking}
                   className="
                     px-6 py-3 rounded-2xl font-bold
                     bg-gradient-to-r from-emerald-500 to-emerald-400
                     text-black
-                    transition
-                    hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                    transition-all duration-300
+                    hover:shadow-[0_0_35px_rgba(34,197,94,0.8)]
                     disabled:opacity-60
                   "
                 >
@@ -218,13 +244,14 @@ export default function Gamification() {
                   {badges.map((b) => (
                     <motion.span
                       key={b}
-                      whileHover={{scale:1.1}}
+                      whileHover={{scale:1.15,rotate:2}}
                       className="
                         px-4 py-2 rounded-full
                         bg-black/30 border border-white/10
                         text-sm
                         hover:border-emerald-400/40
-                        transition
+                        hover:bg-emerald-400/10
+                        transition-all duration-300
                       "
                     >
                       🏅 {b}

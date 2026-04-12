@@ -20,7 +20,6 @@ export default function Signup({ mode = "page", onSuccess }) {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // motion
   const wrapRef = useRef(null);
 
   const mx = useMotionValue(0);
@@ -99,13 +98,11 @@ export default function Signup({ mode = "page", onSuccess }) {
         return;
       }
 
-      // ✅ In modal mode, let parent decide what to do next
       if (mode === "modal" && onSuccess) {
         onSuccess();
         return;
       }
 
-      // ✅ Page mode → open login
       navigate("/home/login", {
         state: {
           backgroundLocation: location.state?.backgroundLocation || location,
@@ -121,18 +118,25 @@ export default function Signup({ mode = "page", onSuccess }) {
 
   const Form = (
     <div ref={wrapRef} className="relative z-10 w-full max-w-md">
+
+      {/* 🔥 GLOBAL DEPTH */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute w-[500px] h-[500px] bg-green-400/10 blur-[160px] -top-20 -left-20" />
+        <div className="absolute w-[500px] h-[500px] bg-cyan-400/10 blur-[160px] bottom-0 right-0" />
+      </div>
+
       {(mode === "modal" || (mode === "page" && isFinePointer)) && (
         <motion.div
-          className="pointer-events-none absolute -inset-10"
+          className="pointer-events-none absolute -inset-12"
           style={{
             background: useTransform([glowXS, glowYS], ([x, y]) =>
-              `radial-gradient(260px circle at ${x}px ${y}px, rgba(34,197,94,0.16), rgba(59,130,246,0.10), transparent 65%)`
+              `radial-gradient(300px circle at ${x}px ${y}px, rgba(34,197,94,0.25), rgba(59,130,246,0.12), transparent 70%)`
             ),
           }}
         />
       )}
 
-      <div className="pointer-events-none absolute -inset-[1px] rounded-[26px] bg-gradient-to-r from-emerald-500/35 via-sky-500/25 to-indigo-500/30 blur-[14px] opacity-70" />
+      <div className="pointer-events-none absolute -inset-[2px] rounded-[30px] bg-gradient-to-r from-emerald-400/50 via-sky-400/40 to-indigo-400/40 blur-[20px] opacity-90" />
 
       <motion.form
         onSubmit={handleSubmit}
@@ -141,27 +145,34 @@ export default function Signup({ mode = "page", onSuccess }) {
             ? { rotateX: tiltXS, rotateY: tiltYS, transformStyle: "preserve-3d" }
             : undefined
         }
-        initial={{ opacity: 0, scale: 0.985, y: 12 }}
+        initial={{ opacity: 0, scale: 0.96, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden"
+        transition={{ duration: 0.5 }}
+        className="relative w-full bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8 shadow-[0_40px_140px_rgba(0,0,0,0.9)] overflow-hidden"
       >
+
+        {/* 🔥 SHINE */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -top-20 -left-20 h-56 w-56 rotate-12 bg-white/10 blur-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/30" />
+          <div className="absolute -top-24 -left-20 h-72 w-72 rotate-12 bg-white/10 blur-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.06] via-transparent to-black/50" />
         </div>
 
         <div className="relative text-center mb-7">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/12">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.7)]" />
+
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/12 mb-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(34,197,94,0.8)]" />
             <p className="text-[11px] tracking-[0.35em] uppercase text-white/70">
               Join FitTrack
             </p>
-          </div>
+          </motion.div>
 
-          <h2 className="text-3xl font-extrabold mt-4">
+          <h2 className="text-3xl font-extrabold mt-2">
             Create{" "}
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent drop-shadow-[0_0_14px_rgba(34,197,94,0.6)]">
               Account
             </span>
           </h2>
@@ -171,6 +182,7 @@ export default function Signup({ mode = "page", onSuccess }) {
           </p>
         </div>
 
+        {/* 🔥 INPUTS FIXED */}
         <div className="space-y-2">
           <label className="text-xs uppercase tracking-[0.22em] text-white/55">
             Full Name
@@ -180,7 +192,17 @@ export default function Signup({ mode = "page", onSuccess }) {
             placeholder="Your name"
             value={form.name}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 placeholder-white/35 outline-none transition focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+            className="
+              w-full px-4 py-3 rounded-2xl
+              bg-white/5 backdrop-blur-md
+              border border-white/10
+              text-white/90 placeholder-white/40
+              outline-none transition-all duration-300
+              hover:border-white/20
+              focus:border-emerald-400
+              focus:ring-2 focus:ring-emerald-400/40
+              shadow-inner shadow-black/20
+            "
           />
         </div>
 
@@ -194,7 +216,17 @@ export default function Signup({ mode = "page", onSuccess }) {
             placeholder="you@example.com"
             value={form.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 placeholder-white/35 outline-none transition focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+            className="
+              w-full px-4 py-3 rounded-2xl
+              bg-white/5 backdrop-blur-md
+              border border-white/10
+              text-white/90 placeholder-white/40
+              outline-none transition-all duration-300
+              hover:border-white/20
+              focus:border-emerald-400
+              focus:ring-2 focus:ring-emerald-400/40
+              shadow-inner shadow-black/20
+            "
           />
         </div>
 
@@ -208,7 +240,17 @@ export default function Signup({ mode = "page", onSuccess }) {
             placeholder="Create a strong password"
             value={form.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 placeholder-white/35 outline-none transition focus:border-sky-400/40 focus:ring-2 focus:ring-sky-400/20"
+            className="
+              w-full px-4 py-3 rounded-2xl
+              bg-white/5 backdrop-blur-md
+              border border-white/10
+              text-white/90 placeholder-white/40
+              outline-none transition-all duration-300
+              hover:border-white/20
+              focus:border-sky-400
+              focus:ring-2 focus:ring-sky-400/40
+              shadow-inner shadow-black/20
+            "
           />
         </div>
 
@@ -220,38 +262,48 @@ export default function Signup({ mode = "page", onSuccess }) {
             name="gender"
             value={form.gender}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-2xl bg-black/25 border border-white/12 text-white/90 outline-none transition focus:border-emerald-400/40 focus:ring-2 focus:ring-emerald-400/20"
+            className="
+              w-full px-4 py-3 rounded-2xl
+              bg-white/5 backdrop-blur-md
+              border border-white/10
+              text-white outline-none transition-all duration-300
+              hover:border-white/20
+              focus:border-emerald-400
+              focus:ring-2 focus:ring-emerald-400/40
+              shadow-inner shadow-black/20
+            "
           >
-            <option value="" className="bg-slate-950">
-              Select Gender
-            </option>
-            <option value="Male" className="bg-slate-950">
-              Male
-            </option>
-            <option value="Female" className="bg-slate-950">
-              Female
-            </option>
-            <option value="Other" className="bg-slate-950">
-              Other
-            </option>
+            <option value="" className="bg-slate-950">Select Gender</option>
+            <option value="Male" className="bg-slate-950">Male</option>
+            <option value="Female" className="bg-slate-950">Female</option>
+            <option value="Other" className="bg-slate-950">Other</option>
           </select>
         </div>
 
-        {error ? (
+        {error && (
           <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </div>
-        ) : null}
+        )}
 
         <motion.button
           type="submit"
           disabled={loading}
-          whileHover={{ scale: loading ? 1 : 1.01 }}
-          whileTap={{ scale: loading ? 1 : 0.99 }}
-          className="relative mt-6 w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 text-slate-950 font-semibold shadow-[0_12px_34px_rgba(34,197,94,0.25)] transition disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden group"
+          whileHover={{ scale: loading ? 1 : 1.03 }}
+          whileTap={{ scale: loading ? 1 : 0.96 }}
+          className="
+            relative mt-6 w-full py-3.5 rounded-2xl
+            bg-gradient-to-r from-emerald-500 via-emerald-400 to-green-400
+            text-black font-semibold tracking-wide
+            shadow-[0_0_40px_rgba(34,197,94,0.7)]
+            hover:shadow-[0_0_80px_rgba(34,197,94,1)]
+            transition-all duration-300
+            disabled:opacity-70
+            overflow-hidden group
+          "
         >
           <span className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition">
-            <span className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-white/35 blur-md translate-x-0 group-hover:translate-x-[260%] transition duration-700" />
+            <span className="absolute -left-1/2 top-0 h-full w-1/2 rotate-12 bg-white/40 blur-md translate-x-0 group-hover:translate-x-[260%] transition duration-700" />
           </span>
 
           <span className="relative inline-flex items-center justify-center gap-2">
@@ -286,6 +338,7 @@ export default function Signup({ mode = "page", onSuccess }) {
         <p className="text-center text-white/35 text-xs mt-5">
           © {new Date().getFullYear()} FitTrack
         </p>
+
       </motion.form>
     </div>
   );
@@ -299,22 +352,22 @@ export default function Signup({ mode = "page", onSuccess }) {
       onMouseLeave={isFinePointer ? onLeave : undefined}
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
+
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
         <motion.div
           className="absolute inset-0 opacity-80"
           style={isFinePointer ? { x: bgX, y: bgY } : undefined}
           animate={{
             background: [
-              "radial-gradient(circle at 20% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 40%, rgba(59,130,246,0.18), transparent 55%)",
-              "radial-gradient(circle at 70% 15%, rgba(59,130,246,0.24), transparent 60%), radial-gradient(circle at 30% 80%, rgba(99,102,241,0.16), transparent 55%)",
-              "radial-gradient(circle at 35% 70%, rgba(16,185,129,0.22), transparent 62%), radial-gradient(circle at 85% 60%, rgba(99,102,241,0.18), transparent 55%)",
-              "radial-gradient(circle at 20% 25%, rgba(16,185,129,0.28), transparent 60%), radial-gradient(circle at 85% 40%, rgba(59,130,246,0.18), transparent 55%)",
-            ],
+              "radial-gradient(circle at 20% 25%, rgba(16,185,129,0.30), transparent 60%)",
+              "radial-gradient(circle at 70% 15%, rgba(59,130,246,0.25), transparent 60%)",
+              "radial-gradient(circle at 35% 70%, rgba(16,185,129,0.25), transparent 62%)"
+            ]
           }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 16, repeat: Infinity }}
         />
+
       </div>
 
       {Form}

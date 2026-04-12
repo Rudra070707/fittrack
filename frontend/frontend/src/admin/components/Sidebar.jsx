@@ -47,7 +47,6 @@ export default function Sidebar() {
       .get("/contact")
       .then((res) => res.data)
       .catch((err) => {
-        // Keep same logic: if backend says unauthorized, reset token
         if (err?.response?.status === 401 || err?.response?.status === 403) {
           localStorage.removeItem("adminToken");
           localStorage.removeItem("adminRole");
@@ -74,19 +73,21 @@ export default function Sidebar() {
     <aside
       className="
         w-72 min-h-screen
-        bg-gradient-to-b from-[#06090e] via-[#070c12] to-[#05070b]
+        bg-gradient-to-b from-[#020617] via-[#030712] to-[#020617]
         border-r border-white/10
-        shadow-[0_20px_70px_rgba(0,0,0,0.65)]
+        shadow-[0_30px_100px_rgba(0,0,0,0.85)]
         px-6 py-7
         flex flex-col
         relative overflow-hidden
+        backdrop-blur-2xl
       "
     >
-      {/* subtle grid + glows (visual only) */}
-      <div className="pointer-events-none absolute inset-0 opacity-40">
-        <div className="absolute -top-24 -left-24 w-[360px] h-[360px] bg-green-500/10 blur-[130px] rounded-full" />
-        <div className="absolute bottom-0 -right-24 w-[360px] h-[360px] bg-emerald-400/10 blur-[140px] rounded-full" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:26px_26px]" />
+
+      {/* 🔥 ENHANCED BACKGROUND */}
+      <div className="pointer-events-none absolute inset-0 opacity-50">
+        <div className="absolute -top-24 -left-24 w-[420px] h-[420px] bg-green-500/15 blur-[160px] rounded-full" />
+        <div className="absolute bottom-0 -right-24 w-[420px] h-[420px] bg-emerald-400/15 blur-[160px] rounded-full" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.04)_1px,transparent_0)] [background-size:26px_26px]" />
       </div>
 
       {/* BRAND */}
@@ -97,20 +98,22 @@ export default function Sidebar() {
               w-full
               rounded-2xl
               border border-white/10
-              bg-white/[0.03]
-              backdrop-blur-xl
+              bg-white/[0.04]
+              backdrop-blur-2xl
               p-5
               flex items-center justify-center
-              shadow-[0_18px_55px_rgba(0,0,0,0.55)]
+              shadow-[0_25px_70px_rgba(0,0,0,0.7)]
+              hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
+              transition-all duration-300
             "
           >
             {logo ? (
               <img
-                src={`${API_BASE}${logo}`} // ✅ FIXED (no localhost)
+                src={`${API_BASE}${logo}`}
                 alt="FitTrack Logo"
                 className="
                   h-20 w-auto object-contain
-                  drop-shadow-[0_0_26px_rgba(34,197,94,0.45)]
+                  drop-shadow-[0_0_30px_rgba(34,197,94,0.6)]
                 "
                 style={{ animation: "breathe 3.2s ease-in-out infinite" }}
               />
@@ -150,11 +153,11 @@ export default function Sidebar() {
                 flex items-center justify-between
                 px-4 py-3 rounded-2xl
                 border
-                transition-all duration-200
+                transition-all duration-300
                 ${
                   isActive
-                    ? "bg-gradient-to-r from-green-400/20 via-green-400/10 to-transparent border-green-400/30 shadow-[0_0_0_1px_rgba(34,197,94,0.12),0_12px_35px_rgba(0,0,0,0.35)]"
-                    : "bg-white/[0.02] border-white/10 hover:bg-white/[0.04] hover:border-white/20"
+                    ? "bg-gradient-to-r from-green-400/25 via-green-400/10 to-transparent border-green-400/40 shadow-[0_0_0_1px_rgba(34,197,94,0.2),0_15px_45px_rgba(0,0,0,0.6)]"
+                    : "bg-white/[0.03] border-white/10 hover:bg-white/[0.06] hover:border-white/20 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                 }
                 `
               }
@@ -165,11 +168,11 @@ export default function Sidebar() {
                     <span
                       className={`
                         h-2.5 w-2.5 rounded-full
-                        transition-all duration-200
+                        transition-all duration-300
                         ${
                           isActive
-                            ? "bg-green-400 shadow-[0_0_18px_rgba(34,197,94,0.65)]"
-                            : "bg-gray-600 group-hover:bg-gray-400"
+                            ? "bg-green-400 shadow-[0_0_22px_rgba(34,197,94,0.9)]"
+                            : "bg-gray-600 group-hover:bg-green-300"
                         }
                       `}
                     />
@@ -177,7 +180,7 @@ export default function Sidebar() {
                     <span
                       className={`
                         font-medium
-                        transition-colors duration-200
+                        transition-all duration-300
                         ${
                           isActive
                             ? "text-white"
@@ -197,7 +200,7 @@ export default function Sidebar() {
                           rounded-full
                           bg-green-400 text-black
                           font-bold
-                          shadow-[0_0_16px_rgba(34,197,94,0.45)]
+                          shadow-[0_0_20px_rgba(34,197,94,0.9)]
                         "
                         title="New messages"
                       >
@@ -209,11 +212,11 @@ export default function Sidebar() {
                   <span
                     className={`
                       text-xs
-                      transition-all duration-200
+                      transition-all duration-300
                       ${
                         isActive
                           ? "text-green-300 translate-x-0"
-                          : "text-gray-500 translate-x-1 group-hover:text-gray-300 group-hover:translate-x-0"
+                          : "text-gray-500 translate-x-1 group-hover:text-green-300 group-hover:translate-x-0"
                       }
                     `}
                   >
@@ -231,7 +234,7 @@ export default function Sidebar() {
         <div className="h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-5" />
         <div className="flex items-center justify-between text-xs text-gray-500">
           <span>© 2025 FitTrack</span>
-          <span className="px-2 py-1 rounded-lg bg-white/[0.03] border border-white/10">
+          <span className="px-2 py-1 rounded-lg bg-white/[0.05] border border-white/10 backdrop-blur-md">
             Admin
           </span>
         </div>

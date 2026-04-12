@@ -64,6 +64,13 @@ export default function Gym() {
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
 
+        {/* 🔥 EXTRA GLOW (ADDED) */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
+
+        {/* 🔥 CENTER LIGHT (NEW DEPTH) */}
+        <div className="absolute left-1/2 top-1/2 w-[600px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-green-400/10 blur-[160px]" />
+
         <motion.div
           className="absolute inset-0 opacity-80"
           animate={{
@@ -87,13 +94,18 @@ export default function Gym() {
         {/* 🔥 HEADER */}
         <div className="mb-14">
 
+          {/* 🔥 BADGE */}
+          <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 backdrop-blur-md mb-6">
+            🏋️ Gym Training
+          </div>
+
           <p className="text-emerald-400 font-semibold tracking-[0.28em] text-xs">
             SERVICES / GYM ACCESS
           </p>
 
           <h1 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
             Gym access made{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
               simple
             </span>
           </h1>
@@ -111,20 +123,25 @@ export default function Gym() {
 
             <motion.div
               key={i}
-              whileHover={{ y: -10, scale: 1.03 }}
+              whileHover={{ y: -12, scale: 1.06 }}
               className="
                 group relative rounded-2xl p-[1px]
                 bg-gradient-to-br from-white/10 to-transparent
               "
             >
+
+              {/* 🔥 GLOW UPGRADE */}
+              <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/20 blur-2xl rounded-2xl transition"/>
+
               <div className="
                 bg-white/6 backdrop-blur-2xl border border-white/12
                 rounded-2xl p-6 transition-all duration-300
-                group-hover:shadow-[0_0_35px_rgba(34,197,94,0.2)]
+                group-hover:shadow-[0_0_60px_rgba(34,197,94,0.3)]
               ">
                 <p className="font-bold text-lg">{f.title}</p>
                 <p className="text-white/60 text-sm mt-2">{f.sub}</p>
               </div>
+
             </motion.div>
 
           ))}
@@ -144,17 +161,20 @@ export default function Gym() {
 
               <motion.div
                 key={i}
-                whileHover={{ y: -12, scale: 1.03 }}
+                whileHover={{ y: -16, scale: 1.05 }}
                 className="
                   group relative rounded-3xl p-[1px]
                   bg-gradient-to-br from-white/10 to-transparent
                 "
               >
 
+                {/* 🔥 GLOW UPGRADE */}
+                <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/25 blur-3xl rounded-3xl transition"/>
+
                 <div className="
                   bg-white/6 backdrop-blur-2xl border border-white/12
                   rounded-3xl p-8 transition-all duration-300
-                  group-hover:shadow-[0_0_45px_rgba(34,197,94,0.25)]
+                  group-hover:shadow-[0_0_80px_rgba(34,197,94,0.4)]
                 ">
 
                   <div className="flex justify-between mb-4">
@@ -192,8 +212,8 @@ export default function Gym() {
                       bg-gradient-to-r from-emerald-500 to-emerald-400
                       text-slate-950 font-semibold py-3 rounded-xl
                       transition-all duration-300
-                      hover:scale-[1.03]
-                      hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                      hover:scale-[1.05]
+                      hover:shadow-[0_0_40px_rgba(34,197,94,0.8)]
                     "
                   >
                     Open Workout Planner
@@ -222,21 +242,21 @@ export default function Gym() {
 
           <div className="mt-8 flex justify-center gap-4 flex-wrap">
 
-            <motion.div whileHover={{ scale: 1.06 }}>
+            <motion.div whileHover={{ scale: 1.1 }}>
               <Link
                 to="/home/join"
                 state={joinState}
                 className="
                   bg-gradient-to-r from-emerald-500 to-emerald-400
                   text-slate-950 font-semibold px-8 py-3 rounded-xl
-                  hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                  hover:shadow-[0_0_45px_rgba(34,197,94,0.8)]
                 "
               >
                 Join Membership
               </Link>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.06 }}>
+            <motion.div whileHover={{ scale: 1.1 }}>
               <Link
                 to="/home/progress"
                 className="

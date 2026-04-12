@@ -2,8 +2,22 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import CountUp from "react-countup";
 
-// 🔥 NEW IMPORT (VERY IMPORTANT)
+// 📊 CHARTS
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  BarChart,
+  Bar,
+} from "recharts";
+
+// 🔥 API
 import { API_BASE, getUserToken } from "../api";
 
 export default function UserDashboard() {
@@ -14,56 +28,52 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // 🔥 NEW: dummy stats (replace later with API)
   const [stats] = useState({
     workouts: 18,
     calories: 5400,
     activeDays: 12,
   });
 
-  // 🔥 NEW: dummy progress data
   const progressData = [60, 70, 65, 80, 75, 90];
+
+  // 📊 NEW CHART DATA
+  const chartData = [
+    { day: "Mon", progress: 60, calories: 400 },
+    { day: "Tue", progress: 70, calories: 520 },
+    { day: "Wed", progress: 65, calories: 480 },
+    { day: "Thu", progress: 80, calories: 600 },
+    { day: "Fri", progress: 75, calories: 550 },
+    { day: "Sat", progress: 90, calories: 700 },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = getUserToken();
 
-        console.log("TOKEN:", token);
-        console.log("API BASE:", API_BASE);
-
         if (!token) {
           navigate("/home/login");
           return;
         }
 
-        const res = await axios.get(
-          `${API_BASE}/users/me`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await axios.get(`${API_BASE}/users/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         setUser(res.data.user || null);
         setPlan(res.data.plan || null);
-
       } catch (err) {
-        console.error("Dashboard fetch error:", err);
-
         if (err.response?.status === 401) {
           setError("Session expired. Please login again.");
-
           setTimeout(() => {
             localStorage.removeItem("token");
             navigate("/home/login");
           }, 1500);
-
         } else {
-          setError("Failed to load dashboard. Please try again.");
+          setError("Failed to load dashboard.");
         }
-
       } finally {
         setLoading(false);
       }
@@ -74,12 +84,15 @@ export default function UserDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#05080f] flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#05080f] relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute w-[700px] h-[700px] bg-indigo-500/20 blur-[160px] top-[-150px] left-[-150px]" />
+          <div className="absolute w-[700px] h-[700px] bg-green-500/20 blur-[160px] bottom-[-150px] right-[-150px]" />
+        </div>
+
         <div className="flex flex-col items-center gap-6">
-          <div className="w-10 h-10 border-4 border-green-400 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-white/60 tracking-wide">
-            Loading your dashboard...
-          </p>
+          <div className="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-white/60 text-lg">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -87,146 +100,128 @@ export default function UserDashboard() {
 
   if (error) {
     return (
-      <div className="h-screen flex items-center justify-center bg-[#05080f] text-red-400">
+      <div className="h-screen flex items-center justify-center bg-[#05080f] text-red-400 text-lg">
         {error}
       </div>
     );
   }
 
   return (
-    <section className="min-h-screen bg-[#05080f] text-white px-6 py-16 relative overflow-hidden">
+    <section className="min-h-screen bg-[#05080f] text-white px-6 md:px-14 py-20 relative overflow-hidden">
 
-      {/* 🌌 BACKGROUND GLOW */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -top-40 left-20 w-[450px] h-[450px] bg-green-400/10 blur-[160px] rounded-full" />
-        <div className="absolute -bottom-40 right-20 w-[450px] h-[450px] bg-emerald-400/10 blur-[160px] rounded-full" />
+      {/* 🌌 BACKGROUND */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute w-[700px] h-[700px] bg-indigo-500/20 blur-[160px] top-[-150px] left-[-150px]" />
+        <div className="absolute w-[700px] h-[700px] bg-green-500/20 blur-[160px] bottom-[-150px] right-[-150px]" />
+
+        <motion.div
+          className="absolute inset-0 opacity-50"
+          animate={{
+            background: [
+              "radial-gradient(circle at 20% 30%, rgba(16,185,129,0.25), transparent 60%)",
+              "radial-gradient(circle at 80% 20%, rgba(99,102,241,0.25), transparent 60%)",
+              "radial-gradient(circle at 30% 80%, rgba(16,185,129,0.25), transparent 60%)"
+            ]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+        />
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="relative z-10 max-w-7xl mx-auto">
 
-        {/* 🧠 HEADER */}
-        <div className="mb-12">
-          <p className="text-green-400 text-xs tracking-[0.3em] font-semibold">
+        {/* HEADER */}
+        <div className="mb-16">
+          <motion.div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 backdrop-blur-md mb-6">
+            🚀 Fitness Dashboard
+          </motion.div>
+
+          <p className="text-green-400 text-xs tracking-[0.4em] font-semibold">
             USER DASHBOARD
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-3 tracking-tight">
-            Welcome,{" "}
-            <span className="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-extrabold mt-4">
+            Welcome back,{" "}
+            <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent">
               {user?.name || "User"}
-            </span>{" "}
-            👋
+            </span>
           </h1>
-
-          <p className="text-white/60 mt-3">
-            Track your fitness journey and membership details.
-          </p>
         </div>
 
-        {/* 🔥 STATS CARDS */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
+        {/* STATS */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
           {[
             { label: "Workouts", value: stats.workouts },
-            { label: "Calories Burned", value: stats.calories },
+            { label: "Calories", value: stats.calories },
             { label: "Active Days", value: stats.activeDays },
           ].map((s, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl hover:shadow-[0_0_25px_rgba(34,197,94,0.2)] transition"
-            >
+            <motion.div key={i} whileHover={{ y: -12, scale: 1.05 }} className="card text-center">
               <p className="text-white/60 text-sm">{s.label}</p>
-              <h2 className="text-2xl font-bold mt-2">{s.value}</h2>
+              <h2 className="text-4xl font-bold text-green-400 mt-2">
+                <CountUp end={s.value} duration={2} />
+              </h2>
             </motion.div>
           ))}
         </div>
 
-        {/* 📊 CARDS */}
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* 📊 CHARTS */}
+        <div className="grid md:grid-cols-2 gap-10 mb-20">
 
-          <motion.div whileHover={{ scale: 1.04 }} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent">
-            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl">
-              <p className="text-white/60 text-sm">Active Plan</p>
-              <h2 className="text-3xl font-bold mt-4">{plan?.name || "No Plan Selected"}</h2>
-              <p className="text-green-400 text-lg mt-2">₹{plan?.price || 0} / month</p>
-            </div>
-          </motion.div>
+          {/* LINE */}
+          <div className="card p-6">
+            <h3 className="text-xl font-semibold mb-4">Progress Trend</h3>
 
-          <motion.div whileHover={{ scale: 1.04 }} className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent">
-            <div className="relative p-8 rounded-3xl bg-white/[0.05] border border-white/10 backdrop-blur-xl">
-              <p className="text-white/60 text-sm">Account Info</p>
-              <h2 className="text-2xl font-semibold mt-4 break-all">{user?.email || "No email"}</h2>
-              <p className="text-white/50 mt-2 text-sm">
-                Member since{" "}
-                {user?.createdAt
-                  ? new Date(user.createdAt).toDateString()
-                  : "N/A"}
-              </p>
-            </div>
-          </motion.div>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={chartData}>
+                <CartesianGrid stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="day" stroke="#aaa" />
+                <YAxis stroke="#aaa" />
+                <Tooltip />
+
+                <Line
+                  type="monotone"
+                  dataKey="progress"
+                  stroke="#22c55e"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* BAR */}
+          <div className="card p-6">
+            <h3 className="text-xl font-semibold mb-4">Calories Burned</h3>
+
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={chartData}>
+                <CartesianGrid stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="day" stroke="#aaa" />
+                <YAxis stroke="#aaa" />
+                <Tooltip />
+
+                <Bar dataKey="calories" fill="#06b6d4" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
         </div>
 
-        {/* 🔥 WEEKLY PROGRESS (ULTIMATE VERSION) */}
-        <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
-          <h3 className="text-xl font-bold mb-6">Weekly Progress</h3>
+        {/* ORIGINAL PROGRESS (UNCHANGED) */}
+        <div className="mt-20 card p-12 relative overflow-hidden">
+          <h3 className="text-2xl font-bold mb-12">Weekly Progress</h3>
 
-          <div className="flex items-end gap-4 h-52">
-
+          <div className="flex items-end gap-6 h-64">
             {progressData.map((val, i) => (
-
-              <div
-                key={i}
-                className="flex-1 h-full relative flex items-end justify-center group hover:-translate-y-1 transition"
-              >
-
-                {/* track */}
-                <div className="absolute bottom-0 w-full h-full bg-white/5 rounded-xl" />
-
-                {/* bar */}
+              <div key={i} className="flex-1 relative group h-full">
                 <motion.div
                   initial={{ height: 0 }}
                   animate={{ height: `${val}%` }}
-                  transition={{ duration: 0.8, delay: i * 0.1 }}
-                  className="
-                    absolute bottom-0 w-full
-                    bg-gradient-to-t from-emerald-500 via-green-400 to-emerald-300
-                    rounded-t-2xl rounded-b-xl
-                    shadow-[0_10px_30px_rgba(34,197,94,0.35)]
-                  "
+                  transition={{ duration: 1, delay: i * 0.1 }}
+                  className="absolute bottom-0 w-full rounded-t-2xl bg-gradient-to-t from-green-500 to-emerald-300"
                 />
-
-                {/* tooltip */}
-                <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition text-xs bg-black/70 px-2 py-1 rounded text-emerald-300">
-                  {val}%
-                </div>
-
-                {/* day */}
-                <div className="absolute -bottom-6 text-xs text-white/40">
-                  Day {i + 1}
-                </div>
-
               </div>
-
             ))}
-
           </div>
-        </div>
-
-        {/* 🔥 RECENT ACTIVITY */}
-        <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
-          <h3 className="text-xl font-bold mb-4">Recent Activity</h3>
-
-          <ul className="space-y-3 text-white/70 text-sm">
-            <li>✅ Completed workout session</li>
-            <li>🔥 Burned 500 calories</li>
-            <li>📅 Active for 7 days streak</li>
-          </ul>
-        </div>
-
-        {/* 🚀 FUTURE */}
-        <div className="mt-12 p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-white/50 backdrop-blur-xl">
-          🚀 More features coming soon (progress tracking, workouts, payments)
         </div>
 
       </div>

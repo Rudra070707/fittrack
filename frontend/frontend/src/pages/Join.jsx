@@ -99,11 +99,15 @@ export default function Join() {
   return (
     <section className="relative min-h-screen overflow-hidden text-white">
 
-      {/* 🌌 BACKGROUND SAME */}
+      {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
 
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black"/>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]"/>
+
+        {/* 🔥 EXTRA DEPTH */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
 
         <motion.div
           className="absolute inset-0 opacity-80"
@@ -134,7 +138,8 @@ export default function Join() {
             className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 to-transparent"
           >
 
-            <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
+            {/* 🔥 FIXED OVERLAY */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl"/>
 
             <div className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl shadow-[0_26px_90px_rgba(0,0,0,0.65)] overflow-hidden">
 
@@ -151,20 +156,24 @@ export default function Join() {
               <form onSubmit={(e)=>e.preventDefault()} className="px-8 py-8 space-y-5">
 
                 {["name","email","phone","age"].map((field)=>(
+
                   <input
                     key={field}
                     value={form[field]}
-                    disabled={processing} // 🔥 NEW
+                    disabled={processing}
                     onChange={(e)=>setForm({...form,[field]:e.target.value})}
                     placeholder={field}
                     className="
                       w-full p-3 rounded-xl
                       bg-black/30 border border-white/10
                       focus:ring-2 focus:ring-emerald-400
-                      transition
+                      hover:border-emerald-400/40
+                      focus:shadow-[0_0_20px_rgba(34,197,94,0.25)]
+                      outline-none transition-all duration-300
                       disabled:opacity-60
                     "
                   />
+
                 ))}
 
                 <DemoCheckout
@@ -192,14 +201,14 @@ export default function Join() {
                       });
 
                       if (!res.success) {
-                        toast.error("Payment failed ❌"); // 🔥 NEW
+                        toast.error("Payment failed ❌");
                         return;
                       }
 
-                      toast.success("Membership activated 🎉"); // 🔥 NEW
+                      toast.success("Membership activated 🎉");
 
                     } catch {
-                      toast.error("Something went wrong ⚠️"); // 🔥 NEW
+                      toast.error("Something went wrong ⚠️");
                     } finally {
                       setProcessing(false);
                     }
@@ -219,8 +228,8 @@ export default function Join() {
 
           </motion.div>
 
-          {/* RIGHT SUMMARY SAME */}
-          <motion.div className="bg-white/6 border border-white/12 rounded-3xl p-6">
+          {/* RIGHT SUMMARY */}
+          <motion.div className="bg-white/6 border border-white/12 rounded-3xl p-6 backdrop-blur-2xl shadow-[0_0_40px_rgba(0,0,0,0.6)]">
 
             <h3 className="text-xl font-bold">Summary</h3>
 
@@ -231,8 +240,9 @@ export default function Join() {
               </div>
             ) : (
               <>
-                <p className="mt-4">{meta.priceText}</p>
-                <ul>
+                <p className="mt-4 text-emerald-400 font-semibold">{meta.priceText}</p>
+
+                <ul className="mt-4 space-y-2 text-white/70">
                   {meta.perks.map((p,i)=>(
                     <li key={i}>✓ {p}</li>
                   ))}

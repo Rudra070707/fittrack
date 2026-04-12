@@ -15,14 +15,12 @@ export default function SmartWorkoutPlanner() {
   const generatePlan = async () => {
 
     if (!goal || !level || !days) {
-      // toast.error("Please select all fields");
       return;
     }
 
     try {
 
       setLoading(true);
-      // const loadingToast = toast.loading("Generating plan...");
 
       const res = await axios.post(`${API_BASE}/workout/generate`, {
         goal,
@@ -31,18 +29,14 @@ export default function SmartWorkoutPlanner() {
       });
 
       if (!res.data?.success) {
-        // toast.error(res.data?.message || "Failed to generate plan");
         return;
       }
 
       setPlan(res.data.plan);
-      // toast.success("Workout plan ready 💪");
 
     } catch (err) {
 
       console.error(err);
-
-      // toast.error("Server error generating workout plan");
 
     } finally {
       setLoading(false);
@@ -55,6 +49,13 @@ export default function SmartWorkoutPlanner() {
       {/* 🌌 BACKGROUND */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
+
+        {/* 🔥 ADDED GLOW LAYERS */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
+
+        {/* 🔥 CENTER LIGHT */}
+        <div className="absolute left-1/2 top-1/2 w-[500px] h-[250px] -translate-x-1/2 -translate-y-1/2 bg-emerald-400/10 blur-[140px]" />
 
         <motion.div
           className="absolute inset-0 opacity-80"
@@ -76,37 +77,52 @@ export default function SmartWorkoutPlanner() {
       >
 
         {/* HEADER */}
-        <div className="mb-12">
-          <p className="text-emerald-400 tracking-[0.28em] text-xs font-semibold">
+        <div className="mb-14">
+
+          <p className="text-emerald-400 tracking-[0.32em] text-xs font-semibold">
             SERVICES / WORKOUT PLANNER
           </p>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-4 leading-tight">
             Smart{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
               Workout Planner
             </span>
           </h1>
 
-          <p className="text-white/65 mt-4 max-w-2xl">
+          <p className="text-white/65 mt-4 max-w-2xl leading-relaxed">
             Generate a personalized workout routine based on your goal and experience.
           </p>
+
         </div>
 
         {/* GRID */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-10">
 
           {/* FORM */}
           <motion.div
             whileHover={{ scale: 1.01 }}
-            className="lg:col-span-2 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8"
+            className="
+              group relative
+              lg:col-span-2
+              bg-white/6 backdrop-blur-2xl
+              border border-white/12
+              rounded-3xl p-8
+              shadow-[0_30px_100px_rgba(0,0,0,0.7)]
+            "
           >
 
-            <h2 className="text-2xl font-bold mb-6">
+            {/* 🔥 INNER LIGHT */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent rounded-3xl"/>
+
+            {/* 🔥 HOVER GLOW */}
+            <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/20 blur-2xl rounded-3xl transition"/>
+
+            <h2 className="text-2xl font-bold mb-6 tracking-wide">
               Your Preferences
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-5">
+            <div className="grid md:grid-cols-2 gap-6">
 
               {[{
                 value: goal,
@@ -130,10 +146,13 @@ export default function SmartWorkoutPlanner() {
                   onChange={(e) => f.setter(e.target.value)}
                   className="
                     px-4 py-3 rounded-2xl
-                    bg-black/30 border border-white/10
+                    bg-black/40 border border-white/10
                     text-white outline-none
                     focus:ring-2 focus:ring-emerald-400
-                    transition hover:border-emerald-400/40
+                    focus:border-emerald-400/40
+                    focus:shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                    transition-all duration-300
+                    hover:border-emerald-400/40
                   "
                 >
                   <option value="">{f.placeholder}</option>
@@ -148,14 +167,15 @@ export default function SmartWorkoutPlanner() {
             <motion.button
               onClick={generatePlan}
               disabled={loading}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="
-                mt-8 px-8 py-3 rounded-2xl font-semibold
-                bg-gradient-to-r from-emerald-500 to-emerald-400
+                mt-8 px-8 py-3 rounded-2xl font-semibold tracking-wide
+                bg-gradient-to-r from-emerald-500 via-green-400 to-emerald-400
                 text-black
                 transition-all duration-300
-                hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                hover:shadow-[0_0_60px_rgba(34,197,94,0.9)]
                 disabled:opacity-60
               "
             >
@@ -167,14 +187,23 @@ export default function SmartWorkoutPlanner() {
           {/* TIPS */}
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8"
+            className="
+              group relative
+              bg-white/6 backdrop-blur-2xl
+              border border-white/12
+              rounded-3xl p-8
+              shadow-[0_30px_100px_rgba(0,0,0,0.7)]
+            "
           >
 
-            <h3 className="text-xl font-bold mb-4">
+            {/* 🔥 GLOW */}
+            <div className="pointer-events-none absolute -inset-3 opacity-0 group-hover:opacity-100 bg-emerald-400/20 blur-2xl rounded-3xl transition"/>
+
+            <h3 className="text-xl font-bold mb-4 tracking-wide">
               Training Tips
             </h3>
 
-            <ul className="space-y-4 text-white/70 text-sm">
+            <ul className="space-y-4 text-white/70 text-sm leading-relaxed">
               <li>• Warm up before workouts</li>
               <li>• Focus on proper form</li>
               <li>• Rest muscle groups properly</li>
@@ -188,12 +217,22 @@ export default function SmartWorkoutPlanner() {
         {/* RESULT */}
         {plan && (
           <motion.div
-            className="mt-12 bg-white/6 backdrop-blur-2xl border border-white/12 rounded-3xl p-8"
+            className="
+              mt-14
+              relative
+              bg-white/6 backdrop-blur-2xl
+              border border-white/12
+              rounded-3xl p-8
+              shadow-[0_30px_100px_rgba(0,0,0,0.7)]
+            "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
 
-            <h2 className="text-2xl font-bold mb-6">
+            {/* 🔥 GLOW */}
+            <div className="absolute -inset-3 bg-emerald-400/10 blur-3xl rounded-3xl opacity-60"/>
+
+            <h2 className="text-2xl font-bold mb-6 tracking-wide">
               Your Weekly Workout Plan
             </h2>
 
@@ -203,19 +242,21 @@ export default function SmartWorkoutPlanner() {
 
                 <motion.div
                   key={day}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.06, y: -6 }}
                   className="
                     rounded-2xl p-5
                     bg-black/30 border border-white/10
-                    transition hover:border-emerald-400/40
+                    transition-all duration-300
+                    hover:border-emerald-400/40
+                    hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
                   "
                 >
 
-                  <p className="text-emerald-400 font-semibold mb-3">
+                  <p className="text-emerald-400 font-semibold mb-3 tracking-wide">
                     Day {i + 1}
                   </p>
 
-                  <ul className="space-y-2 text-white/80 text-sm">
+                  <ul className="space-y-2 text-white/80 text-sm leading-relaxed">
                     {workouts.map((w, idx) => (
                       <li key={idx}>• {w}</li>
                     ))}

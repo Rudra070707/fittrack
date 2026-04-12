@@ -106,34 +106,40 @@ export default function PaymentModal({
           exit={{ opacity: 0 }}
         >
 
-          {/* backdrop */}
+          {/* 🔥 BACKDROP */}
           <div
-            className="absolute inset-0 bg-black/75 backdrop-blur-md"
+            className="absolute inset-0 bg-black/85 backdrop-blur-2xl"
             onClick={() => !processing && onClose()}
           />
+
+          {/* 🔥 BACKGROUND GLOW */}
+          <div className="absolute inset-0 -z-10">
+            <div className="absolute w-[500px] h-[500px] bg-green-400/10 blur-[180px] top-[-100px] left-[-100px]" />
+            <div className="absolute w-[500px] h-[500px] bg-cyan-400/10 blur-[180px] bottom-[-100px] right-[-100px]" />
+          </div>
 
           {/* modal */}
           <motion.div
             initial={{ y: 40, scale: 0.96, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 20, scale: 0.98, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.35 }}
             className="
             relative w-full max-w-lg
             rounded-3xl
             backdrop-blur-2xl
-            bg-[#0b0f14]/95
+            bg-gradient-to-b from-[#0b0f14]/95 to-[#020617]/95
             border border-white/10
-            shadow-[0_30px_90px_rgba(0,0,0,0.8)]
+            shadow-[0_40px_120px_rgba(0,0,0,0.9)]
             overflow-hidden
             "
           >
 
-            {/* header */}
-            <div className="px-6 py-4 bg-gradient-to-r from-green-400 to-emerald-500 text-black flex justify-between items-center">
+            {/* 🔥 HEADER */}
+            <div className="px-6 py-4 bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-black flex justify-between items-center">
 
               <div>
-                <p className="text-lg font-bold">
+                <p className="text-lg font-bold tracking-wide">
                   Complete Your Payment
                 </p>
 
@@ -145,7 +151,7 @@ export default function PaymentModal({
               {step === "form" && (
                 <button
                   onClick={onClose}
-                  className="text-xs bg-black/20 px-3 py-1 rounded-full hover:bg-black/30"
+                  className="text-xs bg-black/20 px-3 py-1 rounded-full hover:bg-black/30 transition"
                 >
                   Close
                 </button>
@@ -153,19 +159,19 @@ export default function PaymentModal({
 
             </div>
 
-            {/* body */}
+            {/* 🔥 BODY */}
             <div className="p-6">
 
               {step === "form" && (
                 <>
 
-                  <p className="text-white font-semibold mb-1">
-                    {planName}
-                  </p>
-
-                  <p className="text-green-400 font-bold text-lg mb-5">
-                    ₹{amount}
-                  </p>
+                  {/* 🔥 PLAN INFO */}
+                  <div className="mb-6 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl">
+                    <p className="text-white font-semibold">{planName}</p>
+                    <p className="text-green-400 font-bold text-2xl mt-1 drop-shadow-[0_0_12px_rgba(34,197,94,0.6)]">
+                      ₹{amount}
+                    </p>
+                  </div>
 
                   {/* method selector */}
                   <div className="flex gap-2 mb-5">
@@ -176,10 +182,10 @@ export default function PaymentModal({
                         key={m}
                         onClick={() => setMethod(m)}
                         className={`
-                        flex-1 py-2 rounded-xl text-sm border transition
+                        flex-1 py-2 rounded-xl text-sm border transition-all duration-300
                         ${
                           method === m
-                            ? "bg-green-400 text-black border-green-400 shadow-[0_0_15px_rgba(34,197,94,0.4)]"
+                            ? "bg-green-400 text-black border-green-400 shadow-[0_0_25px_rgba(34,197,94,0.7)] scale-[1.04]"
                             : "bg-white/5 text-white border-white/10 hover:bg-white/10"
                         }
                         `}
@@ -204,6 +210,8 @@ export default function PaymentModal({
                       text-white
                       focus:ring-2 focus:ring-green-400
                       outline-none
+                      transition-all duration-300
+                      focus:shadow-[0_0_25px_rgba(34,197,94,0.5)]
                       "
                     />
                   )}
@@ -214,7 +222,7 @@ export default function PaymentModal({
 
                       <input
                         placeholder="Card Number"
-                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
+                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10 focus:ring-2 focus:ring-green-400 focus:shadow-[0_0_25px_rgba(34,197,94,0.5)]"
                         value={card.number}
                         onChange={(e) =>
                           setCard({ ...card, number: e.target.value })
@@ -223,7 +231,7 @@ export default function PaymentModal({
 
                       <input
                         placeholder="Name on Card"
-                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
+                        className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10 focus:ring-2 focus:ring-green-400 focus:shadow-[0_0_25px_rgba(34,197,94,0.5)]"
                         value={card.name}
                         onChange={(e) =>
                           setCard({ ...card, name: e.target.value })
@@ -234,7 +242,7 @@ export default function PaymentModal({
 
                         <input
                           placeholder="MM/YY"
-                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
+                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10 focus:ring-2 focus:ring-green-400"
                           value={card.expiry}
                           onChange={(e) =>
                             setCard({ ...card, expiry: e.target.value })
@@ -243,7 +251,7 @@ export default function PaymentModal({
 
                         <input
                           placeholder="CVV"
-                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10"
+                          className="w-full bg-black/40 px-4 py-3 rounded-xl border border-white/10 focus:ring-2 focus:ring-green-400"
                           value={card.cvv}
                           onChange={(e) =>
                             setCard({ ...card, cvv: e.target.value })
@@ -260,7 +268,7 @@ export default function PaymentModal({
                     <select
                       value={bank}
                       onChange={(e) => setBank(e.target.value)}
-                      className="w-full bg-black/40 px-4 py-3 rounded-xl text-white border border-white/10"
+                      className="w-full bg-black/40 px-4 py-3 rounded-xl text-white border border-white/10 focus:ring-2 focus:ring-green-400"
                     >
                       <option>SBI</option>
                       <option>HDFC</option>
@@ -269,19 +277,34 @@ export default function PaymentModal({
                     </select>
                   )}
 
+                  {/* 🔥 TRUST BADGE */}
+                  <p className="text-xs text-white/50 mt-4 text-center">
+                    🔒 Secure payment • Encrypted • Trusted by users
+                  </p>
+
                   {/* Pay button */}
                   <motion.button
-                    whileHover={{ scale: 1.03 }}
+                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.96 }}
                     onClick={payNow}
                     className="
                     mt-6 w-full py-3 rounded-2xl
-                    bg-gradient-to-r from-green-400 to-emerald-500
-                    text-black font-bold
-                    shadow-[0_0_30px_rgba(34,197,94,0.5)]
+                    bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400
+                    text-black font-bold tracking-wide
+                    shadow-[0_0_50px_rgba(34,197,94,0.8)]
+                    hover:shadow-[0_0_80px_rgba(34,197,94,1)]
+                    transition-all duration-300
+                    relative overflow-hidden
                     "
                   >
-                    Pay ₹{amount}
+                    {/* 🔥 SHINE */}
+                    <span className="absolute inset-0 overflow-hidden">
+                      <span className="absolute w-1/2 h-full bg-white/20 blur-lg -left-1/2 animate-[shine_2s_infinite]" />
+                    </span>
+
+                    <span className="relative z-10">
+                      🔒 Pay ₹{amount}
+                    </span>
                   </motion.button>
 
                 </>
@@ -291,7 +314,7 @@ export default function PaymentModal({
               {step === "processing" && (
                 <div className="text-center py-12">
 
-                  <div className="mx-auto w-12 h-12 border-4 border-white/10 border-t-green-400 rounded-full animate-spin" />
+                  <div className="mx-auto w-12 h-12 border-4 border-white/10 border-t-green-400 rounded-full animate-spin shadow-[0_0_25px_rgba(34,197,94,0.7)]" />
 
                   <p className="mt-4 text-white">
                     Processing payment...
@@ -307,7 +330,7 @@ export default function PaymentModal({
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="mx-auto w-16 h-16 rounded-full bg-green-400/20 flex items-center justify-center text-green-300 text-3xl"
+                    className="mx-auto w-16 h-16 rounded-full bg-green-400/20 flex items-center justify-center text-green-300 text-3xl shadow-[0_0_30px_rgba(34,197,94,0.8)]"
                   >
                     ✓
                   </motion.div>

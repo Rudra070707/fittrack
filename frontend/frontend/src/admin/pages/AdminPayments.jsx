@@ -87,7 +87,7 @@ export default function AdminPayments() {
 
       w.document.open();
       w.document.write(`
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -322,9 +322,9 @@ export default function AdminPayments() {
     }
   };
 
-  // ===== UI (UPGRADED ONLY) =====
   return (
     <div className="space-y-10">
+
       {/* HEADER */}
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
         <div>
@@ -332,7 +332,7 @@ export default function AdminPayments() {
             ADMIN / PAYMENTS
           </p>
 
-          <h2 className="text-4xl font-extrabold mt-3 leading-tight">
+          <h2 className="text-4xl font-extrabold mt-3 leading-tight bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
             Payment <span className="text-green-400">History</span>
           </h2>
 
@@ -342,17 +342,20 @@ export default function AdminPayments() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative px-5 py-4 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl overflow-hidden">
-            <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 bg-green-400/10 blur-[110px] rounded-full" />
+
+          {/* TOTAL */}
+          <div className="relative px-5 py-4 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-2xl overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
+            <div className="absolute -top-10 -right-10 w-44 h-44 bg-green-400/20 blur-[130px] rounded-full animate-pulse" />
             <div className="text-xs uppercase tracking-[0.22em] text-gray-400">
               Total Collected
             </div>
-            <div className="text-2xl font-extrabold text-green-300 mt-2">
+            <div className="text-2xl font-extrabold bg-gradient-to-r from-green-300 to-green-500 bg-clip-text text-transparent mt-2">
               ₹{formatINR(total)}
             </div>
           </div>
 
-          <div className="px-5 py-4 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl">
+          {/* COUNT */}
+          <div className="px-5 py-4 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)]">
             <div className="text-xs uppercase tracking-[0.22em] text-gray-400">
               Records
             </div>
@@ -360,15 +363,18 @@ export default function AdminPayments() {
               {loading ? "…" : payments.length}
             </div>
           </div>
+
         </div>
       </div>
 
       {/* TABLE CARD */}
-      <div className="relative bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.65)] overflow-hidden">
-        <div className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 bg-green-400/10 blur-[120px] rounded-full" />
-        <div className="pointer-events-none absolute -bottom-20 -left-16 w-56 h-56 bg-emerald-400/10 blur-[140px] rounded-full" />
+      <div className="relative bg-white/[0.04] backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_35px_100px_rgba(0,0,0,0.85)] overflow-hidden">
 
-        <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 bg-white/[0.02]">
+        <div className="absolute -top-16 -right-16 w-60 h-60 bg-green-400/15 blur-[140px] rounded-full" />
+        <div className="absolute -bottom-20 -left-16 w-60 h-60 bg-emerald-400/15 blur-[140px] rounded-full" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/[0.02] to-transparent" />
+
+        <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/10 bg-white/[0.03]">
           <div>
             <h3 className="text-lg font-bold">All Transactions</h3>
             <p className="text-gray-400 text-sm mt-1">
@@ -377,17 +383,8 @@ export default function AdminPayments() {
           </div>
 
           <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span className="px-3 py-2 rounded-2xl bg-black/20 border border-white/10">
-              {loading ? (
-                <>Loading…</>
-              ) : (
-                <>
-                  Showing:{" "}
-                  <span className="text-white font-semibold">
-                    {payments.length}
-                  </span>
-                </>
-              )}
+            <span className="px-3 py-2 rounded-2xl bg-black/30 border border-white/10 backdrop-blur-md">
+              {loading ? "Loading…" : `Showing: ${payments.length}`}
             </span>
           </div>
         </div>
@@ -412,86 +409,60 @@ export default function AdminPayments() {
             </thead>
 
             <tbody>
-              {loading && (
-                <tr>
-                  <td className="px-6 py-10 text-gray-300" colSpan={6}>
-                    Loading payments...
-                  </td>
-                </tr>
-              )}
+              {payments.map((p) => {
+                const statusText = String(p.status || "").toUpperCase();
+                const isSuccess = statusText.includes("SUCCESS");
 
-              {!loading && !payments.length && !err && (
-                <tr>
-                  <td className="px-6 py-10 text-center text-gray-400" colSpan={6}>
-                    No payments found
-                  </td>
-                </tr>
-              )}
+                return (
+                  <tr
+                    key={p._id}
+                    className="border-t border-white/10 hover:bg-white/[0.05] transition-all duration-300"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="text-white font-semibold">{p.userName || "—"}</div>
+                      <div className="text-xs text-gray-400 mt-1 break-all">
+                        {p.userEmail || ""}
+                      </div>
+                    </td>
 
-              {!loading &&
-                payments.map((p) => {
-                  const statusText = String(p.status || "").toUpperCase();
-                  const isSuccess = statusText.includes("SUCCESS") || statusText === "SUCCESS";
+                    <td className="px-6 py-4 text-gray-200">{p.plan || "—"}</td>
 
-                  const badge = isSuccess
-                    ? "bg-green-400/10 border-green-400/25 text-green-300"
-                    : "bg-red-400/10 border-red-400/25 text-red-300";
+                    <td className="px-6 py-4">
+                      <span className="font-extrabold text-white">
+                        ₹{formatINR(p.amount)}
+                      </span>
+                    </td>
 
-                  const dot = isSuccess ? "bg-green-400" : "bg-red-400";
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border text-sm font-semibold ${
+                        isSuccess
+                          ? "bg-green-400/10 border-green-400/30 text-green-300"
+                          : "bg-red-400/10 border-red-400/30 text-red-300"
+                      }`}>
+                        <span className={`h-2 w-2 rounded-full ${
+                          isSuccess ? "bg-green-400 shadow-[0_0_12px_rgba(34,197,94,0.8)]" : "bg-red-400"
+                        }`} />
+                        {statusText}
+                      </span>
+                    </td>
 
-                  return (
-                    <tr
-                      key={p._id}
-                      className="border-t border-white/10 hover:bg-white/[0.03] transition"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="text-white font-semibold">{p.userName || "—"}</div>
-                        <div className="text-xs text-gray-400 mt-1 break-all">
-                          {p.userEmail || ""}
-                        </div>
-                      </td>
+                    <td className="px-6 py-4 text-gray-400 text-sm">
+                      {formatDateTime(p.createdAt)}
+                    </td>
 
-                      <td className="px-6 py-4 text-gray-200">
-                        {p.plan || "—"}
-                      </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => downloadReceipt(p)}
+                        disabled={downloadingId === p._id}
+                        className="px-4 py-2 rounded-2xl bg-white/[0.06] border border-white/10 hover:bg-white/[0.1] hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] transition-all duration-300"
+                      >
+                        {downloadingId === p._id ? "Generating…" : "Download"}
+                      </button>
+                    </td>
 
-                      <td className="px-6 py-4">
-                        <span className="font-extrabold text-white">
-                          ₹{formatINR(p.amount)}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-2xl border text-sm font-semibold ${badge}`}>
-                          <span className={`h-2 w-2 rounded-full ${dot}`} />
-                          {statusText || "—"}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4 text-gray-400 text-sm">
-                        {formatDateTime(p.createdAt)}
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => downloadReceipt(p)}
-                          disabled={downloadingId === p._id}
-                          className={`
-                            px-4 py-2 rounded-2xl
-                            border border-white/10
-                            bg-white/[0.06]
-                            text-gray-200 font-semibold
-                            hover:bg-white/[0.09]
-                            transition
-                            ${downloadingId === p._id ? "opacity-60 cursor-not-allowed" : ""}
-                          `}
-                        >
-                          {downloadingId === p._id ? "Generating…" : "Download"}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

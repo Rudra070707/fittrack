@@ -99,7 +99,7 @@ export default function ProgressTracker() {
     })
   );
 
-  const data = {
+  const weightData = {
     labels,
     datasets: [
       {
@@ -111,25 +111,56 @@ export default function ProgressTracker() {
     ],
   };
 
+  const bodyFatData = {
+    labels,
+    datasets: [
+      {
+        label: "Body Fat (%)",
+        data: entries.map((e) => e.bodyFat),
+        borderColor: "#38bdf8",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const workoutData = {
+    labels,
+    datasets: [
+      {
+        label: "Workout Done",
+        data: entries.map((e) => (e.didWorkout ? 1 : 0)),
+        borderColor: "#facc15",
+        tension: 0.3,
+      },
+    ],
+  };
+
   const bmiValue = calculateBMI(weight, height);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
 
       {/* 🔥 STREAK CARD */}
       <motion.div
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.05 }}
         className="group relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent"
       >
-        <div className="p-6 rounded-3xl bg-white/[0.05] backdrop-blur-xl border border-white/10 text-center transition group-hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]">
-          <p className="text-white/60 text-sm">Current Streak</p>
-          <p className="text-5xl font-extrabold text-emerald-400">🔥</p>
-          <p className="text-white/50 text-sm">Keep going</p>
+        <div className="
+          p-8 rounded-3xl
+          bg-white/[0.05] backdrop-blur-xl
+          border border-white/10
+          text-center
+          transition
+          group-hover:shadow-[0_0_50px_rgba(34,197,94,0.25)]
+        ">
+          <p className="text-white/60 text-sm tracking-wide">Consistency</p>
+          <p className="text-6xl font-extrabold text-emerald-400">🔥</p>
+          <p className="text-white/50 text-sm">Stay consistent daily</p>
         </div>
       </motion.div>
 
       {/* 🧾 INPUTS */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-3 gap-8">
 
         {[{
           val: height,
@@ -150,62 +181,59 @@ export default function ProgressTracker() {
             placeholder={f.ph}
             value={f.val}
             onChange={(e) => f.set(e.target.value)}
-            className="
-              px-4 py-3 rounded-2xl
-              bg-black/30 border border-white/10
-              text-white
-              focus:ring-2 focus:ring-emerald-400
-              outline-none transition
-              hover:border-green-400/40
-            "
+            className="px-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white focus:ring-2 focus:ring-emerald-400 outline-none"
           />
         ))}
 
       </div>
 
-      {/* 🚀 SAVE BUTTON */}
+      {/* 🚀 SAVE */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={addEntry}
-        className="
-          w-full py-3 rounded-2xl font-semibold
-          bg-gradient-to-r from-emerald-500 to-green-400
-          text-black
-          transition
-          hover:shadow-[0_0_30px_rgba(34,197,94,0.5)]
-        "
+        className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-400 text-black font-semibold"
       >
         Save Entry
       </motion.button>
 
       {/* 📊 BMI */}
       {bmiValue && (
-        <div className="grid md:grid-cols-3 gap-6">
-
-          <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-5 text-center backdrop-blur-xl">
-            <p className="text-white/60">BMI</p>
-            <p className="text-2xl font-bold text-emerald-400">{bmiValue}</p>
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="card text-center">
+            <p>BMI</p>
+            <p className="text-3xl text-emerald-400">{bmiValue}</p>
           </div>
-
-          <div className="bg-white/[0.05] border border-white/10 rounded-2xl p-5 text-center backdrop-blur-xl">
-            <p className="text-white/60">Status</p>
+          <div className="card text-center">
+            <p>Status</p>
             <p>{bmiStatus(bmiValue)}</p>
           </div>
-
         </div>
       )}
 
-      {/* 📈 CHART */}
+      {/* 📈 CHARTS */}
       {entries.length > 0 ? (
-        <motion.div
-          className="bg-white/[0.05] border border-white/10 rounded-3xl p-6 h-[400px] backdrop-blur-xl"
-        >
-          <Line data={data} />
-        </motion.div>
+        <div className="space-y-10">
+
+          <div className="card">
+            <h3 className="mb-4">Weight Progress</h3>
+            <Line data={weightData} />
+          </div>
+
+          <div className="card">
+            <h3 className="mb-4">Body Fat</h3>
+            <Line data={bodyFatData} />
+          </div>
+
+          <div className="card">
+            <h3 className="mb-4">Workout Consistency</h3>
+            <Line data={workoutData} />
+          </div>
+
+        </div>
       ) : (
         <div className="text-center text-white/60">
-          No progress yet
+          No progress yet 🚀
         </div>
       )}
 

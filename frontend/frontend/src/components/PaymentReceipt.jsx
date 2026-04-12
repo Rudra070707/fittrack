@@ -25,9 +25,32 @@ Thank you for choosing FitTrack.
   return (
     <button
       onClick={downloadReceipt}
-      className="mt-4 px-4 py-2 rounded-xl bg-white/10 text-white border border-white/10 hover:bg-white/15 transition"
+      className="
+        mt-5 px-5 py-2.5 rounded-xl
+        flex items-center justify-center gap-2
+        bg-gradient-to-r from-white/10 to-white/5
+        text-white font-medium tracking-wide
+        border border-white/10
+        backdrop-blur-md
+        shadow-[0_0_20px_rgba(0,0,0,0.4)]
+        hover:bg-white/15
+        hover:shadow-[0_0_25px_rgba(34,197,94,0.3)]
+        hover:scale-[1.03]
+        active:scale-[0.96]
+        transition-all duration-300
+      "
     >
-      🧾 Download Receipt
+
+      {/* Icon */}
+      <span className="text-lg">
+        🧾
+      </span>
+
+      {/* Text */}
+      <span>
+        Download Receipt
+      </span>
+
     </button>
   );
 }

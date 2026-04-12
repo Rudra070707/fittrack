@@ -13,7 +13,7 @@ export default function Gyms() {
     const fetchGyms = async () => {
       setLoading(true);
 
-      await new Promise((r) => setTimeout(r, 1200)); // simulate delay
+      await new Promise((r) => setTimeout(r, 1200));
 
       setGyms([
         { name: "Gold Gym", distance: "1.2 km", status: "Open" },
@@ -36,6 +36,13 @@ export default function Gyms() {
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-950 to-black" />
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+
+        {/* 🔥 EXTRA GLOW */}
+        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
+
+        {/* 🔥 CENTER LIGHT */}
+        <div className="absolute left-1/2 top-1/2 w-[500px] h-[250px] -translate-x-1/2 -translate-y-1/2 bg-green-400/10 blur-[140px]" />
 
         <motion.div
           className="absolute inset-0 opacity-80"
@@ -60,7 +67,7 @@ export default function Gyms() {
           animate={{ opacity: 1, y: 0 }}
         >
           Find{" "}
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(34,197,94,0.8)]">
             Gyms Near You
           </span>
         </motion.h1>
@@ -70,12 +77,12 @@ export default function Gyms() {
         </p>
 
         {/* 🔍 SEARCH */}
-        <div className="mb-12 relative">
+        <div className="mb-12 relative group">
 
           <input
             type="text"
             placeholder="Enter city or location"
-            disabled={loading} // 🔥 disable while loading
+            disabled={loading}
             className="
               w-full px-5 py-3 rounded-2xl
               bg-black/30 border border-white/12
@@ -84,11 +91,13 @@ export default function Gyms() {
               outline-none text-white placeholder-white/40
               transition-all duration-300
               hover:border-emerald-400/40
+              focus:shadow-[0_0_35px_rgba(34,197,94,0.5)]
               disabled:opacity-60
             "
           />
 
-          <div className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 hover:opacity-100 transition bg-emerald-400/5 blur-xl" />
+          {/* 🔥 glow FIXED */}
+          <div className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-2xl" />
 
         </div>
 
@@ -96,15 +105,18 @@ export default function Gyms() {
         <div className="grid md:grid-cols-3 gap-8">
 
           {loading
-            ? // 🔥 SKELETON LOADING
-              [...Array(3)].map((_, i) => (
+            ? [...Array(3)].map((_, i) => (
                 <div
                   key={i}
                   className="
                     animate-pulse rounded-3xl p-6
                     bg-white/6 border border-white/12
+                    relative overflow-hidden
                   "
                 >
+                  {/* 🔥 shimmer */}
+                  <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.06),transparent)] animate-[shine_2s_linear_infinite]" />
+
                   <div className="h-5 bg-white/10 rounded w-2/3 mb-4"></div>
                   <div className="h-4 bg-white/10 rounded w-1/2 mb-6"></div>
                   <div className="h-10 bg-white/10 rounded"></div>
@@ -114,28 +126,29 @@ export default function Gyms() {
 
                 <motion.div
                   key={i}
-                  whileHover={{ y: -12, scale: 1.03 }}
+                  whileHover={{ y: -16, scale: 1.05 }}
                   className="
                     group relative rounded-3xl p-[1px]
                     bg-gradient-to-br from-white/10 to-transparent
                   "
                 >
 
-                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/10 blur-xl" />
+                  {/* 🔥 glow */}
+                  <div className="pointer-events-none absolute -inset-3 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/20 blur-3xl" />
 
                   <div className="
                     bg-white/6 backdrop-blur-2xl
                     border border-white/12
                     rounded-3xl p-6
                     transition-all duration-300
-                    group-hover:shadow-[0_0_40px_rgba(34,197,94,0.25)]
+                    group-hover:shadow-[0_0_70px_rgba(34,197,94,0.35)]
                   ">
 
                     <h2 className="font-bold text-xl">{gym.name}</h2>
 
                     <p className="text-white/60 mt-2">
-                      <span className="text-emerald-400 font-semibold">
-                        {gym.status}
+                      <span className="text-emerald-400 font-semibold drop-shadow-[0_0_8px_rgba(34,197,94,0.8)]">
+                        ● {gym.status}
                       </span>{" "}
                       • {gym.distance} away
                     </p>
@@ -146,8 +159,8 @@ export default function Gyms() {
                         bg-gradient-to-r from-emerald-500 to-emerald-400
                         text-slate-950 font-semibold
                         transition-all duration-300
-                        hover:scale-[1.03]
-                        hover:shadow-[0_0_25px_rgba(34,197,94,0.5)]
+                        hover:scale-[1.06]
+                        hover:shadow-[0_0_40px_rgba(34,197,94,0.8)]
                       "
                     >
                       View Gym

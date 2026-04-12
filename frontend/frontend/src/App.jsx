@@ -1,3 +1,4 @@
+// SAME IMPORTS (UNCHANGED)
 import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo } from "react";
@@ -67,66 +68,125 @@ export default function App() {
     else navigate("/home", { replace: true });
   };
 
+  const showServicesSubnav = useMemo(() => {
+
+    const path = location.pathname;
+
+    const isServiceRoute =
+      path.includes("services") ||
+      path.includes("diet") ||
+      path.includes("workout") ||
+      path.includes("progress") ||
+      path.includes("injury") ||
+      path.includes("gym") ||
+      path.includes("zumba") ||
+      path.includes("yoga") ||
+      path.includes("gamification");
+
+    return isServiceRoute && !modalOpen;
+
+  }, [location.pathname, modalOpen]);
+
   return (
 
-    <div className="relative text-white min-h-screen overflow-hidden">
+    <div className="relative text-white min-h-screen"> {/* ✅ overflow-hidden removed */}
 
-      {/* BACKGROUND */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
+      {/* 🔥 GLOBAL BACKGROUND (ENHANCED) */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
 
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-950" />
+        {/* base gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#030712] to-[#020617]" />
 
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+        {/* main glow layers */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-green-400/10 blur-[200px] rounded-full" />
+
+        <div className="absolute bottom-0 right-1/3 w-[800px] h-[400px] bg-emerald-400/10 blur-[180px] rounded-full" />
+
+        <div className="absolute top-1/3 left-1/4 w-[600px] h-[300px] bg-cyan-400/10 blur-[160px] rounded-full" />
+
+        {/* center glow */}
+        <div className="absolute left-1/2 top-1/2 w-[600px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-green-400/10 blur-[160px]" />
+
+        {/* 🔥 animated floating glow (smoother) */}
+        <motion.div
+          className="absolute top-0 left-0 w-[600px] h-[600px] bg-green-400/10 blur-[160px] rounded-full"
+          animate={{ x: [0, 120, 0], y: [0, 80, 0] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+        />
 
         <motion.div
-          className="absolute inset-0 opacity-80"
-          animate={{
-            background: [
-              "radial-gradient(circle at 15% 25%, rgba(16,185,129,0.28), transparent 60%)",
-              "radial-gradient(circle at 70% 20%, rgba(34,197,94,0.26), transparent 60%)",
-              "radial-gradient(circle at 30% 70%, rgba(16,185,129,0.24), transparent 62%)",
-            ]
-          }}
-          transition={{ duration: 16, repeat: Infinity }}
+          className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-cyan-400/10 blur-[140px] rounded-full"
+          animate={{ x: [0, -100, 0], y: [0, -60, 0] }}
+          transition={{ duration: 32, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* 🔥 extra subtle floating glow */}
+        <motion.div
+          className="absolute top-1/4 left-1/3 w-[400px] h-[400px] bg-emerald-400/10 blur-[120px] rounded-full"
+          animate={{ x: [0, 60, 0], y: [0, 40, 0] }}
+          transition={{ duration: 26, repeat: Infinity }}
+        />
+
+        {/* grain */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none"
+             style={{
+               backgroundImage:
+                 "url('https://grainy-gradients.vercel.app/noise.svg')"
+             }}
         />
 
       </div>
 
       <div className="relative z-10">
 
-        <Navbar />
-        <ServicesSubnav show={!modalOpen} />
+        {/* NAVBAR */}
+        <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/5 border-b border-white/10 shadow-soft">
+          <Navbar />
+        </div>
 
-        {/* 🔥 UPGRADED TRANSITIONS */}
+        {/* SUBNAV */}
+        <AnimatePresence mode="wait">
+          {showServicesSubnav && (
+            <motion.div
+              key="subnav"
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="px-4 md:px-8"
+            >
+              <ServicesSubnav show={true} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* PAGE TRANSITIONS */}
         <AnimatePresence mode="wait">
 
           <motion.main
             key={backgroundLocation.pathname}
-
-            // 🔥 ENTER
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-
-            // 🔥 ACTIVE
+            initial={{ opacity: 0, y: 50, scale: 0.97 }}
             animate={{
               opacity: 1,
               y: 0,
               scale: 1,
               transition: {
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1] // smooth ease
+                duration: 0.65,
+                ease: [0.22, 1, 0.36, 1]
               }
             }}
-
-            // 🔥 EXIT
             exit={{
               opacity: 0,
-              y: -30,
-              scale: 0.97,
+              y: -40,
+              scale: 0.96,
               transition: { duration: 0.35 }
             }}
-
-            className="relative pt-10 min-h-screen"
+            style={{ willChange: "transform, opacity" }}
+            className="relative pt-20 pb-32 min-h-screen px-4 md:px-10"
           >
+
+            {/* TOP FADE */}
+            <div className="pointer-events-none absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-black/40 to-transparent z-0" />
 
             {/* ROUTES */}
             <Routes location={backgroundLocation}>
@@ -135,13 +195,24 @@ export default function App() {
                 path="/"
                 element={
                   <div>
-                    <Hero />
-                    <Services />
-                    <Plans />
+
+                    <section className="relative section">
+                      <Hero />
+                    </section>
+
+                    <section className="relative section">
+                      <Services />
+                    </section>
+
+                    <section className="relative section">
+                      <Plans />
+                    </section>
+
                   </div>
                 }
               />
 
+              <Route path="services" element={<Services />} />
               <Route path="select" element={<SelectRole />} />
 
               <Route path="about" element={<RequireAuth><About /></RequireAuth>} />
@@ -169,10 +240,14 @@ export default function App() {
 
         </AnimatePresence>
 
-        <Footer />
-        <Chatbot />
+        <div className="px-4 md:px-8">
+          <Footer />
+        </div>
 
       </div>
+
+      {/* ✅ CHATBOT MOVED HERE */}
+      <Chatbot />
 
       {/* MODALS */}
       <AnimatePresence>
