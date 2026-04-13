@@ -69,7 +69,7 @@ const Plans = () => {
 
       // ✅ FIXED API + BODY
       await axios.post(
-        "https://fittrack-weld.vercel.app/api/plan/select-plan",
+        "https://fittrack-ot15.onrender.com/api/plan/select-plan",
         { planCode: plan.code },
         {
           headers: {
