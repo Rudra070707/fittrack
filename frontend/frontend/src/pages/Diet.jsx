@@ -56,6 +56,7 @@ export default function Diet() {
     e.preventDefault();
 
     if(!height || !weight || !goal || !pref){
+      setError("Please fill all fields properly");
       return;
     }
 
@@ -78,6 +79,14 @@ export default function Diet() {
       }
 
       setDietPlan(res.data.plan);
+
+      // ✅ Smooth scroll to result
+      setTimeout(()=>{
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth"
+        });
+      },200);
 
     }catch(err){
 
@@ -208,7 +217,7 @@ export default function Diet() {
                 />
               ))}
 
-              {/* 🔥 CUSTOM GOAL DROPDOWN */}
+              {/* GOAL */}
               <div className="relative">
                 <div
                   onClick={()=>setGoalOpen(!goalOpen)}
@@ -239,7 +248,7 @@ export default function Diet() {
                 </AnimatePresence>
               </div>
 
-              {/* 🔥 CUSTOM PREF DROPDOWN */}
+              {/* PREF */}
               <div className="relative">
                 <div
                   onClick={()=>setPrefOpen(!prefOpen)}
@@ -307,9 +316,6 @@ export default function Diet() {
                 shadow-[0_0_60px_rgba(0,0,0,0.7)]
               "
             >
-
-              <div className="absolute -inset-2 bg-emerald-400/10 blur-2xl opacity-60 rounded-3xl"/>
-
               <h3 className="text-lg font-bold mb-6">
                 Quick Preview
               </h3>
@@ -325,6 +331,41 @@ export default function Diet() {
           )}
 
         </div>
+
+        {/* ✅ RESULT SECTION (ADDED - VERY IMPORTANT) */}
+        {dietPlan && (
+          <motion.div
+            initial={{opacity:0,y:30}}
+            animate={{opacity:1,y:0}}
+            className="mt-16 p-8 bg-white/5 border border-white/10 rounded-3xl"
+          >
+            <h2 className="text-2xl font-bold text-emerald-400 mb-6">
+              Your Diet Plan
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <p>Calories: {dietPlan.calories}</p>
+              <p>Protein: {dietPlan.protein}</p>
+              <p>Carbs: {dietPlan.carbs}</p>
+              <p>Fats: {dietPlan.fats}</p>
+              <p>BMI: {dietPlan.bmi}</p>
+              <p>Category: {dietPlan.bmiCategory}</p>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Meals</h3>
+              {dietPlan.meals.map((meal,i)=>(
+                <div key={i} className="mb-3">
+                  <strong className="text-emerald-400">{meal.title}:</strong> {meal.items}
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-6 text-sm text-gray-400">
+              {dietPlan.note}
+            </p>
+          </motion.div>
+        )}
 
       </motion.div>
 

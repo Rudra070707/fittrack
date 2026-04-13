@@ -2,39 +2,70 @@
 
 exports.generateDietPlan = async (req, res) => {
   try {
-    const { height, weight, goal, preference } = req.body;
+    let { height, weight, goal, preference } = req.body;
 
-    if (!height || !weight || !goal || !preference) {
+    // ✅ BASIC PRESENCE VALIDATION
+    if (height === undefined || weight === undefined || !goal || !preference) {
       return res.status(400).json({
         success: false,
         message: "height, weight, goal, preference are required",
       });
     }
 
-    // ✅ Simple & safe demo logic (non-medical)
-    const calories =
-      goal === "Weight Loss" ? 1800 : goal === "Muscle Gain" ? 2400 : 2100;
+    // ✅ TYPE + VALUE VALIDATION (IMPORTANT)
+    height = Number(height);
+    weight = Number(weight);
 
-    const protein =
-      goal === "Muscle Gain"
-        ? "120–140g"
-        : goal === "Weight Loss"
-        ? "90–110g"
-        : "100–120g";
+    if (
+      isNaN(height) ||
+      isNaN(weight) ||
+      height <= 0 ||
+      weight <= 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Height and weight must be valid positive numbers",
+      });
+    }
 
-    const carbs =
-      goal === "Weight Loss"
-        ? "160–200g"
-        : goal === "Muscle Gain"
-        ? "250–320g"
-        : "200–260g";
+    // ✅ NORMALIZE INPUTS
+    goal = String(goal).trim();
+    preference = String(preference).trim();
 
-    const fats =
-      goal === "Weight Loss"
-        ? "45–55g"
-        : goal === "Muscle Gain"
-        ? "60–75g"
-        : "55–70g";
+    // ✅ SCALABLE GOAL MAP (BETTER THAN MULTIPLE TERNARY)
+    const goalMap = {
+      "Weight Loss": {
+        calories: 1800,
+        protein: "90–110g",
+        carbs: "160–200g",
+        fats: "45–55g",
+      },
+      "Muscle Gain": {
+        calories: 2400,
+        protein: "120–140g",
+        carbs: "250–320g",
+        fats: "60–75g",
+      },
+      "Maintain": {
+        calories: 2100,
+        protein: "100–120g",
+        carbs: "200–260g",
+        fats: "55–70g",
+      },
+    };
+
+    // fallback if unknown goal
+    const selectedGoal = goalMap[goal] || goalMap["Maintain"];
+
+    const { calories, protein, carbs, fats } = selectedGoal;
+
+    // ✅ BMI CALCULATION (ADDED FEATURE 🔥)
+    const bmi = +(weight / ((height / 100) ** 2)).toFixed(1);
+
+    let bmiCategory = "Normal";
+    if (bmi < 18.5) bmiCategory = "Underweight";
+    else if (bmi >= 25 && bmi < 30) bmiCategory = "Overweight";
+    else if (bmi >= 30) bmiCategory = "Obese";
 
     // ✅ Meal suggestions based on preference
     const vegMeals = [
@@ -58,29 +89,38 @@ exports.generateDietPlan = async (req, res) => {
       { title: "Dinner", items: "Paneer/tofu or chicken + veggies + roti" },
     ];
 
-    // ✅ IMPORTANT FIX: "Mixed" contains "veg" (substring)
-    // so we must check NON-VEG first, then VEG, then default mixed
-    const prefLower = String(preference).toLowerCase();
+    // ✅ FIXED PREFERENCE LOGIC (SAFE STRING CHECK)
+    const prefLower = preference.toLowerCase();
 
     let meals = mixedMeals;
-    if (prefLower.includes("non")) meals = nonVegMeals;
-    else if (prefLower === "veg" || (prefLower.includes("veg") && !prefLower.includes("non"))) {
+
+    if (prefLower.includes("non")) {
+      meals = nonVegMeals;
+    } else if (
+      prefLower === "veg" ||
+      (prefLower.includes("veg") && !prefLower.includes("non"))
+    ) {
       meals = vegMeals;
     }
 
-    return res.json({
+    // ✅ FINAL RESPONSE
+    return res.status(200).json({
       success: true,
       plan: {
         calories,
         protein,
         carbs,
         fats,
+        bmi,
+        bmiCategory,
         meals,
         note: "This is a basic generated plan for your project demo (not medical advice).",
       },
     });
+
   } catch (err) {
     console.error("Diet generate error:", err);
+
     return res.status(500).json({
       success: false,
       message: "Server error",

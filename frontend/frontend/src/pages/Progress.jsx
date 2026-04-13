@@ -17,7 +17,7 @@ export default function Progress() {
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
 
-        {/* 🔥 CENTER LIGHT (NEW) */}
+        {/* 🔥 CENTER LIGHT */}
         <div className="absolute left-1/2 top-1/2 w-[600px] h-[300px] -translate-x-1/2 -translate-y-1/2 bg-green-400/10 blur-[160px]" />
 
         <motion.div
@@ -44,7 +44,6 @@ export default function Progress() {
         {/* 🔥 HEADER */}
         <div className="mb-14">
 
-          {/* 🔥 BADGE */}
           <div className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 backdrop-blur-md mb-6">
             📊 Analytics Dashboard
           </div>
@@ -81,10 +80,7 @@ export default function Progress() {
             "
           >
 
-            {/* 🔥 GLOW UPGRADE */}
             <div className="pointer-events-none absolute -inset-3 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/20 blur-2xl"/>
-
-            {/* 🔥 INNER LIGHT */}
             <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-b from-white/[0.05] to-transparent"/>
 
             <div className="
@@ -104,11 +100,12 @@ export default function Progress() {
                 Log entries regularly to see trends and improvements clearly.
               </p>
 
-              {/* 🔥 SUBTLE SHINE */}
               <div className="pointer-events-none absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_0%,rgba(255,255,255,0.15),transparent_60%)]"/>
 
-              {/* MAIN COMPONENT */}
-              <ProgressTracker/>
+              {/* ✅ SAFETY WRAP (NEW) */}
+              <div className="relative z-10">
+                <ProgressTracker/>
+              </div>
 
             </div>
 
@@ -123,7 +120,6 @@ export default function Progress() {
             "
           >
 
-            {/* 🔥 GLOW */}
             <div className="pointer-events-none absolute -inset-3 rounded-3xl opacity-0 group-hover:opacity-100 transition bg-emerald-400/20 blur-2xl"/>
 
             <div className="
@@ -163,9 +159,7 @@ export default function Progress() {
 
               </ul>
 
-              {/* 💡 TIP BOX */}
               <div className="mt-6 p-5 rounded-2xl bg-emerald-400/10 border border-emerald-400/20">
-
                 <p className="text-emerald-300 text-xs tracking-[0.22em]">
                   CONSISTENCY TIP
                 </p>
@@ -174,10 +168,8 @@ export default function Progress() {
                   Update your progress once per week at the same time of day for
                   accurate comparison.
                 </p>
-
               </div>
 
-              {/* 🔥 EXTRA MICRO CTA */}
               <div className="mt-6 text-xs text-white/50">
                 Small progress daily = big results 📈
               </div>

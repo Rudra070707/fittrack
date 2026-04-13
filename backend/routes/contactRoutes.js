@@ -1,3 +1,5 @@
+// backend/routes/contactRoutes.js
+
 const router = require("express").Router();
 const adminAuth = require("../middleware/adminAuth");
 
@@ -8,10 +10,10 @@ const {
   deleteContactMessage,
 } = require("../controllers/contactController");
 
-// ✅ public
+// ✅ PUBLIC
 router.post("/", createContactMessage);
 
-// ✅ admin inbox
+// ✅ ADMIN (Protected)
 router.get("/", adminAuth, getAllContactMessages);
 router.patch("/:id/status", adminAuth, updateContactStatus);
 router.delete("/:id", adminAuth, deleteContactMessage);

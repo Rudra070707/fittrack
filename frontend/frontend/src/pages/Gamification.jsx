@@ -55,6 +55,11 @@ export default function Gamification() {
       setSuccess(res?.message || "Updated successfully");
       setData(res.gamification || null);
 
+      // ✅ AUTO CLEAR SUCCESS MESSAGE (NEW UX)
+      setTimeout(() => {
+        setSuccess("");
+      }, 3000);
+
     } catch (e) {
       console.error(e);
       setErr("Network / server error");
@@ -84,7 +89,7 @@ export default function Gamification() {
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-emerald-400/10 blur-[200px] rounded-full"/>
         <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-green-400/10 blur-[200px] rounded-full"/>
 
-        {/* 🔥 CENTER GLOW */}
+        {/* CENTER GLOW */}
         <div className="absolute left-1/2 top-1/2 w-[500px] h-[250px] -translate-x-1/2 -translate-y-1/2 bg-emerald-400/10 blur-[140px]" />
 
         <motion.div
@@ -146,10 +151,9 @@ export default function Gamification() {
               </motion.div>
             )}
 
-            {/* 💎 STATS */}
+            {/* STATS */}
             <div className="grid md:grid-cols-3 gap-6">
 
-              {/* STREAK */}
               <motion.div
                 whileHover={{scale:1.06,y:-6}}
                 className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(34,197,94,0.4)]"
@@ -160,7 +164,6 @@ export default function Gamification() {
                 <p className="text-white/50 mt-2">Best: {best} days</p>
               </motion.div>
 
-              {/* LEVEL */}
               <motion.div
                 whileHover={{scale:1.06,y:-6}}
                 className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(59,130,246,0.4)]"
@@ -171,7 +174,6 @@ export default function Gamification() {
                 <p className="text-white/50 mt-2">{xp} XP total</p>
               </motion.div>
 
-              {/* PROGRESS */}
               <motion.div
                 whileHover={{scale:1.06,y:-6}}
                 className="group relative bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl transition-all duration-300 group-hover:shadow-[0_0_80px_rgba(34,197,94,0.4)]"
@@ -194,7 +196,7 @@ export default function Gamification() {
 
             </div>
 
-            {/* 🚀 DAILY CHECK-IN */}
+            {/* DAILY CHECK-IN */}
             <div className="mt-8 bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl hover:shadow-[0_0_50px_rgba(34,197,94,0.3)] transition">
 
               <div className="flex flex-col md:flex-row md:justify-between gap-4">
@@ -227,7 +229,7 @@ export default function Gamification() {
 
             </div>
 
-            {/* 🏅 BADGES */}
+            {/* BADGES */}
             <div className="mt-8 bg-white/[0.05] border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
 
               <h2 className="text-xl font-bold mb-4">
@@ -254,7 +256,7 @@ export default function Gamification() {
                         transition-all duration-300
                       "
                     >
-                      🏅 {b}
+                      🏅 {b.replaceAll("_"," ").toUpperCase()}
                     </motion.span>
                   ))}
 

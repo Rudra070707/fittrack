@@ -1,15 +1,44 @@
+// backend/controllers/contactController.js
+
 const ContactMessage = require("../models/ContactMessage");
 const { sendMail } = require("../utils/mailer");
+
+// ✅ helper: simple email validation
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
 
 // ✅ PUBLIC: user submits contact message
 exports.createContactMessage = async (req, res) => {
   try {
-    const { fullName, email, subject, message } = req.body;
+    let { fullName, email, subject, message } = req.body;
 
+    // 🔥 sanitize input
+    fullName = String(fullName || "").trim();
+    email = String(email || "").trim().toLowerCase();
+    subject = String(subject || "").trim();
+    message = String(message || "").trim();
+
+    // ✅ validation
     if (!fullName || !email || !subject || !message) {
       return res.status(400).json({
         success: false,
         message: "fullName, email, subject, message are required",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email format",
+      });
+    }
+
+    // 🔥 prevent spam (basic length check)
+    if (message.length < 5) {
+      return res.status(400).json({
+        success: false,
+        message: "Message too short",
       });
     }
 
@@ -27,9 +56,14 @@ exports.createContactMessage = async (req, res) => {
         const ownerEmail =
           process.env.OWNER_EMAIL ||
           process.env.EMAIL_USER ||
-          process.env.MAIL_FROM; // fallback (not ideal, but safe)
+          process.env.MAIL_FROM;
 
-        // send to owner (admin)
+        if (!ownerEmail) {
+          console.log("⚠️ No owner email configured");
+          return;
+        }
+
+        // 📩 send to admin
         await sendMail({
           to: ownerEmail,
           subject: `📩 New Contact Message: ${subject}`,
@@ -47,7 +81,7 @@ exports.createContactMessage = async (req, res) => {
           `,
         });
 
-        // auto reply to user
+        // 📩 auto reply to user
         await sendMail({
           to: email,
           subject: "✅ We received your message - FitTrack Support",
@@ -63,6 +97,7 @@ exports.createContactMessage = async (req, res) => {
             </div>
           `,
         });
+
       } catch (mailErr) {
         console.log("⚠️ Email sending failed:", mailErr.message);
       }
@@ -73,32 +108,50 @@ exports.createContactMessage = async (req, res) => {
       message: "Message saved successfully",
       data: saved,
     });
+
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message });
+    console.error("Contact create error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
 // ✅ ADMIN: list messages (Inbox)
 exports.getAllContactMessages = async (req, res) => {
   try {
-    const messages = await ContactMessage.find().sort({ createdAt: -1 });
-    res.json({ success: true, data: messages });
+    const messages = await ContactMessage.find()
+      .sort({ createdAt: -1 })
+      .limit(100); // 🔥 prevent overload
+
+    res.json({
+      success: true,
+      count: messages.length,
+      data: messages,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error("Fetch messages error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
-// ✅ ADMIN: update status (new/seen/resolved)
+// ✅ ADMIN: update status
 exports.updateContactStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
     const allowed = ["new", "seen", "resolved"];
+
     if (!allowed.includes(status)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid status" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status",
+      });
     }
 
     const updated = await ContactMessage.findByIdAndUpdate(
@@ -108,14 +161,24 @@ exports.updateContactStatus = async (req, res) => {
     );
 
     if (!updated) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Message not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Message not found",
+      });
     }
 
-    res.json({ success: true, message: "Status updated", data: updated });
+    res.json({
+      success: true,
+      message: "Status updated",
+      data: updated,
+    });
+
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error("Update status error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
@@ -125,14 +188,24 @@ exports.deleteContactMessage = async (req, res) => {
     const { id } = req.params;
 
     const deleted = await ContactMessage.findByIdAndDelete(id);
+
     if (!deleted) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Message not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Message not found",
+      });
     }
 
-    res.json({ success: true, message: "Message deleted" });
+    res.json({
+      success: true,
+      message: "Message deleted",
+    });
+
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error("Delete message error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };

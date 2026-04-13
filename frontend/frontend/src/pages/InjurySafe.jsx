@@ -103,7 +103,10 @@ export default function InjurySafe() {
             {/* 🔥 EXTRA SHINE LAYER (NEW ADDITION) */}
             <div className="pointer-events-none absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.2),transparent)]" />
 
-            <InjurySafeTraining />
+            {/* ✅ IMPORTANT FIX: SAFE LAYERING */}
+            <div className="relative z-10">
+              <InjurySafeTraining />
+            </div>
 
           </div>
 

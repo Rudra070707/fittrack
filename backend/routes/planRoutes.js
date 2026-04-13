@@ -1,8 +1,13 @@
+// backend/routes/planRoutes.js
+
 const express = require("express");
 const router = express.Router();
 const Plan = require("../models/Plan");
 const User = require("../models/User");
 const planController = require("../controllers/planController");
+
+// 🔥 NEW: AUTH
+const { requireAuth } = require("../middleware/authMiddleware");
 
 // 🔹 TEMP: Seed default plans (GET route for testing)
 router.get("/seed", async (req, res) => {
@@ -76,7 +81,7 @@ router.post("/add-plan", async (req, res) => {
   }
 });
 
-// 📋 Get all plans (🔥 WITH REAL USER COUNT)
+// 📋 Get all plans
 router.get("/all", async (req, res) => {
   try {
     const plans = await Plan.find().sort({ price: 1 });
@@ -95,6 +100,58 @@ router.get("/all", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// 🔥🔥🔥 NEW: SELECT PLAN (MAIN FIX)
+router.post("/select-plan", requireAuth, async (req, res) => {
+  try {
+    const { planCode } = req.body;
+
+    if (!planCode) {
+      return res.status(400).json({
+        success: false,
+        message: "planCode is required"
+      });
+    }
+
+    const plan = await Plan.findOne({ code: planCode });
+
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Plan not found"
+      });
+    }
+
+    const now = new Date();
+
+    const end = new Date();
+    end.setMonth(end.getMonth() + (plan.durationMonths || 1));
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        plan: plan.name,
+        planStart: now,
+        planEnd: end
+      },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Plan selected successfully 🎉",
+      plan: plan.name,
+      validTill: end
+    });
+
+  } catch (err) {
+    console.error("Select plan error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
 });
 

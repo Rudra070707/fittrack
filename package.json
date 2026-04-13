@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "express-rate-limit": "^8.3.2",
     "react-countup": "^6.5.3",
     "react-hot-toast": "^2.6.0",
     "recharts": "^3.8.1"

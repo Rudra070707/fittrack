@@ -12,11 +12,19 @@ export default function SmartWorkoutPlanner() {
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // ✅ ADDED ERROR STATE
+  const [error, setError] = useState("");
+
   const generatePlan = async () => {
 
+    // ✅ IMPROVED VALIDATION
     if (!goal || !level || !days) {
+      setError("Please select goal, level and days");
       return;
     }
+
+    setError("");
+    setPlan(null);
 
     try {
 
@@ -29,14 +37,28 @@ export default function SmartWorkoutPlanner() {
       });
 
       if (!res.data?.success) {
+        setError(res.data?.message || "Failed to generate workout plan");
         return;
       }
 
       setPlan(res.data.plan);
 
+      // ✅ SMOOTH SCROLL TO RESULT
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth"
+        });
+      }, 200);
+
     } catch (err) {
 
       console.error(err);
+
+      setError(
+        err?.response?.data?.message ||
+        "Something went wrong while generating workout"
+      );
 
     } finally {
       setLoading(false);
@@ -163,6 +185,13 @@ export default function SmartWorkoutPlanner() {
               ))}
 
             </div>
+
+            {/* ✅ ERROR MESSAGE */}
+            {error && (
+              <p className="mt-4 text-red-400 text-sm">
+                {error}
+              </p>
+            )}
 
             <motion.button
               onClick={generatePlan}

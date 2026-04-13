@@ -1,4 +1,5 @@
 // backend/controllers/gamificationController.js
+
 const User = require("../models/User");
 const {
   todayStringIST,
@@ -13,7 +14,10 @@ const {
  */
 exports.getGamification = async (req, res, next) => {
   try {
+
+    // ✅ SAFE USER FETCH
     const user = await User.findById(req.user.id).select("streak xp level badges");
+
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -21,13 +25,15 @@ exports.getGamification = async (req, res, next) => {
     return res.json({
       success: true,
       gamification: {
-        streak: user.streak,
-        xp: user.xp,
-        level: user.level,
-        badges: user.badges,
+        streak: user.streak || { current: 0, best: 0, lastActiveDate: "" },
+        xp: user.xp || 0,
+        level: user.level || 1,
+        badges: user.badges || [],
       },
     });
+
   } catch (err) {
+    console.error("getGamification error:", err);
     next(err);
   }
 };
@@ -38,15 +44,39 @@ exports.getGamification = async (req, res, next) => {
  */
 exports.markTodayDone = async (req, res, next) => {
   try {
+
+    // ✅ SAFE USER FETCH
     const user = await User.findById(req.user.id);
+
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const today = todayStringIST();
-    const last = user.streak?.lastActiveDate || "";
+    // ✅ ENSURE DEFAULT STRUCTURE (VERY IMPORTANT)
+    if (!user.streak) {
+      user.streak = {
+        current: 0,
+        best: 0,
+        lastActiveDate: "",
+      };
+    }
 
-    // already counted today
+    if (!Array.isArray(user.badges)) {
+      user.badges = [];
+    }
+
+    if (typeof user.xp !== "number") {
+      user.xp = 0;
+    }
+
+    if (typeof user.level !== "number") {
+      user.level = 1;
+    }
+
+    const today = todayStringIST();
+    const last = user.streak.lastActiveDate || "";
+
+    // ✅ ALREADY MARKED TODAY
     if (last === today) {
       return res.json({
         success: true,
@@ -60,7 +90,7 @@ exports.markTodayDone = async (req, res, next) => {
       });
     }
 
-    // streak logic
+    // ✅ STREAK LOGIC (SAFE)
     if (!last) {
       user.streak.current = 1;
     } else if (isYesterday(last, today)) {
@@ -70,15 +100,26 @@ exports.markTodayDone = async (req, res, next) => {
     }
 
     user.streak.lastActiveDate = today;
+
+    // ✅ BEST STREAK UPDATE
     user.streak.best = Math.max(user.streak.best || 0, user.streak.current);
 
-    // award xp
-    user.xp = (user.xp || 0) + 20; // +20 per day
+    // ✅ XP SYSTEM (SAFE LIMIT)
+    const DAILY_XP = 20;
+
+    // 🔥 OPTIONAL ABUSE PROTECTION (MAX XP PER DAY)
+    const maxDailyXP = 50;
+    const gainedXP = Math.min(DAILY_XP, maxDailyXP);
+
+    user.xp = (user.xp || 0) + gainedXP;
+
+    // ✅ LEVEL CALCULATION
     user.level = calcLevel(user.xp);
 
-    // badges
+    // ✅ BADGES UPDATE
     awardBadges(user);
 
+    // ✅ SAVE
     await user.save();
 
     return res.json({
@@ -91,7 +132,11 @@ exports.markTodayDone = async (req, res, next) => {
         badges: user.badges,
       },
     });
+
   } catch (err) {
+
+    console.error("markTodayDone error:", err);
+
     next(err);
   }
 };

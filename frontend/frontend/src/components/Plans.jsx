@@ -67,12 +67,14 @@ const Plans = () => {
 
       const token = localStorage.getItem("token");
 
+      // ✅ FIXED API + BODY
       await axios.post(
-        "https://fittrack-weld.vercel.app/api/users/select-plan",
-        { planId: plan._id },
+        "https://fittrack-weld.vercel.app/api/plan/select-plan",
+        { planCode: plan.code },
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -97,15 +99,12 @@ const Plans = () => {
         <div className="absolute w-[700px] h-[700px] bg-indigo-500/10 blur-[160px] top-[-150px] left-[-150px]" />
         <div className="absolute w-[700px] h-[700px] bg-green-500/10 blur-[160px] bottom-[-150px] right-[-150px]" />
 
-        {/* 🔥 EXTRA DEPTH */}
         <div className="absolute w-[600px] h-[600px] bg-cyan-400/10 blur-[180px] top-[30%] left-[40%]" />
       </div>
 
-      {/* 🔥 TOP + BOTTOM FADE */}
       <div className="pointer-events-none absolute -top-32 left-0 w-full h-32 bg-gradient-to-b from-[#05070c] to-transparent opacity-60" />
       <div className="pointer-events-none absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#05070c] to-transparent opacity-60" />
 
-      {/* 🔥 BACKGROUND GLOW */}
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-green-400/10 blur-[160px] rounded-full pointer-events-none"
         animate={{ x: [0, 80, 0] }}
@@ -118,7 +117,6 @@ const Plans = () => {
         transition={{ duration: 22, repeat: Infinity }}
       />
 
-      {/* 🧠 HEADER */}
       <div className="relative z-10 max-w-6xl mx-auto text-center">
 
         <motion.p
@@ -175,20 +173,15 @@ const Plans = () => {
 
               <motion.div
                 key={plan._id}
-
                 initial={{ opacity: 0, y: 60, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: i * 0.2, duration: 0.7 }}
                 viewport={{ once: true }}
-
                 whileHover={{ y: -22, scale: 1.07 }}
                 className="group relative rounded-3xl p-[1px] bg-gradient-to-br from-white/10 via-white/5 to-transparent h-full"
               >
 
-                {/* 🔥 OUTER GLOW */}
                 <div className="absolute -inset-3 rounded-3xl opacity-0 group-hover:opacity-100 transition duration-500 bg-green-400/25 blur-3xl pointer-events-none" />
-
-                {/* 🔥 DEPTH SHADOW */}
                 <div className="absolute -inset-1 translate-y-6 bg-black/30 blur-2xl rounded-3xl opacity-60 group-hover:translate-y-12 transition-all duration-500 pointer-events-none" />
 
                 <div className={`relative rounded-3xl p-10 h-full flex flex-col justify-between backdrop-blur-2xl border transition-all duration-300
@@ -205,13 +198,10 @@ const Plans = () => {
                   )}
 
                   <div>
-
-                    {/* 🔥 PLAN NAME */}
                     <h2 className="text-2xl font-bold text-center tracking-wide group-hover:text-green-300 transition">
                       {plan.name}
                     </h2>
 
-                    {/* 🔥 PRICE */}
                     <p className="text-center text-5xl font-extrabold mt-6 tracking-tight">
                       ₹{formatINR(plan.price)}
                     </p>
@@ -220,7 +210,6 @@ const Plans = () => {
                       per month
                     </p>
 
-                    {/* 🔥 FEATURES */}
                     <ul className="mt-8 space-y-3 text-white/70">
                       {(plan.features || []).map((f, j) => (
                         <li key={j} className="flex gap-3 items-start">
@@ -229,10 +218,8 @@ const Plans = () => {
                         </li>
                       ))}
                     </ul>
-
                   </div>
 
-                  {/* 🔥 CTA */}
                   <button
                     onClick={() => choosePlan(plan)}
                     disabled={isProcessing}
@@ -244,11 +231,6 @@ const Plans = () => {
                     ${isProcessing ? "opacity-60 cursor-not-allowed" : ""}
                     `}
                   >
-                    {/* 🔥 SHINE */}
-                    <span className="absolute inset-0 overflow-hidden">
-                      <span className="absolute w-1/2 h-full bg-white/20 blur-lg -left-1/2 animate-[shine_2s_infinite]" />
-                    </span>
-
                     <span className="relative z-10">
                       {isProcessing ? "Processing..." : "Choose Plan"}
                     </span>

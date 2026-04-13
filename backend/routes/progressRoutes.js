@@ -18,26 +18,64 @@ function getUserId(req) {
 router.post("/upsert", auth, async (req, res) => {
   try {
     const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const { date, weightKg, bodyFat, didWorkout, workoutMinutes, workoutType } = req.body;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
-    if (!date) return res.status(400).json({ success: false, message: "Date is required" });
+    let { date, weightKg, bodyFat, didWorkout, workoutMinutes, workoutType } = req.body;
+
+    // ✅ AUTO DATE FIX (IMPORTANT 🔥)
+    if (!date) {
+      date = new Date();
+    }
 
     const d = new Date(date);
+
     if (isNaN(d.getTime())) {
       return res.status(400).json({ success: false, message: "Invalid date format" });
     }
+
+    // normalize to midnight
     d.setHours(0, 0, 0, 0);
+
+    // ✅ SAFE PARSING
+    const parsedWeight =
+      weightKg === null || weightKg === undefined || weightKg === ""
+        ? null
+        : Number(weightKg);
+
+    const parsedBodyFat =
+      bodyFat === null || bodyFat === undefined || bodyFat === ""
+        ? null
+        : Number(bodyFat);
+
+    // ✅ VALIDATION
+    if (parsedWeight !== null && (isNaN(parsedWeight) || parsedWeight < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid weight value",
+      });
+    }
+
+    if (
+      parsedBodyFat !== null &&
+      (isNaN(parsedBodyFat) || parsedBodyFat < 0 || parsedBodyFat > 100)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid body fat %",
+      });
+    }
 
     const doc = await Progress.findOneAndUpdate(
       { userId, date: d },
       {
         $set: {
-          weightKg: weightKg === null || weightKg === undefined || weightKg === "" ? null : Number(weightKg),
+          weightKg: parsedWeight,
 
           // ✅ store bodyFat too
-          bodyFat: bodyFat === null || bodyFat === undefined || bodyFat === "" ? null : Number(bodyFat),
+          bodyFat: parsedBodyFat,
 
           didWorkout: !!didWorkout,
           workoutMinutes: Number(workoutMinutes || 0),
@@ -47,13 +85,25 @@ router.post("/upsert", auth, async (req, res) => {
       { upsert: true, new: true }
     );
 
-    res.json({ success: true, progress: doc });
+    res.json({
+      success: true,
+      progress: doc,
+    });
+
   } catch (err) {
     if (err.code === 11000) {
-      return res.status(409).json({ success: false, message: "Progress for this date already exists." });
+      return res.status(409).json({
+        success: false,
+        message: "Progress for this date already exists.",
+      });
     }
+
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 });
 
@@ -61,7 +111,10 @@ router.post("/upsert", auth, async (req, res) => {
 router.get("/range", auth, async (req, res) => {
   try {
     const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
     const days = Math.min(Number(req.query.days || 30), 365);
 
@@ -72,14 +125,27 @@ router.get("/range", auth, async (req, res) => {
     start.setDate(start.getDate() - (days - 1));
     start.setHours(0, 0, 0, 0);
 
-    const entries = await Progress.find({ userId, date: { $gte: start, $lte: end } })
+    const entries = await Progress.find({
+      userId,
+      date: { $gte: start, $lte: end },
+    })
       .sort({ date: 1 })
       .lean();
 
-    res.json({ success: true, start, end, entries });
+    res.json({
+      success: true,
+      start,
+      end,
+      entries,
+    });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 });
 
@@ -87,13 +153,19 @@ router.get("/range", auth, async (req, res) => {
 router.get("/monthly-summary", auth, async (req, res) => {
   try {
     const userId = getUserId(req);
-    if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
 
     const year = Number(req.query.year);
     const month = Number(req.query.month); // 1-12
 
     if (!year || !month || month < 1 || month > 12) {
-      return res.status(400).json({ success: false, message: "year & month required (month 1-12)" });
+      return res.status(400).json({
+        success: false,
+        message: "year & month required (month 1-12)",
+      });
     }
 
     const start = new Date(year, month - 1, 1);
@@ -102,36 +174,52 @@ router.get("/monthly-summary", auth, async (req, res) => {
     const end = new Date(year, month, 0);
     end.setHours(23, 59, 59, 999);
 
-    const entries = await Progress.find({ userId, date: { $gte: start, $lte: end } })
+    const entries = await Progress.find({
+      userId,
+      date: { $gte: start, $lte: end },
+    })
       .sort({ date: 1 })
       .lean();
 
-    const workoutDays = entries.filter(e => e.didWorkout).length;
+    const workoutDays = entries.filter((e) => e.didWorkout).length;
+
     const totalMinutes = entries.reduce(
-      (sum, e) => sum + (e.didWorkout ? (e.workoutMinutes || 0) : 0),
+      (sum, e) => sum + (e.didWorkout ? e.workoutMinutes || 0 : 0),
       0
     );
 
-    const weights = entries.filter(e => typeof e.weightKg === "number");
+    const weights = entries.filter((e) => typeof e.weightKg === "number");
+
     const avgWeight = weights.length
-      ? (weights.reduce((s, e) => s + e.weightKg, 0) / weights.length)
+      ? weights.reduce((s, e) => s + e.weightKg, 0) / weights.length
       : null;
 
     const firstWeight = weights.length ? weights[0].weightKg : null;
-    const lastWeight = weights.length ? weights[weights.length - 1].weightKg : null;
+    const lastWeight = weights.length
+      ? weights[weights.length - 1].weightKg
+      : null;
+
     const weightChange =
-      firstWeight != null && lastWeight != null ? (lastWeight - firstWeight) : null;
+      firstWeight != null && lastWeight != null
+        ? lastWeight - firstWeight
+        : null;
 
     // ✅ bodyFat stats
-    const fats = entries.filter(e => typeof e.bodyFat === "number");
+    const fats = entries.filter((e) => typeof e.bodyFat === "number");
+
     const avgBodyFat = fats.length
-      ? (fats.reduce((s, e) => s + e.bodyFat, 0) / fats.length)
+      ? fats.reduce((s, e) => s + e.bodyFat, 0) / fats.length
       : null;
 
     const firstBodyFat = fats.length ? fats[0].bodyFat : null;
-    const lastBodyFat = fats.length ? fats[fats.length - 1].bodyFat : null;
+    const lastBodyFat = fats.length
+      ? fats[fats.length - 1].bodyFat
+      : null;
+
     const bodyFatChange =
-      firstBodyFat != null && lastBodyFat != null ? (lastBodyFat - firstBodyFat) : null;
+      firstBodyFat != null && lastBodyFat != null
+        ? lastBodyFat - firstBodyFat
+        : null;
 
     // Best streak in month
     let bestStreak = 0;
@@ -139,8 +227,8 @@ router.get("/monthly-summary", auth, async (req, res) => {
 
     const workoutSet = new Set(
       entries
-        .filter(e => e.didWorkout)
-        .map(e => {
+        .filter((e) => e.didWorkout)
+        .map((e) => {
           const d = new Date(e.date);
           d.setHours(0, 0, 0, 0);
           return d.toISOString().slice(0, 10);
@@ -148,14 +236,17 @@ router.get("/monthly-summary", auth, async (req, res) => {
     );
 
     const iter = new Date(start);
+
     while (iter <= end) {
       const key = iter.toISOString().slice(0, 10);
+
       if (workoutSet.has(key)) {
         cur += 1;
         if (cur > bestStreak) bestStreak = cur;
       } else {
         cur = 0;
       }
+
       iter.setDate(iter.getDate() + 1);
     }
 
@@ -180,9 +271,14 @@ router.get("/monthly-summary", auth, async (req, res) => {
         bodyFatChange,
       },
     });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: "Server error" });
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 });
 

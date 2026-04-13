@@ -1,3 +1,5 @@
+// frontend/src/pages/Contact.jsx
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { API_BASE } from "../api";
@@ -17,14 +19,30 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
 
+  // ✅ email validation
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccess("");
 
     if (loading) return;
 
+    // 🔥 validation
     if (!fullName || !email || !subject || !message) {
       toast.error("Please fill all fields ❌");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast.error("Invalid email ❌");
+      return;
+    }
+
+    if (message.length < 5) {
+      toast.error("Message too short ❌");
       return;
     }
 
@@ -40,7 +58,12 @@ export default function Contact() {
       const res = await fetch(`${API_BASE}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, subject, message }),
+        body: JSON.stringify({
+          fullName: fullName.trim(),
+          email: email.trim().toLowerCase(),
+          subject: subject.trim(),
+          message: message.trim(),
+        }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -50,6 +73,7 @@ export default function Contact() {
         return;
       }
 
+      // 🔥 WhatsApp formatted message
       const text = `Hi FitTrack Team 👋
 Name: ${fullName}
 Email: ${email}
@@ -62,6 +86,7 @@ ${message}`;
 
       setSuccess("Message saved! Opening WhatsApp…");
 
+      // 🔥 reset form
       setFullName("");
       setEmail("");
       setSubject("");
@@ -69,12 +94,13 @@ ${message}`;
 
       toast.success("Message sent successfully 🎉", { id: "contact" });
 
+      // 🔥 delay for UX
       setTimeout(() => {
         window.open(url, "_blank", "noopener,noreferrer");
-      }, 250);
+      }, 300);
 
     } catch (err) {
-      console.error(err);
+      console.error("Contact error:", err);
       toast.error("Server error ⚠️", { id: "contact" });
     } finally {
       setLoading(false);
@@ -114,7 +140,6 @@ ${message}`;
         {/* HEADER */}
         <div className="mb-20 text-center">
 
-          {/* 🔥 BADGE */}
           <motion.div
             className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300 backdrop-blur-md mb-6"
             initial={{ opacity: 0 }}
@@ -146,23 +171,14 @@ ${message}`;
           <motion.form
             onSubmit={handleSubmit}
             whileHover={{ scale: 1.02 }}
-            className="
-              relative p-[1px] rounded-3xl
-              bg-gradient-to-br from-white/10 to-transparent
-            "
+            className="relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent"
           >
 
-            {/* 🔥 OUTER GLOW */}
             <div className="absolute -inset-3 opacity-0 hover:opacity-100 bg-green-400/25 blur-3xl rounded-3xl transition duration-500" />
 
-            {/* 🔥 DEPTH */}
             <div className="absolute -inset-1 translate-y-6 bg-black/30 blur-2xl rounded-3xl opacity-60 hover:translate-y-10 transition-all duration-500" />
 
-            <div className="
-              p-10 rounded-3xl
-              bg-white/[0.05] backdrop-blur-2xl
-              border border-white/10
-            ">
+            <div className="p-10 rounded-3xl bg-white/[0.05] backdrop-blur-2xl border border-white/10">
 
               <h2 className="text-2xl font-bold mb-6">Send a message</h2>
 
@@ -189,14 +205,7 @@ ${message}`;
                     disabled={loading}
                     onChange={(e)=>f.set(e.target.value)}
                     placeholder={f.ph}
-                    className="
-                      w-full p-4 rounded-xl
-                      bg-black/40 border border-white/10
-                      focus:ring-2 focus:ring-emerald-400
-                      transition-all duration-300
-                      hover:border-emerald-400/40
-                      focus:shadow-[0_0_30px_rgba(34,197,94,0.5)]
-                    "
+                    className="w-full p-4 rounded-xl bg-black/40 border border-white/10 focus:ring-2 focus:ring-emerald-400 transition-all duration-300 hover:border-emerald-400/40 focus:shadow-[0_0_30px_rgba(34,197,94,0.5)]"
                   />
 
                 ))}
@@ -207,14 +216,7 @@ ${message}`;
                   disabled={loading}
                   onChange={(e)=>setMessage(e.target.value)}
                   placeholder="Your Message"
-                  className="
-                    w-full p-4 rounded-xl
-                    bg-black/40 border border-white/10
-                    focus:ring-2 focus:ring-emerald-400
-                    transition-all duration-300
-                    hover:border-emerald-400/40
-                    focus:shadow-[0_0_30px_rgba(34,197,94,0.5)]
-                  "
+                  className="w-full p-4 rounded-xl bg-black/40 border border-white/10 focus:ring-2 focus:ring-emerald-400 transition-all duration-300 hover:border-emerald-400/40 focus:shadow-[0_0_30px_rgba(34,197,94,0.5)]"
                 />
 
                 <LoadingButton loading={loading}>
@@ -254,19 +256,12 @@ ${message}`;
               <motion.div
                 key={i}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="
-                  relative p-[1px] rounded-3xl
-                  bg-gradient-to-br from-white/10 to-transparent
-                "
+                className="relative p-[1px] rounded-3xl bg-gradient-to-br from-white/10 to-transparent"
               >
 
                 <div className="absolute -inset-3 opacity-0 hover:opacity-100 bg-green-400/25 blur-3xl rounded-3xl transition duration-500" />
 
-                <div className="
-                  p-8 rounded-3xl
-                  bg-white/[0.05] backdrop-blur-2xl
-                  border border-white/10
-                ">
+                <div className="p-8 rounded-3xl bg-white/[0.05] backdrop-blur-2xl border border-white/10">
 
                   <h3 className="text-xl font-bold mb-4">{block.title}</h3>
 

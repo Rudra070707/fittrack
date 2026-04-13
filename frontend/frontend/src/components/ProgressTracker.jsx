@@ -40,6 +40,10 @@ export default function ProgressTracker() {
   const [bodyFat, setBodyFat] = useState("");
   const [didWorkout, setDidWorkout] = useState(false);
 
+  // ✅ NEW STATES (NO UI CHANGE)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const calculateBMI = (w, h) => {
     const heightMeters = Number(h) / 100;
     if (!heightMeters || !w) return null;
@@ -54,41 +58,66 @@ export default function ProgressTracker() {
     return "Obese";
   };
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await axios.get(`${API_BASE}/progress/range?days=30`, {
-          headers,
-        });
-        setEntries(res.data.entries || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  // ✅ LOAD FUNCTION (EXTRACTED)
+  const loadEntries = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/progress/range?days=30`, {
+        headers,
+      });
+      setEntries(res.data.entries || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load progress");
+    }
+  };
 
-    if (token) load();
+  useEffect(() => {
+    if (token) loadEntries();
   }, [token]);
 
   const addEntry = async () => {
+
     if (!weight && !bodyFat && !didWorkout) {
-      return alert("Enter data first");
+      setError("Enter at least one field");
+      return;
     }
 
+    setError("");
+
     try {
+
+      setLoading(true);
+
       await axios.post(
         `${API_BASE}/progress/upsert`,
         {
-          weightKg: weight,
-          bodyFat,
+          weightKg: weight || null,
+          bodyFat: bodyFat || null,
           didWorkout,
+          date: new Date(), // ✅ IMPORTANT FIX
         },
         { headers }
       );
 
-      alert("Saved ✅");
+      // ✅ REFETCH AFTER SAVE
+      await loadEntries();
 
-    } catch {
-      alert("Error ❌");
+      // ✅ RESET INPUTS
+      setWeight("");
+      setBodyFat("");
+      setDidWorkout(false);
+
+    } catch (err) {
+
+      console.error(err);
+
+      setError(
+        err?.response?.data?.message ||
+        "Error saving progress"
+      );
+
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,14 +216,22 @@ export default function ProgressTracker() {
 
       </div>
 
+      {/* ✅ ERROR UI (NEW) */}
+      {error && (
+        <p className="text-red-400 text-sm">
+          {error}
+        </p>
+      )}
+
       {/* 🚀 SAVE */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={addEntry}
-        className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-400 text-black font-semibold"
+        disabled={loading}
+        className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-400 text-black font-semibold disabled:opacity-60"
       >
-        Save Entry
+        {loading ? "Saving..." : "Save Entry"}
       </motion.button>
 
       {/* 📊 BMI */}

@@ -29,8 +29,24 @@ export default function InjurySafeTraining() {
 
       const res = await axios.post(`${API_BASE}/injury-safe/generate`, { text });
 
+      // ✅ SAFETY CHECK (NEW)
+      if (!res.data?.success) {
+        setError(res.data?.message || "Failed to generate plan");
+        setPlan(null);
+        setBodyPart("");
+        return;
+      }
+
       setBodyPart(res.data.bodyPart);
       setPlan(res.data.plan);
+
+      // ✅ SMOOTH SCROLL (NEW UX IMPROVEMENT)
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: "smooth"
+        });
+      }, 200);
 
     } catch (err) {
 
@@ -40,9 +56,10 @@ export default function InjurySafeTraining() {
       setPlan(null);
       setBodyPart("");
 
+    } finally {
+      // ✅ FIXED LOADING BUG (VERY IMPORTANT)
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -125,6 +142,7 @@ export default function InjurySafeTraining() {
           whileHover={{ scale: 1.04 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleGeneratePlan}
+          disabled={loading} // ✅ ADDED
           className="
           mt-6 w-full py-3 rounded-2xl
           bg-gradient-to-r from-emerald-500 via-emerald-400 to-green-400
@@ -132,6 +150,7 @@ export default function InjurySafeTraining() {
           shadow-[0_15px_40px_rgba(34,197,94,0.35)]
           hover:shadow-[0_0_60px_rgba(34,197,94,0.9)]
           transition-all duration-300
+          disabled:opacity-60
           "
         >
           {loading ? "Generating..." : "Generate Safe Plan"}

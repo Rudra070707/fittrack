@@ -1,5 +1,6 @@
 // backend/utils/workoutGenerator.js
 
+// ✅ PICK SPLIT BASED ON DAYS
 const pickSplit = (days) => {
   if (days <= 3) return ["Push", "Pull", "Legs"];
   if (days === 5) return ["Push", "Pull", "Legs", "Upper", "Lower"];
@@ -7,6 +8,7 @@ const pickSplit = (days) => {
   return ["Push", "Pull", "Legs", "Push", "Pull", "Legs"];
 };
 
+// ✅ ALL WORKOUT TEMPLATES (UNCHANGED - YOUR CORE LOGIC)
 const templates = {
   "Weight Loss": {
     Beginner: {
@@ -105,18 +107,31 @@ const templates = {
   }
 };
 
+// ✅ MAIN GENERATOR FUNCTION
 function generateWorkoutPlan({ goal, level, days }) {
+
   const d = Number(days);
 
+  // ✅ SAFETY FALLBACKS
   const safeGoal = templates[goal] ? goal : "General Fitness";
   const safeLevel = templates[safeGoal][level] ? level : "Beginner";
 
+  // ✅ SPLIT GENERATION
   const split = pickSplit(d);
   const base = templates[safeGoal][safeLevel];
 
   const plan = {};
+
   split.forEach((type, idx) => {
-    plan[`day${idx + 1}`] = base[type] || base["Push"];
+
+    // ✅ SAFE FALLBACK FOR MISSING TYPE
+    const workoutList = base[type] || base["Push"] || [];
+
+    // ✅ ADD SMALL RANDOMIZATION (ADVANCED IMPROVEMENT 🔥)
+    const randomized = workoutList.sort(() => 0.5 - Math.random());
+
+    plan[`day${idx + 1}`] = randomized;
+
   });
 
   return plan;
