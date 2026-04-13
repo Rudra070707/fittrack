@@ -82,7 +82,7 @@ app.get("/api/test", (req, res) => {
 
 // ================= ROUTES =================
 app.use("/api/admin", adminRoutes);
-app.use("/api/plan", planRoutes);
+app.use("/api/plans", planRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api", chatRoutes);
