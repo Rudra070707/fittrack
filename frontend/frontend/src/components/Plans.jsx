@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import { getPlans } from "../api";
 import axios from "axios";
 
 const Plans = () => {
@@ -14,6 +13,8 @@ const Plans = () => {
   const [processingId, setProcessingId] = useState(null);
   const [error, setError] = useState("");
 
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://fittrack-otl5.onrender.com/api";
+  
   const isLoggedIn = useMemo(() => {
     return !!localStorage.getItem("token");
   }, []);
@@ -24,14 +25,35 @@ const Plans = () => {
 
       try {
         setLoading(true);
-        const res = await getPlans();
+        setError("");
 
-        if (res?.success) setPlans(res.plans || []);
-        else setPlans([]);
+        console.log("🚀 Fetching plans from:", `${BASE_URL}/plans/all`);
+
+        // ✅ FIXED API
+        const res = await axios.get(`${BASE_URL}/plans/all`);
+
+        console.log("✅ FULL RESPONSE:", res);
+        console.log("✅ RESPONSE DATA:", res.data);
+
+        if (res.data?.success) {
+          setPlans(res.data.plans || []);
+        } else {
+          console.warn("⚠️ API success false");
+          setPlans([]);
+          setError("No plans returned from server");
+        }
 
       } catch (err) {
-        console.error("Plan fetch error:", err);
+        console.error("❌ Plan fetch error:", err);
+        console.error("❌ Response:", err.response);
+
         setPlans([]);
+        setError(
+          err.response?.data?.message ||
+          err.message ||
+          "Failed to load plans"
+        );
+
       } finally {
         setLoading(false);
       }
@@ -67,9 +89,11 @@ const Plans = () => {
 
       const token = localStorage.getItem("token");
 
-      // ✅ FIXED API + BODY
-      await axios.post(
-        "https://fittrack-ot15.onrender.com/api/plan/select-plan",
+      console.log("🚀 Selecting plan:", plan.code);
+
+      // ✅ FIXED URL + ROUTE
+      const res = await axios.post(
+        `${BASE_URL}/plans/select-plan`,
         { planCode: plan.code },
         {
           headers: {
@@ -79,11 +103,13 @@ const Plans = () => {
         }
       );
 
+      console.log("✅ SELECT PLAN RESPONSE:", res.data);
+
       alert("✅ Plan activated successfully");
       navigate("/home/dashboard");
 
     } catch (err) {
-      console.error(err);
+      console.error("❌ Plan select error:", err);
       setError(err.response?.data?.message || "Failed to select plan");
     } finally {
       setProcessingId(null);
@@ -148,15 +174,24 @@ const Plans = () => {
 
       </div>
 
+      {/* 🔴 ERROR DISPLAY */}
       {error && (
         <div className="text-center mt-6 text-red-400 font-medium">
           {error}
         </div>
       )}
 
+      {/* ⏳ LOADING */}
       {loading && (
         <div className="text-center mt-16 text-white/60 animate-pulse tracking-wide">
           Loading plans...
+        </div>
+      )}
+
+      {/* ⚠️ EMPTY STATE */}
+      {!loading && plans.length === 0 && !error && (
+        <div className="text-center mt-16 text-yellow-400">
+          No plans found ⚠️ (Check backend / seed API)
         </div>
       )}
 
