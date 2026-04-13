@@ -13,8 +13,11 @@ const Plans = () => {
   const [processingId, setProcessingId] = useState(null);
   const [error, setError] = useState("");
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://fittrack-otl5.onrender.com/api";
-  
+  const BASE_URL =
+  (import.meta.env.VITE_API_URL?.includes("/api")
+    ? import.meta.env.VITE_API_URL
+    : `${import.meta.env.VITE_API_URL}/api`) ||
+  "https://fittrack-otl5.onrender.com/api";
   const isLoggedIn = useMemo(() => {
     return !!localStorage.getItem("token");
   }, []);
